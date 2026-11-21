@@ -1,0 +1,395 @@
+<!doctype html>
+<!--
+  PROTÓTIPO DESCARTÁVEL — ticket "Telas e fluxo da partida solo" (tharso/trunfo#9).
+  Pergunta: qual o caminho da tela inicial até o fim da partida no modo solo,
+  no celular e no desktop? Como a rodada mostra: minha carta, a escolha,
+  a carta do computador, quem ganhou e o placar.
+  Três variantes da RODADA, trocadas por ?variant=A|B|C (ou setas ← →):
+    A — Uma carta por vez (a carta do computador entra no lugar da sua)
+    B — Mesa (as duas cartas na tela; a do computador fica virada)
+    C — Duelo (a escolha abre uma tela de corrida só com o atributo)
+  Início, sorteio e fim são iguais nas três. Regras reais (tickets #2, #3, #5).
+  Carta já decidida no ticket "Visual da carta" (#8). Nada é salvo.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Protótipo — Telas da partida solo</title>
+<style>
+  :root { --bg:#dfe4ea; --ink:#14181f; --mute:#5d6672; --line:#d5dae0; --paper:#f8f9fb; --gold:#e8b400; --win:#1b8a3a; --lose:#c62828; --tie:#8a6d00; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  button { font:inherit; color:inherit; cursor:pointer; }
+  .frame { container-type:inline-size; margin:0 auto; min-height:100dvh; background:var(--paper); position:relative; overflow:hidden; }
+  .frame.cel { max-width:390px; }
+  .scr { padding:12px 14px 200px; }
+  .btn { display:block; width:100%; padding:16px; border:0; border-radius:14px; font-size:18px; font-weight:800; background:var(--ink); color:#fff; }
+  .btn.sec { background:#fff; color:var(--ink); border:2px solid var(--line); }
+  .muted { color:var(--mute); font-size:13px; }
+  .chip { display:inline-flex; gap:6px; align-items:center; border-radius:999px; padding:4px 10px; font-size:13px; font-weight:700; background:#fff; border:1px solid var(--line); }
+  .menu { border:0; background:none; font-size:22px; padding:4px 8px; }
+  @keyframes pop { from { transform:scale(.85); opacity:0 } to { transform:none; opacity:1 } }
+  @keyframes slideup { from { transform:translateY(40px); opacity:0 } to { transform:none; opacity:1 } }
+  @keyframes flip { 0% { transform:rotateY(90deg) } 100% { transform:none } }
+  .pop { animation:pop .25s ease-out both; } .slideup { animation:slideup .3s ease-out both; } .flip { animation:flip .35s ease-out both; }
+
+  /* ---- Carta (decidida no ticket #8) ---- */
+  .card { border-radius:22px; overflow:hidden; background:#fff; box-shadow:0 6px 20px #0002; border:3px solid var(--c1); }
+  .c-head { position:relative; height:130px; background:linear-gradient(135deg,var(--c1) 0 55%,var(--c2) 55% 70%,var(--c1) 70%); }
+  .c-head .avatar { position:absolute; left:50%; top:14px; transform:translateX(-50%); width:96px; height:96px; border-radius:50%; background:#0003; border:3px solid #fff8; font-size:34px; }
+  .c-head .flag { position:absolute; right:12px; top:8px; font-size:30px; }
+  .c-head .badge { position:absolute; left:12px; top:12px; font-size:15px; }
+  .avatar { display:flex; align-items:center; justify-content:center; font-weight:900; color:#fff; letter-spacing:1px; text-shadow:0 1px 2px #0006; }
+  .badge { display:inline-flex; font-weight:900; border-radius:8px; padding:2px 8px; font-size:13px; background:#fff; color:#000; }
+  .badge.st { background:var(--gold); } .badge.a { background:var(--lose); color:#fff; }
+  .c-name { padding:8px 14px 0; font-size:21px; font-weight:900; }
+  .c-sub { padding:0 14px 8px; font-size:13px; color:var(--mute); }
+  .c-row { display:grid; grid-template-columns:1fr 46px; align-items:center; gap:10px; width:100%; min-height:48px; padding:5px 14px; border:0; border-top:1px solid var(--line); background:none; text-align:left; }
+  .c-row .lbl { font-weight:700; } .c-row .lbl small { font-weight:400; opacity:.85; }
+  .c-row .bar { height:8px; border-radius:3px; background:var(--line); margin-top:4px; }
+  .c-row .bar i { display:block; height:100%; border-radius:4px; }
+  .c-row .num { font-size:23px; font-weight:900; text-align:right; }
+  .c-row.sel { background:var(--c1); color:#fff; } .c-row.sel .bar { background:#fff4; }
+  .c-row.hi { box-shadow:inset 0 0 0 3px var(--ink); background:#fff7d6; }
+  .c-row.hi.w { background:#dff3e3; box-shadow:inset 0 0 0 3px var(--win); }
+  .c-row.hi.l { background:#fbe1e1; box-shadow:inset 0 0 0 3px var(--lose); }
+  .c-row.dim { opacity:.35; }
+  .card.back { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:repeating-linear-gradient(45deg,#24303f 0 12px,#2c3a4c 12px 24px); border-color:#24303f; color:#fff; }
+  .card.back b { font-size:44px; }
+
+  /* ---- Início / sorteio / fim ---- */
+  .home { max-width:560px; margin:0 auto; display:flex; flex-direction:column; gap:16px; padding:28px 20px 200px; min-height:100dvh; }
+  .home h1 { font-size:34px; line-height:1; margin:10px 0 0; font-weight:900; }
+  .fan { position:relative; height:170px; margin:8px auto 0; width:220px; }
+  .fan .card { position:absolute; width:110px; height:160px; left:55px; top:0; }
+  .seg { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .seg button { padding:14px 10px; border-radius:14px; border:2px solid var(--line); background:#fff; text-align:left; }
+  .seg button b { display:block; font-size:17px; } .seg button span { font-size:12px; color:var(--mute); }
+  .seg button.on { border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink); }
+  details { background:#fff; border-radius:14px; padding:12px 14px; border:1px solid var(--line); font-size:14px; }
+  details summary { font-weight:700; }
+  .center { text-align:center; }
+  .big { font-size:30px; font-weight:900; margin:6px 0; }
+  .coin { width:120px; height:120px; border-radius:50%; margin:30px auto 10px; display:flex; align-items:center; justify-content:center; font-size:46px; background:var(--gold); box-shadow:0 6px 20px #0003; }
+  .score-big { display:flex; justify-content:center; gap:18px; align-items:baseline; font-weight:900; font-size:48px; margin:6px 0 4px; }
+  .score-big small { font-size:13px; font-weight:600; color:var(--mute); display:block; text-align:center; }
+  .stats { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0; }
+  .stats div { background:#fff; border:1px solid var(--line); border-radius:12px; padding:10px; } .stats b { display:block; font-size:20px; }
+  .sheet { position:absolute; inset:0; background:#0007; display:flex; align-items:flex-end; z-index:5; }
+  .sheet > div { background:#fff; width:100%; border-radius:20px 20px 0 0; padding:18px; display:grid; gap:10px; }
+
+  /* ---- comum à rodada ---- */
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:10px; font-size:13px; color:var(--mute); }
+  .stage { text-align:center; font-weight:800; font-size:18px; min-height:46px; margin-top:10px; }
+  .stage small { display:block; font-weight:400; font-size:13px; color:var(--mute); }
+  .why { font-size:13px; color:var(--mute); }
+  .res-w { color:var(--win); } .res-l { color:var(--lose); } .res-t { color:var(--tie); }
+
+  /* ---- A: uma carta por vez ---- */
+  .A-strip { max-width:900px; margin-left:auto; margin-right:auto; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; background:#fff; border:1px solid var(--line); border-radius:14px; padding:8px 12px; margin-bottom:10px; }
+  .A-strip .me { font-weight:900; font-size:20px; } .A-strip .cpu { font-weight:900; font-size:20px; text-align:right; }
+  .A-strip small { display:block; font-size:11px; color:var(--mute); font-weight:600; }
+  .A-who { font-size:13px; font-weight:800; margin:0 0 6px 4px; color:var(--mute); }
+  .A-wrap.rev { display:flex; flex-direction:column; gap:12px; } .A-wrap.rev .A-result { order:-1; }
+  .A-result { padding:12px 14px; background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 20px #0001; }
+  .A-vs { display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center; margin:8px 0 12px; }
+  .A-vs .s { background:var(--paper); border-radius:12px; padding:8px 10px; } .A-vs .s b { font-size:28px; display:block; }
+  .A-vs .s.w { background:#dff3e3; } .A-vs .s.l { background:#fbe1e1; opacity:.8; }
+  .A-tabs { display:flex; gap:6px; margin-bottom:8px; } .A-tabs button { flex:1; padding:8px; border-radius:10px; border:1px solid var(--line); background:#fff; font-weight:700; font-size:14px; } .A-tabs button.on { background:var(--ink); color:#fff; }
+  @container (min-width:800px) {
+    .A-wrap { display:grid; grid-template-columns:420px 1fr; gap:28px; max-width:900px; margin:0 auto; align-items:start; }
+    .A-wrap.rev { display:grid; } .A-wrap.rev .A-result { order:2; padding:18px; }
+    .A-tabs { display:none; } .A-both .card { margin-bottom:12px; }
+  }
+
+  /* ---- B: mesa ---- */
+  .B-table { display:grid; gap:10px; }
+  .B-cpu { display:flex; gap:10px; align-items:center; background:#fff; border:1px solid var(--line); border-radius:16px; padding:8px; }
+  .B-cpu .mini { flex:none; width:64px; height:88px; border-radius:10px; }
+  .B-cpu .mini.card { border-width:2px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--c1); color:#fff; font-weight:900; }
+  .B-cpu .mini.back b { font-size:26px; }
+  .B-cpu .info { flex:1; min-width:0; } .B-cpu .info b { font-size:16px; }
+  .B-cpu .val { font-size:34px; font-weight:900; min-width:54px; text-align:right; padding-right:6px; }
+  .B-pile { font-size:12px; color:var(--mute); }
+  .B-mid { display:flex; justify-content:center; gap:8px; align-items:center; min-height:30px; }
+  .B-me-lbl { display:flex; justify-content:space-between; font-size:13px; font-weight:800; color:var(--mute); margin:0 4px 4px; }
+  .ribbon { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:900; color:#fff; background:var(--win); }
+  .ribbon.l { background:var(--lose); } .ribbon.t { background:var(--tie); }
+  .B-next { margin-top:12px; }
+  .B-desk { display:none; }
+  @container (min-width:800px) {
+    .B-mobile { display:none; }
+    .B-desk { display:grid; grid-template-columns:380px 120px 380px; justify-content:center; gap:10px; align-items:start; }
+    .B-desk .vs { align-self:center; text-align:center; font-weight:900; font-size:28px; }
+    .B-desk .vs .B-pile { font-weight:600; }
+    .B-desk .card.back { height:640px; }
+  }
+
+  /* ---- C: duelo ---- */
+  .C-tug { display:flex; height:14px; border-radius:7px; overflow:hidden; background:var(--line); margin:4px 0 2px; }
+  .C-tug i { display:block; height:100%; transition:width .5s; }
+  .C-tugl { display:flex; justify-content:space-between; font-size:12px; font-weight:800; }
+  .C-duel { position:absolute; inset:0; z-index:4; background:#101820; color:#fff; padding:22px 18px 200px; display:flex; flex-direction:column; gap:18px; }
+  .C-duel h2 { margin:0; font-size:28px; text-align:center; } .C-duel .sub { text-align:center; color:#fffa; font-size:14px; }
+  .lane { background:#ffffff10; border-radius:16px; padding:12px; }
+  .lane .who { display:flex; align-items:center; gap:10px; font-weight:800; }
+  .lane .who .avatar { width:40px; height:40px; border-radius:50%; background:var(--c1); box-shadow:0 0 0 3px var(--c2); font-size:14px; }
+  .lane .who .n { margin-left:auto; font-size:34px; font-weight:900; }
+  .lane .track { height:18px; border-radius:9px; background:#ffffff18; margin-top:10px; overflow:hidden; }
+  .lane .track i { display:block; height:100%; width:0; border-radius:9px; background:var(--c2); transition:width 1.1s cubic-bezier(.2,.8,.2,1); }
+  .lane.w { box-shadow:inset 0 0 0 3px #3ddc84; } .lane.l { opacity:.6; }
+  .C-verdict { text-align:center; font-size:26px; font-weight:900; } .C-verdict small { display:block; font-size:14px; font-weight:400; color:#fffb; margin-top:4px; }
+  .C-duel .btn { background:#fff; color:#101820; } .C-duel .btn.sec { background:transparent; color:#fff; border-color:#fff5; }
+  .C-peek { display:grid; grid-template-columns:1fr 1fr; gap:10px; } .C-peek .card { transform:scale(1); }
+  @container (min-width:800px) {
+    .C-wrap { max-width:430px; margin:0 auto; }
+    .C-duel { padding:40px max(40px, calc(50% - 360px)) 200px; }
+  }
+
+  /* ---- Barra do protótipo (não faz parte do design) ---- */
+  .proto { position:fixed; left:50%; bottom:10px; transform:translateX(-50%); z-index:20; display:flex; flex-direction:column; gap:5px; align-items:center; font:12px system-ui; }
+  .proto .pill { display:flex; flex-wrap:wrap; justify-content:center; gap:4px; align-items:center; background:#111; color:#fff; border-radius:999px; padding:4px; box-shadow:0 4px 16px #0005; }
+  .proto button { white-space:nowrap; border:0; background:#333; color:#fff; border-radius:999px; padding:6px 10px; }
+  .proto button.on { background:#fff; color:#111; }
+  .proto .lbl { padding:0 8px; white-space:nowrap; font-weight:700; }
+  .state { position:fixed; right:8px; top:8px; z-index:19; max-width:240px; font:10px/1.35 ui-monospace,monospace; background:#111d; color:#cfe; padding:6px 8px; border-radius:8px; white-space:pre-wrap; pointer-events:none; }
+  @media (max-width:700px) { .state { display:none; } }
+</style>
+</head>
+<body>
+<div class="frame cel" id="frame"><div id="app"></div></div>
+<div class="proto" id="proto"></div>
+<div class="state" id="state"></div>
+<script>
+// 32 cartas do baralho (ticket #3). Notas de data/cartas.csv. Pavê 10 ainda sem a estimativa.
+// João Almeida não está no CSV: notas inventadas só para o protótipo.
+const BARALHO = [{"nome": "Tadej Pogačar", "pais": "🇸🇮", "paisNome": "Eslovênia", "equipe": "UAE Team Emirates - XRG", "idade": 28, "n": [67, 99, 99, 93, 98, 99], "c1": "#1f1f1f", "c2": "#d32f2f", "cod": "1A", "tipo": "n"}, {"nome": "Jonas Vingegaard", "pais": "🇩🇰", "paisNome": "Dinamarca", "equipe": "Team Visma | Lease a Bike", "idade": 29, "n": [51, 84, 92, 85, 10, 98], "c1": "#f5c400", "c2": "#111111", "cod": "1B", "tipo": "n"}, {"nome": "Remco Evenepoel", "pais": "🇧🇪", "paisNome": "Bélgica", "equipe": "Red Bull - BORA - hansgrohe", "idade": 26, "n": [59, 86, 85, 99, 10, 85], "c1": "#12224a", "c2": "#e2001a", "cod": "1C", "tipo": "n"}, {"nome": "Primož Roglič", "pais": "🇸🇮", "paisNome": "Eslovênia", "equipe": "Red Bull - BORA - hansgrohe", "idade": 37, "n": [42, 71, 81, 85, 10, 84], "c1": "#12224a", "c2": "#e2001a", "cod": "1D", "tipo": "n"}, {"nome": "Isaac Del Toro", "pais": "🇲🇽", "paisNome": "México", "equipe": "UAE Team Emirates - XRG", "idade": 22, "n": [45, 76, 82, 73, 10, 83], "c1": "#1f1f1f", "c2": "#d32f2f", "cod": "2A", "tipo": "n"}, {"nome": "Paul Seixas", "pais": "🇫🇷", "paisNome": "França", "equipe": "Decathlon CMA CGM Team", "idade": 20, "n": [53, 80, 83, 77, 10, 81], "c1": "#0b3a8c", "c2": "#7fd3f7", "cod": "2B", "tipo": "n"}, {"nome": "Juan Ayuso", "pais": "🇪🇸", "paisNome": "Espanha", "equipe": "Lidl - Trek", "idade": 24, "n": [21, 69, 79, 78, 10, 80], "c1": "#a5142a", "c2": "#13284b", "cod": "2C", "tipo": "n"}, {"nome": "Richard Carapaz", "pais": "🇪🇨", "paisNome": "Equador", "equipe": "EF Education - EasyPost", "idade": 33, "n": [58, 70, 80, 53, 10, 81], "c1": "#e5197d", "c2": "#0b2a4a", "cod": "2D", "tipo": "n"}, {"nome": "Sepp Kuss", "pais": "🇺🇸", "paisNome": "EUA", "equipe": "Team Visma | Lease a Bike", "idade": 32, "n": [17, 52, 76, 50, 10, 77], "c1": "#f5c400", "c2": "#111111", "cod": "3A", "tipo": "n"}, {"nome": "Adam Yates", "pais": "🇬🇧", "paisNome": "Grã-Bretanha", "equipe": "UAE Team Emirates - XRG", "idade": 34, "n": [25, 63, 74, 63, 10, 75], "c1": "#1f1f1f", "c2": "#d32f2f", "cod": "3B", "tipo": "n"}, {"nome": "Tom Pidcock", "pais": "🇬🇧", "paisNome": "Grã-Bretanha", "equipe": "Pinarello Q36.5 Pro Cycling Team", "idade": 27, "n": [63, 80, 76, 61, 59, 78], "c1": "#1a1a1a", "c2": "#c8a96a", "cod": "3C", "tipo": "n"}, {"nome": "Matteo Jorgenson", "pais": "🇺🇸", "paisNome": "EUA", "equipe": "Team Visma | Lease a Bike", "idade": 27, "n": [58, 73, 73, 81, 64, 76], "c1": "#f5c400", "c2": "#111111", "cod": "3D", "tipo": "n"}, {"nome": "Mattias Skjelmose", "pais": "🇩🇰", "paisNome": "Dinamarca", "equipe": "Lidl - Trek", "idade": 26, "n": [42, 75, 78, 72, 10, 79], "c1": "#a5142a", "c2": "#13284b", "cod": "4A", "tipo": "n"}, {"nome": "Giulio Ciccone", "pais": "🇮🇹", "paisNome": "Itália", "equipe": "Lidl - Trek", "idade": 31, "n": [37, 74, 76, 51, 10, 72], "c1": "#a5142a", "c2": "#13284b", "cod": "4B", "tipo": "n"}, {"nome": "Ben Healy", "pais": "🇮🇪", "paisNome": "Irlanda", "equipe": "EF Education - EasyPost", "idade": 26, "n": [27, 67, 63, 60, 10, 62], "c1": "#e5197d", "c2": "#0b2a4a", "cod": "4C", "tipo": "n"}, {"nome": "Florian Lipowitz", "pais": "🇩🇪", "paisNome": "Alemanha", "equipe": "Red Bull - BORA - hansgrohe", "idade": 26, "n": [51, 69, 81, 76, 10, 82], "c1": "#12224a", "c2": "#e2001a", "cod": "4D", "tipo": "n"}, {"nome": "João Almeida", "pais": "🇵🇹", "paisNome": "Portugal", "equipe": "UAE Team Emirates - XRG", "idade": 27, "n": [40, 74, 88, 86, 10, 89], "falta": true, "c1": "#1f1f1f", "c2": "#d32f2f", "cod": "5A", "tipo": "n"}, {"nome": "Enric Mas", "pais": "🇪🇸", "paisNome": "Espanha", "equipe": "Movistar Team", "idade": 31, "n": [22, 69, 75, 62, 10, 78], "c1": "#0a2a8a", "c2": "#7ac143", "cod": "5B", "tipo": "n"}, {"nome": "Lenny Martinez", "pais": "🇫🇷", "paisNome": "França", "equipe": "Bahrain Victorious", "idade": 23, "n": [32, 72, 76, 66, 10, 74], "c1": "#c8102e", "c2": "#d4a017", "cod": "5C", "tipo": "n"}, {"nome": "Mathieu van der Poel", "pais": "🇳🇱", "paisNome": "Países Baixos", "equipe": "Alpecin - Premier Tech", "idade": 31, "n": [75, 76, 20, 57, 99, 47], "c1": "#00446b", "c2": "#1fb5e9", "cod": "5D", "tipo": "n"}, {"nome": "Wout van Aert", "pais": "🇧🇪", "paisNome": "Bélgica", "equipe": "Team Visma | Lease a Bike", "idade": 32, "n": [79, 66, 60, 72, 89, 44], "c1": "#f5c400", "c2": "#111111", "cod": "6A", "tipo": "n"}, {"nome": "Mads Pedersen", "pais": "🇩🇰", "paisNome": "Dinamarca", "equipe": "Lidl - Trek", "idade": 30, "n": [88, 70, 42, 67, 90, 48], "c1": "#a5142a", "c2": "#13284b", "cod": "6B", "tipo": "n"}, {"nome": "Jasper Philipsen", "pais": "🇧🇪", "paisNome": "Bélgica", "equipe": "Alpecin - Premier Tech", "idade": 28, "n": [99, 56, 34, 36, 82, 44], "c1": "#00446b", "c2": "#1fb5e9", "cod": "6C", "tipo": "a"}, {"nome": "Filippo Ganna", "pais": "🇮🇹", "paisNome": "Itália", "equipe": "Netcompany INEOS", "idade": 30, "n": [56, 42, 36, 94, 75, 46], "c1": "#7a0019", "c2": "#111111", "cod": "6D", "tipo": "n"}, {"nome": "Biniam Girmay", "pais": "🇪🇷", "paisNome": "Eritreia", "equipe": "NSN Cycling Team", "idade": 26, "n": [91, 54, 44, 16, 61, 23], "c1": "#0d2b52", "c2": "#f28c00", "cod": "7A", "tipo": "n"}, {"nome": "Jonathan Milan", "pais": "🇮🇹", "paisNome": "Itália", "equipe": "Lidl - Trek", "idade": 26, "n": [93, 42, 30, 53, 64, 23], "c1": "#a5142a", "c2": "#13284b", "cod": "7B", "tipo": "a"}, {"nome": "Tim Merlier", "pais": "🇧🇪", "paisNome": "Bélgica", "equipe": "Soudal Quick-Step", "idade": 34, "n": [93, 41, 17, 21, 66, 15], "c1": "#0a3d91", "c2": "#9ad0f5", "cod": "7C", "tipo": "a"}, {"nome": "Michael Matthews", "pais": "🇦🇺", "paisNome": "Austrália", "equipe": "Team Jayco AlUla", "idade": 36, "n": [60, 69, 19, 63, 60, 29], "c1": "#0f2d5c", "c2": "#f28c28", "cod": "7D", "tipo": "n"}, {"nome": "Arnaud de Lie", "pais": "🇧🇪", "paisNome": "Bélgica", "equipe": "Lotto Intermarché", "idade": 24, "n": [86, 61, 20, 21, 60, 45], "c1": "#d0102e", "c2": "#14284b", "cod": "8A", "tipo": "n"}, {"nome": "Paul Magnier", "pais": "🇫🇷", "paisNome": "França", "equipe": "Soudal Quick-Step", "idade": 22, "n": [86, 53, 19, 37, 54, 31], "c1": "#0a3d91", "c2": "#9ad0f5", "cod": "8B", "tipo": "a"}, {"nome": "Jhonatan Narváez", "pais": "🇪🇨", "paisNome": "Equador", "equipe": "UAE Team Emirates - XRG", "idade": 29, "n": [60, 64, 59, 33, 51, 65], "c1": "#1f1f1f", "c2": "#d32f2f", "cod": "8C", "tipo": "n"}, {"nome": "Valentin Paret-Peintre", "pais": "🇫🇷", "paisNome": "França", "equipe": "Soudal Quick-Step", "idade": 25, "n": [42, 52, 63, 38, 10, 56], "c1": "#0a3d91", "c2": "#9ad0f5", "cod": "8D", "tipo": "st"}];
+const ATR = [
+  { nome:'Sprint', ico:'⚡', etapa:'Sprint' },
+  { nome:'Explosão', ico:'💥', etapa:'Explosão' },
+  { nome:'Montanha', ico:'⛰️', etapa:'Etapa de montanha' },
+  { nome:'Contrarrelógio', ico:'⏱️', etapa:'Contrarrelógio' },
+  { nome:'Pavê', ico:'🧱', etapa:'Etapa de pavê' },
+  { nome:'Voltas', ico:'🏆', etapa:'Classificação geral' },
+];
+const LIMITE = 100;
+const PARADAS = [[1,'#d84315'],[40,'#f9a825'],[70,'#7cb342'],[99,'#1b8a3a']];
+function cor(v){ for (let k=1;k<PARADAS.length;k++) if (v<=PARADAS[k][0]) { const [a,ca]=PARADAS[k-1],[b,cb]=PARADAS[k],t=(v-a)/(b-a),h=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16)),A=h(ca),B=h(cb); return 'rgb('+A.map((x,i)=>Math.round(x+(B[i]-x)*t)).join(',')+')'; } return PARADAS[3][1]; }
+const ini = n => n.split(/[\s-]/).map(p=>p[0]).filter(c=>c && c===c.toUpperCase()).slice(-2).join('');
+const badge = c => c.tipo==='st' ? '<span class="badge st">SUPER TRUNFO</span>' : c.tipo==='a' ? `<span class="badge a">${c.cod} · A</span>` : `<span class="badge">${c.cod}</span>`;
+const vars = c => `--c1:${c.c1};--c2:${c.c2}`;
+
+// ---------- Regras ----------
+// Quem ganha: 1 = a, -1 = b, 0 = empate.
+function duelo(a,b,i){
+  if (a.tipo==='st' && b.tipo==='a') return -1; if (b.tipo==='st' && a.tipo==='a') return 1;
+  if (a.tipo==='st') return 1; if (b.tipo==='st') return -1;
+  return Math.sign(a.n[i]-b.n[i]);
+}
+function porque(a,b,i,r){
+  if (a.tipo==='st'||b.tipo==='st') {
+    const st = a.tipo==='st'?a:b, o = a.tipo==='st'?b:a;
+    return o.tipo==='a' ? `${o.nome} é Carta A: ganha do Super Trunfo.` : `${st.nome} é o Super Trunfo: ganha de qualquer carta.`;
+  }
+  return r===0 ? 'Notas iguais: as cartas vão para o monte de empate.' : '';
+}
+// Nível Normal: o atributo em que a carta ganha de mais cartas do baralho (ticket #5).
+const forca = BARALHO.map(c => ATR.map((_,i)=>BARALHO.filter(o=>o!==c && duelo(c,o,i)===1).length));
+function cpuEscolhe(ci){ return st.nivel==='facil' ? Math.floor(Math.random()*6) : forca[ci].indexOf(Math.max(...forca[ci])); }
+
+// ---------- Estado ----------
+const VARIANTS = { A:'Uma carta por vez', B:'Mesa', C:'Duelo' };
+const q = new URLSearchParams(location.search);
+let st = { variant: VARIANTS[q.get('variant')] ? q.get('variant') : 'A', cel: q.get('tela')!=='desktop', tela:'inicio', nivel:'normal' };
+function embaralha(a){ a=[...a]; for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function novaPartida(){
+  const ids = embaralha(BARALHO.map((_,i)=>i));
+  Object.assign(st, { tela:'sorteio', eu:ids.slice(0,16), cpu:ids.slice(16), empate:[], rodada:1, escolhe: Math.random()<.5?'eu':'cpu',
+    fase:'escolher', sel:null, atr:null, res:null, aba:'cpu', duel:false, peek:false, ganhas:{eu:0,cpu:0,empate:0}, fim:null, menu:false });
+  st.primeiro = st.escolhe;
+}
+function iniciaRodada(){
+  st.sel=null; st.atr=null; st.res=null; st.aba='cpu'; st.duel=false; st.peek=false;
+  if (st.escolhe==='cpu') { st.atr = cpuEscolhe(st.cpu[0]); st.fase='cpuEscolheu'; } else st.fase='escolher';
+}
+function revela(){
+  const a=BARALHO[st.eu[0]], b=BARALHO[st.cpu[0]];
+  st.res = duelo(a,b,st.atr); st.fase='revelado'; st.duel=true;
+  st.ganhas[st.res===1?'eu':st.res===-1?'cpu':'empate']++;
+}
+function proxima(){
+  const mesa=[st.eu.shift(), st.cpu.shift()];
+  if (st.res===0) { st.empate.push(...mesa); }
+  else { const w = st.res===1?'eu':'cpu'; st[w].push(...mesa, ...st.empate); st.empate=[]; st.escolhe=w; }
+  // Fim: alguém sem cartas, ou o limite de rodadas (ticket #2 e #3).
+  if (!st.eu.length || !st.cpu.length) { st.fim = { motivo: st.empate.length ? 'sem-cartas-empate' : 'todas', quem: st.eu.length ? 'eu' : 'cpu' }; st.tela='fim'; return; }
+  if (st.rodada>=LIMITE) { const d=st.eu.length-st.cpu.length; st.fim={ motivo:'limite', quem: d>0?'eu':d<0?'cpu':'empate' }; st.tela='fim'; return; }
+  st.rodada++; iniciaRodada();
+}
+function toca(i){
+  if (st.fase!=='escolher') return;
+  if (st.sel===i) { st.atr=i; revela(); } else st.sel=i;
+  render();
+}
+
+// ---------- Peças ----------
+function carta(c, o={}){
+  return `<div class="card ${o.cls||''}" style="${vars(c)}">
+    <div class="c-head">${badge(c)}<span class="flag">${c.pais}</span><div class="avatar">${ini(c.nome)}</div></div>
+    <div class="c-name">${c.nome}</div><div class="c-sub">${c.pais} ${c.paisNome} · ${c.idade} anos<br>${c.equipe}</div>
+    ${ATR.map((a,i)=>{
+      const sel = o.sel===i, hi = o.hi===i;
+      const cls = [sel?'sel':'', hi?'hi '+(o.hiCls||''):'', o.hi!=null && !hi ? 'dim':''].join(' ');
+      const tip = sel && o.click ? ' <small>· toque de novo ▶</small>' : '';
+      return `<button class="c-row ${cls}" ${o.click?`onclick="toca(${i})"`:'disabled style="cursor:default"'}>
+        <div><div class="lbl">${a.ico} ${a.nome}${tip}</div><div class="bar"><i style="width:${c.n[i]}%;background:${cor(c.n[i])}"></i></div></div>
+        <div class="num">${c.n[i]}</div></button>`; }).join('')}
+  </div>`;
+}
+const verso = (txt='?') => `<div class="card back"><b>${txt}</b><span class="muted" style="color:#fffa">Computador</span></div>`;
+const menuBtn = () => `<button class="menu" onclick="st.menu=true;render()" aria-label="Menu">☰</button>`;
+function stageTxt(){
+  const eu = BARALHO[st.eu[0]];
+  if (st.fase==='escolher') return st.sel==null ? `<small>Sua vez: toque num atributo da sua carta</small>`
+    : `${ATR[st.sel].ico} ${ATR[st.sel].etapa}<small>${ATR[st.sel].nome} ${eu.n[st.sel]} — toque de novo para correr</small>`;
+  if (st.fase==='cpuEscolheu') return `${ATR[st.atr].ico} ${ATR[st.atr].etapa}<small>O computador escolheu ${ATR[st.atr].nome}. Sua nota: ${eu.n[st.atr]}</small>`;
+  return `${ATR[st.atr].ico} ${ATR[st.atr].etapa}`;
+}
+function resTxt(){ return st.res===1 ? '<span class="res-w">Você ganhou a rodada!</span>' : st.res===-1 ? '<span class="res-l">O computador ganhou.</span>' : '<span class="res-t">Empate!</span>'; }
+function levaTxt(){
+  const n = 2 + st.empate.length;
+  return st.res===0 ? `As 2 cartas vão para o monte de empate (${st.empate.length+2} no meio). ${st.escolhe==='eu'?'Você':'O computador'} escolhe de novo.`
+    : `${st.res===1?'Você leva':'O computador leva'} ${n} cartas${st.empate.length?` (com o monte de empate)`:''}.`;
+}
+const proxBtn = () => `<button class="btn" onclick="proxima();render()">Próxima rodada</button>`;
+const revBtn = () => `<button class="btn" onclick="revela();render()">Correr!</button>`;
+
+// ---------- Variante A: uma carta por vez ----------
+function VariantA(){
+  const eu=BARALHO[st.eu[0]], cpu=BARALHO[st.cpu[0]], R=st.fase==='revelado';
+  const strip = `<div class="A-strip"><div class="me"><small>Você</small>${st.eu.length}</div>
+    <div class="center muted">Rodada ${st.rodada}/${LIMITE}${st.empate.length?`<br>🤝 ${st.empate.length} no empate`:''}</div>
+    <div class="cpu"><small>Computador</small>${st.cpu.length}</div></div>`;
+  if (!R) return `<div class="scr"><div class="topbar">${menuBtn()}<span>Nível ${st.nivel==='facil'?'Fácil':'Normal'}</span></div>${strip}
+    <div class="A-wrap"><div><div class="A-who">SUA CARTA</div>${carta(eu,{click:st.fase==='escolher', sel:st.fase==='escolher'?st.sel:st.atr})}</div>
+    <div><div class="stage">${stageTxt()}</div>${st.fase==='cpuEscolheu'?revBtn():''}</div></div></div>`;
+  const ce = st.res===1?'w':st.res===-1?'l':'', cc = st.res===-1?'w':st.res===1?'l':'';
+  const mostra = st.aba==='cpu' ? `<div class="A-who">CARTA DO COMPUTADOR</div>${carta(cpu,{hi:st.atr,hiCls:cc,cls:'flip'})}`
+                                 : `<div class="A-who">SUA CARTA</div>${carta(eu,{hi:st.atr,hiCls:ce})}`;
+  return `<div class="scr"><div class="topbar">${menuBtn()}<span>Nível ${st.nivel==='facil'?'Fácil':'Normal'}</span></div>${strip}
+    <div class="A-wrap rev"><div><div class="A-tabs"><button class="${st.aba==='cpu'?'on':''}" onclick="st.aba='cpu';render()">Computador</button><button class="${st.aba==='eu'?'on':''}" onclick="st.aba='eu';render()">Minha carta</button></div>
+      <div class="A-one">${mostra}</div></div>
+    <div class="A-result slideup"><div class="stage" style="margin:0">${stageTxt()}</div>
+      <div class="A-vs"><div class="s ${ce}"><span class="muted">Você · ${eu.nome}</span><b>${eu.n[st.atr]}</b></div><b>×</b>
+        <div class="s ${cc}" style="text-align:right"><span class="muted">Computador · ${cpu.nome}</span><b>${cpu.n[st.atr]}</b></div></div>
+      <div class="center" style="font-size:22px;font-weight:900">${resTxt()}</div>
+      <p class="center why">${porque(eu,cpu,st.atr,st.res)} ${levaTxt()}</p>${proxBtn()}</div></div></div>`;
+}
+
+// ---------- Variante B: mesa ----------
+function VariantB(){
+  const eu=BARALHO[st.eu[0]], cpu=BARALHO[st.cpu[0]], R=st.fase==='revelado';
+  const ce = !R?'':st.res===1?'w':st.res===-1?'l':'', cc = !R?'':st.res===-1?'w':st.res===1?'l':'';
+  const rib = w => !R ? '' : st.res===0 ? '<span class="ribbon t">EMPATE</span>' : w ? '<span class="ribbon">GANHOU</span>' : '<span class="ribbon l">PERDEU</span>';
+  const marca = st.fase==='escolher' ? st.sel : null;
+  const meuCard = carta(eu,{click:st.fase==='escolher', sel: st.fase==='cpuEscolheu'?st.atr:marca, hi:R?st.atr:null, hiCls:ce});
+  const mid = `<div class="B-mid">${st.empate.length?`<span class="chip">🤝 Monte de empate: ${st.empate.length}</span>`:''}<span class="chip">Rodada ${st.rodada}/${LIMITE}</span></div>`;
+  const acao = R ? `<p class="center why" style="margin:8px 0">${porque(eu,cpu,st.atr,st.res)} ${levaTxt()}</p>${proxBtn()}` : st.fase==='cpuEscolheu' ? revBtn() : '';
+  const cpuMini = R
+    ? `<div class="B-cpu pop" style="${vars(cpu)}"><div class="mini card flip">${ini(cpu.nome)}<small style="font-size:10px">${cpu.cod}</small></div>
+        <div class="info"><b>${cpu.nome}</b> ${cpu.tipo!=='n'?badge(cpu):''}<div class="B-pile">Computador · ${st.cpu.length} cartas</div>${rib(st.res===-1)}</div>
+        <div class="val ${cc==='w'?'res-w':cc==='l'?'res-l':'res-t'}">${cpu.n[st.atr]}</div></div>`
+    : `<div class="B-cpu"><div class="mini card back"><b>?</b></div><div class="info"><b>Computador</b><div class="B-pile">🂠 ${st.cpu.length} cartas no monte</div></div></div>`;
+  const mob = `<div class="B-mobile B-table">${cpuMini}${mid}
+     <div class="stage" style="margin:0;min-height:0">${stageTxt()}</div>${acao ? `<div>${acao}</div>`:''}
+     <div><div class="B-me-lbl"><span>VOCÊ · ${st.eu.length} cartas</span>${rib(st.res===1)}</div>${meuCard}</div></div>`;
+  const desk = `<div class="B-desk"><div><div class="B-me-lbl"><span>VOCÊ · ${st.eu.length} cartas</span>${rib(st.res===1)}</div>${meuCard}</div>
+     <div class="vs">VS<div class="B-pile">Rodada ${st.rodada}/${LIMITE}</div>${st.empate.length?`<div class="B-pile">🤝 ${st.empate.length} no empate</div>`:''}</div>
+     <div><div class="B-me-lbl"><span>COMPUTADOR · ${st.cpu.length} cartas</span>${rib(st.res===-1)}</div>${R?carta(cpu,{hi:st.atr,hiCls:cc,cls:'flip'}):verso()}</div></div>
+     <div style="max-width:520px;margin:14px auto 0"><div class="stage">${stageTxt()}</div>${acao}</div>`;
+  return `<div class="scr"><div class="topbar">${menuBtn()}<span>Nível ${st.nivel==='facil'?'Fácil':'Normal'}</span></div>${mob}${desk}</div>`;
+}
+
+// ---------- Variante C: duelo ----------
+function VariantC(){
+  const eu=BARALHO[st.eu[0]], cpu=BARALHO[st.cpu[0]], R=st.fase==='revelado';
+  const tot = BARALHO.length, pe = 100*st.eu.length/tot, pt = 100*st.empate.length/tot;
+  const tug = `<div class="C-tugl"><span>Você ${st.eu.length}</span><span class="muted">Rodada ${st.rodada}/${LIMITE}${st.empate.length?` · 🤝 ${st.empate.length}`:''}</span><span>${st.cpu.length} Computador</span></div>
+    <div class="C-tug"><i style="width:${pe}%;background:#1b8a3a"></i><i style="width:${pt}%;background:#d9b44a"></i><i style="flex:1;background:#c62828"></i></div>`;
+  let duel = '';
+  if (R && st.duel) {
+    const a=ATR[st.atr], ce=st.res===1?'w':st.res===-1?'l':'', cc=st.res===-1?'w':st.res===1?'l':'';
+    const lane = (c,who,cls) => `<div class="lane ${cls}" style="${vars(c)}"><div class="who"><div class="avatar">${ini(c.nome)}</div><div>${c.nome}<div class="muted" style="color:#fff9">${who}</div></div><div class="n">${c.n[st.atr]}</div></div>
+       <div class="track"><i data-w="${c.tipo==='st'?100:c.n[st.atr]}"></i></div></div>`;
+    duel = st.peek
+      ? `<div class="C-duel"><h2>${a.ico} ${a.etapa}</h2><div class="C-peek">${carta(eu,{hi:st.atr,hiCls:ce})}${carta(cpu,{hi:st.atr,hiCls:cc})}</div>
+          <button class="btn sec" onclick="st.peek=false;render()">Voltar</button></div>`
+      : `<div class="C-duel"><h2 class="pop">${a.ico} ${a.etapa}</h2><div class="sub">${st.escolhe==='eu'?'Você escolheu':'O computador escolheu'} ${a.nome}</div>
+          ${lane(eu,'Você',ce)}${lane(cpu,'Computador',cc)}
+          <div class="C-verdict slideup" style="animation-delay:1s">${resTxt().replace(/class="res-\w"/,'')}<small>${porque(eu,cpu,st.atr,st.res)} ${levaTxt()}</small></div>
+          <div style="display:grid;gap:8px">${proxBtn()}<button class="btn sec" onclick="st.peek=true;render()">Ver as duas cartas</button></div></div>`;
+  }
+  return `<div class="scr"><div class="topbar">${menuBtn()}<span>Nível ${st.nivel==='facil'?'Fácil':'Normal'}</span></div>
+    <div class="C-wrap">${tug}<div style="height:10px"></div>
+    ${carta(eu,{click:st.fase==='escolher', sel: st.fase==='escolher'?st.sel:st.atr})}
+    <div class="stage">${stageTxt()}</div>${st.fase==='cpuEscolheu'?revBtn():''}</div></div>${duel}`;
+}
+
+// ---------- Telas comuns ----------
+function Inicio(){
+  const f=[BARALHO[0],BARALHO[31],BARALHO[19]];
+  return `<div class="home"><div class="muted">PROTÓTIPO · nome provisório</div><h1>Super Trunfo<br>Ciclismo</h1>
+    <div class="fan">${f.map((c,i)=>`<div class="card" style="${vars(c)};transform:rotate(${(i-1)*14}deg) translateX(${(i-1)*30}px)"><div class="c-head" style="height:100%"><div class="avatar" style="width:60px;height:60px;font-size:20px;top:40px">${ini(c.nome)}</div></div></div>`).join('')}</div>
+    <div><div style="font-weight:800;margin-bottom:6px">Você contra o computador</div>
+    <div class="seg"><button class="${st.nivel==='facil'?'on':''}" onclick="st.nivel='facil';render()"><b>Fácil</b><span>Escolhe o atributo no sorteio</span></button>
+      <button class="${st.nivel==='normal'?'on':''}" onclick="st.nivel='normal';render()"><b>Normal</b><span>Escolhe o melhor atributo da carta</span></button></div></div>
+    <button class="btn" onclick="novaPartida();render()">Jogar</button>
+    <details><summary>Como jogar</summary><p>Cada um recebe 16 cartas. Quem escolhe toca num atributo da carta de cima. A nota mais alta ganha e leva as duas cartas.</p>
+      <p>Empate: as cartas ficam no meio e vão para quem ganhar a próxima. O Super Trunfo ganha de todas, menos das Cartas A.</p>
+      <p>Ganha quem ficar com todas as cartas, ou quem tiver mais na rodada ${LIMITE}.</p></details></div>`;
+}
+function Sorteio(){
+  const eu = st.primeiro==='eu';
+  return `<div class="home center"><div class="muted">Partida nova · Nível ${st.nivel==='facil'?'Fácil':'Normal'}</div>
+    <div class="coin pop">${eu?'🙋':'🤖'}</div><div class="big">${eu?'Você começa!':'O computador começa.'}</div>
+    <p class="muted">As 32 cartas foram embaralhadas. Cada um tem 16.<br>${eu?'Você escolhe o atributo da 1ª rodada.':'Ele escolhe o atributo da 1ª rodada.'}</p>
+    <button class="btn" onclick="st.tela='rodada';iniciaRodada();render()">Ver minha primeira carta</button></div>`;
+}
+function Fim(){
+  const f=st.fim, w=f.quem==='eu', t=f.quem==='empate';
+  const tit = t ? 'Empate!' : w ? 'Você ganhou! 🏆' : 'O computador ganhou.';
+  const mot = f.motivo==='limite' ? `Chegou a rodada ${LIMITE}. ${t?'Os dois têm o mesmo número de cartas.':'Ganha quem tem mais cartas.'}`
+    : f.motivo==='sem-cartas-empate' ? `${w?'O computador':'Você'} ficou sem cartas num empate. ${st.empate.length} cartas no meio não contam.` : `${w?'Você':'O computador'} ficou com todas as cartas.`;
+  return `<div class="home"><div class="center"><div class="big ${t?'res-t':w?'res-w':'res-l'}" style="font-size:34px">${tit}</div><p class="muted">${mot}</p></div>
+    <div class="score-big"><div>${st.eu.length}<small>Você</small></div><div class="muted">×</div><div>${st.cpu.length}<small>Computador</small></div></div>
+    <div class="stats"><div><span class="muted">Rodadas</span><b>${st.rodada}</b></div><div><span class="muted">Nível</span><b>${st.nivel==='facil'?'Fácil':'Normal'}</b></div>
+      <div><span class="muted">Rodadas que você ganhou</span><b>${st.ganhas.eu}</b></div><div><span class="muted">Empates</span><b>${st.ganhas.empate}</b></div></div>
+    <button class="btn" onclick="novaPartida();render()">Jogar de novo</button><button class="btn sec" onclick="st.tela='inicio';render()">Voltar ao início</button></div>`;
+}
+const Menu = () => `<div class="sheet" onclick="if(event.target===this){st.menu=false;render()}"><div class="slideup"><b>Sair da partida?</b><span class="muted">A partida não é salva. Você perde o placar.</span>
+  <button class="btn" onclick="st.menu=false;render()">Continuar jogando</button><button class="btn sec" onclick="st.tela='inicio';st.menu=false;render()">Sair para o início</button></div></div>`;
+
+// ---------- Render + barra do protótipo ----------
+function render(){
+  const V = { A:VariantA, B:VariantB, C:VariantC }[st.variant];
+  const T = { inicio:Inicio, sorteio:Sorteio, rodada:V, fim:Fim }[st.tela];
+  document.getElementById('frame').className = 'frame' + (st.cel?' cel':'');
+  document.getElementById('app').innerHTML = T() + (st.menu?Menu():'');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll('[data-w]').forEach(e=>e.style.width=e.dataset.w+'%')));
+  document.getElementById('proto').innerHTML = `
+    <div class="pill"><button onclick="cyc(-1)">←</button><span class="lbl">${st.variant} (${VARIANTS[st.variant]})</span><button onclick="cyc(1)">→</button></div>
+    <div class="pill"><button class="${st.cel?'on':''}" onclick="st.cel=true;render()">📱 celular</button><button class="${!st.cel?'on':''}" onclick="st.cel=false;render()">🖥️ desktop</button>
+      ${st.tela==='rodada'?`<button onclick="auto(10)">+10 rodadas</button><button onclick="auto(999)">ir ao fim</button><button onclick="daST()">ST na minha mão</button>`:''}</div>`;
+  document.getElementById('state').textContent = st.tela!=='rodada' ? `tela: ${st.tela}` :
+    `tela: rodada ${st.rodada} · fase: ${st.fase}\nescolhe: ${st.escolhe} · nível: ${st.nivel}\neu (${st.eu.length}): ${BARALHO[st.eu[0]].nome}\ncpu (${st.cpu.length}): ${BARALHO[st.cpu[0]].nome}\nempate: ${st.empate.length}\natr: ${st.atr!=null?ATR[st.atr].nome:'-'} · res: ${st.res??'-'}`;
+  try { history.replaceState(null,'','?'+new URLSearchParams({variant:st.variant, tela:st.cel?'celular':'desktop'})); } catch(e) {}
+}
+function cyc(d){ const k=Object.keys(VARIANTS); st.variant=k[(k.indexOf(st.variant)+d+k.length)%k.length]; render(); }
+function auto(n){ for (let k=0;k<n && st.tela==='rodada';k++){ if (st.fase!=='revelado'){ if (st.atr==null) st.atr=forca[st.eu[0]].indexOf(Math.max(...forca[st.eu[0]])); revela(); } proxima(); } if (st.tela==='rodada'){ st.sel=null; } render(); }
+function daST(){ const i=BARALHO.findIndex(c=>c.tipo==='st'); for (const m of ['eu','cpu','empate']) { const p=st[m].indexOf(i); if (p>=0) st[m].splice(p,1); } st.eu.unshift(i); iniciaRodada(); render(); }
+addEventListener('keydown', e => { if (e.target.closest('input,textarea,[contenteditable]')) return; if (e.key==='ArrowLeft') cyc(-1); if (e.key==='ArrowRight') cyc(1); });
+render();
+</script>
+</body>
+</html>
