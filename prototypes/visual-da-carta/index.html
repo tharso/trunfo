@@ -129,7 +129,7 @@ function VariantA(c){
     <div class="A-head">${badge(c)}<span class="flag">${c.pais}</span><div class="avatar">${ini(c.nome)}</div></div>
     <div class="A-name">${c.nome}</div><div class="A-sub">${sub(c)}</div>
     ${ATR.map((a,i)=>`<button class="A-row ${st.sel===i?'sel':''}" onclick="pick(${i})">
-      <div><div class="lbl">${a.ico} ${a.nome}</div><div class="bar"><i style="width:${c.n[i]}%;--bar:${cor(c.n[i])}"></i></div></div>
+      <div><div class="lbl">${a.ico} ${a.nome}${st.sel===i&&st.escolhido==null?' <small style="font-weight:400;opacity:.8">· toque de novo ▶</small>':''}</div><div class="bar"><i style="width:${c.n[i]}%;--bar:${cor(c.n[i])}"></i></div></div>
       <div class="num">${c.n[i]}</div></button>`).join('')}
   </div>`;
 }
@@ -167,14 +167,13 @@ function render(){
     <div class="top"><span>Você: 16 cartas</span><span>Rodada 12 / 100</span><span>Computador: 16</span></div>
     ${V(c)}
     <div class="stage">${st.escolhido!=null ? `🏁 ${ATR[st.escolhido].etapa}<small>Você escolheu ${ATR[st.escolhido].nome} (${c.n[st.escolhido]})</small>`
-       : s ? `${s.etapa}<small>${s.nome} ${c.n[st.sel]} — toque de novo ou confirme</small>` : `<small>Sua vez: toque num atributo</small>`}</div>
-    ${st.toque===2 ? `<button class="confirm" ${st.sel==null||st.escolhido!=null?'disabled':''} onclick="pick(${st.sel})">Correr com ${s?s.nome:'…'}</button>` : ''}
+       : s ? `${s.etapa}<small>${s.nome} ${c.n[st.sel]} — toque de novo no mesmo atributo para correr</small>` : `<small>Sua vez: toque num atributo</small>`}</div>
     <div class="state">estado: ${JSON.stringify({variant:st.variant, toque:st.toque, carta:c.nome, sel:s&&s.nome, escolhido:st.escolhido!=null?ATR[st.escolhido].nome:null})}</div>`;
   const keys = Object.keys(VARIANTS);
   document.getElementById('proto').innerHTML = `
     <div class="pill"><button onclick="cyc(-1)">←</button><span class="lbl">${st.variant} (${VARIANTS[st.variant]})</span><button onclick="cyc(1)">→</button></div>
     <div class="pill">
-      <button class="${st.toque===1?'on':''}" onclick="setT(1)">1 toque</button><button class="${st.toque===2?'on':''}" onclick="setT(2)">toque + confirma</button>
+      <button class="${st.toque===1?'on':''}" onclick="setT(1)">1 toque</button><button class="${st.toque===2?'on':''}" onclick="setT(2)">2 toques</button>
       <button onclick="nextCard()">próxima carta</button></div>
     <div class="pill">${Object.entries(ESCALAS).map(([k,e])=>`<button class="${st.escala===k?'on':''}" onclick="st.escala='${k}';render()">${e.nome}</button>`).join('')}</div>`;
   const u = new URLSearchParams({variant:st.variant, toque:st.toque, carta:st.carta, escala:st.escala});
