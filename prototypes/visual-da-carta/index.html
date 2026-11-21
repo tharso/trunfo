@@ -37,11 +37,11 @@
   .A-sub { padding:0 14px 10px; font-size:13px; color:var(--mute); }
   .A-row { display:grid; grid-template-columns:1fr 46px; align-items:center; gap:10px; width:100%; min-height:52px; padding:6px 14px; border:0; border-top:1px solid var(--line); background:none; text-align:left; font:inherit; }
   .A-row .lbl { font-weight:700; position:relative; z-index:1; }
-  .A-row .bar { height:6px; border-radius:3px; background:var(--line); margin-top:4px; }
-  .A-row .bar i { display:block; height:100%; border-radius:3px; background:var(--c1); }
+  .A-row .bar { height:8px; border-radius:3px; background:var(--line); margin-top:4px; }
+  .A-row .bar i { display:block; height:100%; border-radius:4px; background:var(--bar); }
   .A-row .num { font-size:24px; font-weight:900; text-align:right; }
   .A-row.sel { background:var(--c1); color:#fff; }
-  .A-row.sel .bar { background:#fff4; } .A-row.sel .bar i { background:#fff; }
+  .A-row.sel .bar { background:#fff4; } .A-row.sel .bar i { background:var(--bar); }
 
   /* ---------- Variante B: ficha compacta + grade de botões grandes ---------- */
   .B-head { display:flex; gap:12px; align-items:center; padding:12px; border-radius:18px; background:var(--c1); color:#fff; }
@@ -97,9 +97,23 @@ const ATR = [
   { nome:'Pavê', ico:'🧱', etapa:'Etapa de pavê' },
   { nome:'Voltas', ico:'🏆', etapa:'Etapa rainha (geral)' },
 ];
+// Escala de cor da barra: a cor muda conforme a nota sobe.
+const ESCALAS = {
+  semaforo: { nome:'semáforo', paradas:[[1,'#d84315'],[40,'#f9a825'],[70,'#7cb342'],[99,'#1b8a3a']] },
+  calor:    { nome:'frio → quente', paradas:[[1,'#4f7cff'],[40,'#8e5cf7'],[70,'#f06292'],[85,'#ff8a00'],[99,'#ffc400']] },
+};
+function cor(v){
+  const P = ESCALAS[st.escala].paradas;
+  for (let k=1;k<P.length;k++) if (v<=P[k][0]) {
+    const [a,ca]=P[k-1], [b,cb]=P[k], t=(v-a)/(b-a);
+    const h=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16)), A=h(ca), B=h(cb);
+    return 'rgb('+A.map((x,i)=>Math.round(x+(B[i]-x)*t)).join(',')+')';
+  }
+  return P[P.length-1][1];
+}
 const VARIANTS = { A:'Carta clássica', B:'Ficha + botões', C:'Hexágono' };
 const q = new URLSearchParams(location.search);
-let st = { variant: VARIANTS[q.get('variant')] ? q.get('variant') : 'A', toque: q.get('toque')==='1' ? 1 : 2, carta: +(q.get('carta')||0) % CARTAS.length, sel: null, escolhido: null };
+let st = { variant: VARIANTS[q.get('variant')] ? q.get('variant') : 'A', toque: q.get('toque')==='1' ? 1 : 2, carta: +(q.get('carta')||0) % CARTAS.length, sel: null, escolhido: null, escala: ESCALAS[q.get('escala')] ? q.get('escala') : 'semaforo' };
 
 const ini = n => n.split(' ').map(p=>p[0]).filter(c=>c===c.toUpperCase()).slice(-2).join('');
 const badge = c => c.tipo==='st' ? '<span class="badge st">SUPER TRUNFO</span>' : c.tipo==='a' ? `<span class="badge a">${c.cod}·A</span>` : `<span class="badge n">${c.cod}</span>`;
@@ -115,7 +129,7 @@ function VariantA(c){
     <div class="A-head">${badge(c)}<span class="flag">${c.pais}</span><div class="avatar">${ini(c.nome)}</div></div>
     <div class="A-name">${c.nome}</div><div class="A-sub">${sub(c)}</div>
     ${ATR.map((a,i)=>`<button class="A-row ${st.sel===i?'sel':''}" onclick="pick(${i})">
-      <div><div class="lbl">${a.ico} ${a.nome}</div><div class="bar"><i style="width:${c.n[i]}%"></i></div></div>
+      <div><div class="lbl">${a.ico} ${a.nome}</div><div class="bar"><i style="width:${c.n[i]}%;--bar:${cor(c.n[i])}"></i></div></div>
       <div class="num">${c.n[i]}</div></button>`).join('')}
   </div>`;
 }
@@ -161,8 +175,9 @@ function render(){
     <div class="pill"><button onclick="cyc(-1)">←</button><span class="lbl">${st.variant} (${VARIANTS[st.variant]})</span><button onclick="cyc(1)">→</button></div>
     <div class="pill">
       <button class="${st.toque===1?'on':''}" onclick="setT(1)">1 toque</button><button class="${st.toque===2?'on':''}" onclick="setT(2)">toque + confirma</button>
-      <button onclick="nextCard()">próxima carta</button></div>`;
-  const u = new URLSearchParams({variant:st.variant, toque:st.toque, carta:st.carta});
+      <button onclick="nextCard()">próxima carta</button></div>
+    <div class="pill">${Object.entries(ESCALAS).map(([k,e])=>`<button class="${st.escala===k?'on':''}" onclick="st.escala='${k}';render()">${e.nome}</button>`).join('')}</div>`;
+  const u = new URLSearchParams({variant:st.variant, toque:st.toque, carta:st.carta, escala:st.escala});
   try { history.replaceState(null,'','?'+u); } catch(e) {}
 }
 function cyc(d){ const k=Object.keys(VARIANTS); st.variant=k[(k.indexOf(st.variant)+d+k.length)%k.length]; render(); }
