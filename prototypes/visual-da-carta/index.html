@@ -1,0 +1,175 @@
+<!doctype html>
+<!--
+  PROTÓTIPO DESCARTÁVEL — ticket "Visual da carta" (tharso/trunfo#8).
+  Pergunta: como a carta aparece no celular e como o jogador toca num atributo.
+  Três variantes, trocadas por ?variant=A|B|C (ou setas ← →).
+  ?toque=1 (um toque escolhe) ou ?toque=2 (toque marca, botão confirma).
+  Sem foto (decisão "Uso de nomes e fotos"): bandeira + cores da equipe + iniciais.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Protótipo — Visual da carta</title>
+<style>
+  :root { --bg:#eef1f4; --ink:#14181f; --mute:#5d6672; --line:#d5dae0; --accent:#e8b400; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .phone { max-width:390px; min-height:100dvh; margin:0 auto; padding:12px 14px 190px; background:#f8f9fb; }
+  .top { display:flex; justify-content:space-between; font-size:13px; color:var(--mute); margin-bottom:10px; }
+  .stage { margin-top:12px; min-height:44px; text-align:center; font-weight:700; font-size:18px; }
+  .stage small { display:block; font-weight:400; font-size:13px; color:var(--mute); }
+  .confirm { display:block; width:100%; margin-top:10px; padding:16px; border:0; border-radius:14px; font-size:18px; font-weight:800; background:var(--ink); color:#fff; }
+  .confirm:disabled { opacity:.25; }
+  .badge { display:inline-flex; align-items:center; justify-content:center; font-weight:900; border-radius:8px; padding:2px 8px; font-size:13px; }
+  .badge.st { background:var(--accent); color:#000; }
+  .badge.a { background:#c62828; color:#fff; }
+  .badge.n { background:#fff; color:#000; }
+  .avatar { display:flex; align-items:center; justify-content:center; font-weight:900; color:#fff; letter-spacing:1px; text-shadow:0 1px 2px #0006; }
+
+  /* ---------- Variante A: carta clássica, lista de barras ---------- */
+  .A-card { border-radius:22px; overflow:hidden; background:#fff; box-shadow:0 6px 20px #0002; border:3px solid var(--c1); }
+  .A-head { position:relative; height:170px; background:linear-gradient(135deg,var(--c1) 0 55%,var(--c2) 55% 70%,var(--c1) 70%); }
+  .A-head .avatar { position:absolute; left:50%; top:22px; transform:translateX(-50%); width:110px; height:110px; border-radius:50%; background:#0003; border:3px solid #fff8; font-size:38px; }
+  .A-head .flag { position:absolute; right:12px; top:10px; font-size:32px; }
+  .A-head .badge { position:absolute; left:12px; top:12px; font-size:16px; }
+  .A-name { padding:10px 14px 2px; font-size:22px; font-weight:900; }
+  .A-sub { padding:0 14px 10px; font-size:13px; color:var(--mute); }
+  .A-row { display:grid; grid-template-columns:1fr 46px; align-items:center; gap:10px; width:100%; min-height:52px; padding:6px 14px; border:0; border-top:1px solid var(--line); background:none; text-align:left; font:inherit; }
+  .A-row .lbl { font-weight:700; position:relative; z-index:1; }
+  .A-row .bar { height:6px; border-radius:3px; background:var(--line); margin-top:4px; }
+  .A-row .bar i { display:block; height:100%; border-radius:3px; background:var(--c1); }
+  .A-row .num { font-size:24px; font-weight:900; text-align:right; }
+  .A-row.sel { background:var(--c1); color:#fff; }
+  .A-row.sel .bar { background:#fff4; } .A-row.sel .bar i { background:#fff; }
+
+  /* ---------- Variante B: ficha compacta + grade de botões grandes ---------- */
+  .B-head { display:flex; gap:12px; align-items:center; padding:12px; border-radius:18px; background:var(--c1); color:#fff; }
+  .B-head .avatar { flex:none; width:64px; height:64px; border-radius:16px; background:var(--c2); font-size:24px; }
+  .B-head .name { font-size:20px; font-weight:900; line-height:1.1; }
+  .B-head .sub { font-size:13px; opacity:.85; margin-top:3px; }
+  .B-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  .B-tile { position:relative; display:flex; flex-direction:column; justify-content:space-between; height:104px; padding:12px; border:2px solid var(--line); border-radius:18px; background:#fff; text-align:left; font:inherit; }
+  .B-tile .ico { font-size:22px; }
+  .B-tile .lbl { font-size:14px; font-weight:700; color:var(--mute); }
+  .B-tile .num { position:absolute; right:12px; bottom:8px; font-size:40px; font-weight:900; }
+  .B-tile.best { border-color:var(--c1); }
+  .B-tile.sel { background:var(--c1); border-color:var(--c1); color:#fff; } .B-tile.sel .lbl { color:#fffc; }
+
+  /* ---------- Variante C: hexágono (radar) ---------- */
+  .C-wrap { border-radius:22px; background:#fff; box-shadow:0 6px 20px #0002; padding:14px; }
+  .C-id { display:flex; gap:10px; align-items:center; }
+  .C-id .avatar { width:48px; height:48px; border-radius:50%; background:var(--c1); box-shadow:0 0 0 3px var(--c2); font-size:18px; }
+  .C-id .name { font-weight:900; font-size:19px; } .C-id .sub { font-size:12px; color:var(--mute); }
+  .C-id .badge { margin-left:auto; }
+  svg.radar { display:block; width:100%; height:auto; margin-top:4px; touch-action:manipulation; }
+  .radar .hit { cursor:pointer; }
+  .radar .chip { fill:#fff; stroke:var(--line); stroke-width:2; }
+  .radar .hit.sel .chip { fill:var(--c1); stroke:var(--c1); }
+  .radar .hit.sel text { fill:#fff; }
+
+  /* ---------- Barra do protótipo (não faz parte do design) ---------- */
+  .proto { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:9; display:flex; flex-direction:column; gap:6px; align-items:center; font:13px system-ui; }
+  .proto .pill { display:flex; gap:4px; align-items:center; background:#111; color:#fff; border-radius:999px; padding:5px; box-shadow:0 4px 16px #0005; }
+  .proto button { border:0; background:#333; color:#fff; border-radius:999px; padding:7px 11px; font:inherit; }
+  .proto button.on { background:#fff; color:#111; }
+  .proto .lbl { padding:0 8px; white-space:nowrap; }
+  .state { font:11px ui-monospace,monospace; color:var(--mute); margin-top:14px; white-space:pre-wrap; }
+</style>
+</head>
+<body>
+<div class="phone" id="app"></div>
+<div class="proto" id="proto"></div>
+<script>
+// Notas reais de data/cartas.csv. Equipe: cores aproximadas, só para o teste.
+const CARTAS = [
+  { cod:'1A', nome:'Tadej Pogačar', pais:'🇸🇮', paisNome:'Eslovênia', equipe:'UAE Team Emirates - XRG', idade:28, c1:'#1f1f1f', c2:'#d32f2f', tipo:'n', n:[67,99,99,93,98,99] },
+  { cod:'ST', nome:'Valentin Paret-Peintre', pais:'🇫🇷', paisNome:'França', equipe:'Soudal Quick-Step', idade:25, c1:'#0a3d91', c2:'#9ad0f5', tipo:'st', n:[42,52,63,38,10,56] },
+  { cod:'5C', nome:'Jasper Philipsen', pais:'🇧🇪', paisNome:'Bélgica', equipe:'Alpecin - Premier Tech', idade:28, c1:'#00446b', c2:'#1fb5e9', tipo:'a', n:[99,56,34,36,82,44] },
+  { cod:'2B', nome:'Remco Evenepoel', pais:'🇧🇪', paisNome:'Bélgica', equipe:'Red Bull - BORA - hansgrohe', idade:26, c1:'#12224a', c2:'#e2001a', tipo:'n', n:[59,86,85,99,10,85] },
+  { cod:'4D', nome:'Mathieu van der Poel', pais:'🇳🇱', paisNome:'Países Baixos', equipe:'Alpecin - Premier Tech', idade:31, c1:'#00446b', c2:'#1fb5e9', tipo:'n', n:[75,76,20,57,99,47] },
+];
+const ATR = [
+  { nome:'Sprint', ico:'⚡', etapa:'Chegada plana' },
+  { nome:'Explosão', ico:'💥', etapa:'Muro curto' },
+  { nome:'Montanha', ico:'⛰️', etapa:'Etapa de montanha' },
+  { nome:'Contrarrelógio', ico:'⏱️', etapa:'Contrarrelógio' },
+  { nome:'Pavê', ico:'🧱', etapa:'Etapa de pavê' },
+  { nome:'Voltas', ico:'🏆', etapa:'Etapa rainha (geral)' },
+];
+const VARIANTS = { A:'Carta clássica', B:'Ficha + botões', C:'Hexágono' };
+const q = new URLSearchParams(location.search);
+let st = { variant: VARIANTS[q.get('variant')] ? q.get('variant') : 'A', toque: q.get('toque')==='1' ? 1 : 2, carta: +(q.get('carta')||0) % CARTAS.length, sel: null, escolhido: null };
+
+const ini = n => n.split(' ').map(p=>p[0]).filter(c=>c===c.toUpperCase()).slice(-2).join('');
+const badge = c => c.tipo==='st' ? '<span class="badge st">SUPER TRUNFO</span>' : c.tipo==='a' ? `<span class="badge a">${c.cod}·A</span>` : `<span class="badge n">${c.cod}</span>`;
+const sub = c => `${c.pais} ${c.paisNome} · ${c.idade} anos<br>${c.equipe}`;
+
+function pick(i){
+  if (st.toque===1 || st.sel===i) { st.sel=i; st.escolhido=i; } else { st.sel=i; st.escolhido=null; }
+  render();
+}
+
+function VariantA(c){
+  return `<div class="A-card" style="--c1:${c.c1};--c2:${c.c2}">
+    <div class="A-head">${badge(c)}<span class="flag">${c.pais}</span><div class="avatar">${ini(c.nome)}</div></div>
+    <div class="A-name">${c.nome}</div><div class="A-sub">${sub(c)}</div>
+    ${ATR.map((a,i)=>`<button class="A-row ${st.sel===i?'sel':''}" onclick="pick(${i})">
+      <div><div class="lbl">${a.ico} ${a.nome}</div><div class="bar"><i style="width:${c.n[i]}%"></i></div></div>
+      <div class="num">${c.n[i]}</div></button>`).join('')}
+  </div>`;
+}
+function VariantB(c){
+  const best = c.n.indexOf(Math.max(...c.n));
+  return `<div style="--c1:${c.c1};--c2:${c.c2}">
+    <div class="B-head"><div class="avatar">${ini(c.nome)}</div><div style="flex:1"><div class="name">${c.nome}</div><div class="sub">${sub(c)}</div></div>${badge(c)}</div>
+    <div class="B-grid">${ATR.map((a,i)=>`<button class="B-tile ${i===best?'best':''} ${st.sel===i?'sel':''}" onclick="pick(${i})">
+      <span class="ico">${a.ico}</span><span class="lbl">${a.nome}</span><span class="num">${c.n[i]}</span></button>`).join('')}</div>
+  </div>`;
+}
+function VariantC(c){
+  const W=340, cx=170, cy=170, R=110;
+  const pt=(i,r)=>{ const ang=-Math.PI/2+i*Math.PI/3; return [cx+r*Math.cos(ang), cy+r*Math.sin(ang)]; };
+  const ring = f => ATR.map((_,i)=>pt(i,R*f).join(',')).join(' ');
+  const poly = ATR.map((_,i)=>pt(i,R*c.n[i]/99).join(',')).join(' ');
+  const hits = ATR.map((a,i)=>{ const [x,y]=pt(i,R+38); return `<g class="hit ${st.sel===i?'sel':''}" onclick="pick(${i})">
+      <rect class="chip" x="${x-46}" y="${y-24}" width="92" height="48" rx="14"/>
+      <text x="${x}" y="${y-5}" text-anchor="middle" font-size="12" fill="#5d6672">${a.ico} ${a.nome==='Contrarrelógio'?'Crono':a.nome}</text>
+      <text x="${x}" y="${y+16}" text-anchor="middle" font-size="20" font-weight="900" fill="#14181f">${c.n[i]}</text></g>`; }).join('');
+  return `<div class="C-wrap" style="--c1:${c.c1};--c2:${c.c2}">
+    <div class="C-id"><div class="avatar">${ini(c.nome)}</div><div><div class="name">${c.nome}</div><div class="sub">${sub(c)}</div></div>${badge(c)}</div>
+    <svg class="radar" viewBox="-10 -10 ${W+20} ${W+20}">
+      ${[1,.66,.33].map(f=>`<polygon points="${ring(f)}" fill="none" stroke="#d5dae0"/>`).join('')}
+      <polygon points="${poly}" fill="${c.c1}" fill-opacity=".35" stroke="${c.c1}" stroke-width="3"/>
+      ${hits}
+    </svg></div>`;
+}
+
+function render(){
+  const c = CARTAS[st.carta];
+  const V = { A:VariantA, B:VariantB, C:VariantC }[st.variant];
+  const s = st.sel==null ? null : ATR[st.sel];
+  document.getElementById('app').innerHTML = `
+    <div class="top"><span>Você: 16 cartas</span><span>Rodada 12 / 100</span><span>Computador: 16</span></div>
+    ${V(c)}
+    <div class="stage">${st.escolhido!=null ? `🏁 ${ATR[st.escolhido].etapa}<small>Você escolheu ${ATR[st.escolhido].nome} (${c.n[st.escolhido]})</small>`
+       : s ? `${s.etapa}<small>${s.nome} ${c.n[st.sel]} — toque de novo ou confirme</small>` : `<small>Sua vez: toque num atributo</small>`}</div>
+    ${st.toque===2 ? `<button class="confirm" ${st.sel==null||st.escolhido!=null?'disabled':''} onclick="pick(${st.sel})">Correr com ${s?s.nome:'…'}</button>` : ''}
+    <div class="state">estado: ${JSON.stringify({variant:st.variant, toque:st.toque, carta:c.nome, sel:s&&s.nome, escolhido:st.escolhido!=null?ATR[st.escolhido].nome:null})}</div>`;
+  const keys = Object.keys(VARIANTS);
+  document.getElementById('proto').innerHTML = `
+    <div class="pill"><button onclick="cyc(-1)">←</button><span class="lbl">${st.variant} (${VARIANTS[st.variant]})</span><button onclick="cyc(1)">→</button></div>
+    <div class="pill">
+      <button class="${st.toque===1?'on':''}" onclick="setT(1)">1 toque</button><button class="${st.toque===2?'on':''}" onclick="setT(2)">toque + confirma</button>
+      <button onclick="nextCard()">próxima carta</button></div>`;
+  const u = new URLSearchParams({variant:st.variant, toque:st.toque, carta:st.carta});
+  try { history.replaceState(null,'','?'+u); } catch(e) {}
+}
+function cyc(d){ const k=Object.keys(VARIANTS); st.variant=k[(k.indexOf(st.variant)+d+k.length)%k.length]; render(); }
+function setT(t){ st.toque=t; st.sel=null; st.escolhido=null; render(); }
+function nextCard(){ st.carta=(st.carta+1)%CARTAS.length; st.sel=null; st.escolhido=null; render(); }
+addEventListener('keydown', e => { if (e.key==='ArrowLeft') cyc(-1); if (e.key==='ArrowRight') cyc(1); });
+render();
+</script>
+</body>
+</html>
