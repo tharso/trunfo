@@ -11,10 +11,8 @@ import { Fim } from "./Fim";
 import { Inicio } from "./Inicio";
 import { Partida } from "./Partida";
 import { sentir } from "./sensacao";
+import { VOCE } from "./solo";
 import { Sorteio } from "./Sorteio";
-
-// No modo solo, a Ordem da mesa é: você, depois o Computador.
-const VOCE = 0;
 
 type Tela =
   | { nome: "inicio" }

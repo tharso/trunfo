@@ -4,15 +4,16 @@
 import type { Nivel, RetrospectoDoNivel } from "../regras";
 import { BotaoSom } from "./BotaoSom";
 import "./Inicio.css";
+import { NOME_DO_NIVEL } from "./solo";
 
-const NIVEIS: { nivel: Nivel; nome: string; explicacao: string }[] = [
-  { nivel: "facil", nome: "Fácil", explicacao: "O computador sorteia o atributo." },
-  { nivel: "normal", nome: "Normal", explicacao: "O computador escolhe o melhor atributo da carta." },
+const NIVEIS: { nivel: Nivel; explicacao: string }[] = [
+  { nivel: "facil", explicacao: "O computador sorteia o atributo." },
+  { nivel: "normal", explicacao: "O computador escolhe o melhor atributo da carta." },
 ];
 
 /** "Normal: você 7 × 4 computador · 1 empate". O empate só aparece quando é maior que zero. */
 function textoDoRetrospecto(nivel: Nivel, doNivel: RetrospectoDoNivel): string {
-  const nome = NIVEIS.find((n) => n.nivel === nivel)!.nome;
+  const nome = NOME_DO_NIVEL[nivel];
   const empates = doNivel.empates === 0 ? "" : ` · ${doNivel.empates} ${doNivel.empates === 1 ? "empate" : "empates"}`;
   return `${nome}: você ${doNivel.vitorias} × ${doNivel.derrotas} computador${empates}`;
 }
@@ -56,7 +57,7 @@ export function Inicio({
                 checked={nivel === n.nivel}
                 onChange={() => aoMudarNivel(n.nivel)}
               />
-              <span class="nivel__nome">{n.nome}</span>
+              <span class="nivel__nome">{NOME_DO_NIVEL[n.nivel]}</span>
               <span class="nivel__explicacao">{n.explicacao}</span>
             </label>
           ))}

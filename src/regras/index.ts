@@ -24,6 +24,7 @@ export type {
   ChaveAtributo,
   Estado,
   Evento,
+  EventoDaRodada,
   Fim,
   MotivoDaRodada,
   MotivoDeSaida,

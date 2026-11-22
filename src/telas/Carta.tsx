@@ -1,20 +1,10 @@
 // A carta em pé (docs/spec.md, parte 5; protótipo `prototype/visual-da-carta`,
 // variante A). Só desenha: quem decide o que um toque faz é quem usa a carta.
 import type { ComponentChildren } from "preact";
-import baralho from "../dados/baralho.json";
 import { ATRIBUTOS, type Carta as CartaDasRegras, type ChaveAtributo } from "../regras";
 import "./Carta.css";
 import { corDaMarcacao, corDaNota, textoSobre } from "./cores";
-
-type CartaDoBaralho = (typeof baralho.cartas)[number];
-
-// As regras só guardam código, nome e notas; o resto (equipe, cores, país...) vem do baralho.
-const DO_BARALHO = new Map<string, CartaDoBaralho>(baralho.cartas.map((c) => [c.codigo, c]));
-
-const NOME_DO_ATRIBUTO = Object.fromEntries(baralho.atributos.map((a) => [a.chave, a.nome])) as Record<
-  ChaveAtributo,
-  string
->;
+import { aparencia, NOME_DO_ATRIBUTO } from "./doBaralho";
 
 const ICONE: Record<ChaveAtributo, string> = {
   sprint: "⚡",
@@ -55,9 +45,8 @@ interface Props {
 }
 
 export function Carta({ carta, marcado, aoTocar, selo, rotulo }: Props) {
-  const dados = DO_BARALHO.get(carta.codigo);
-  const cores = dados?.cores ?? ["#334155", "#94a3b8"];
-  const iniciais = dados?.iniciais ?? carta.nome.slice(0, 2);
+  // As regras só guardam código, nome e notas; o resto (equipe, cores, país...) vem do baralho.
+  const { dados, cores, iniciais } = aparencia(carta);
   const marcacao = corDaMarcacao(cores);
   const pais = dados ? (NOMES_DE_PAIS.of(dados.pais) ?? dados.paisNome) : null;
   const estilo = {

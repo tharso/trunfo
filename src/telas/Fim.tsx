@@ -2,9 +2,7 @@
 import { useEffect } from "preact/hooks";
 import type { Estado, MotivoDoFim } from "../regras";
 import type { AoMomento } from "./momentos";
-
-const VOCE = 0;
-const COMPUTADOR = 1;
+import { COMPUTADOR, VOCE } from "./solo";
 
 const MOTIVO: Record<MotivoDoFim, string> = {
   todasAsCartas: "Ficou com todas as cartas.",

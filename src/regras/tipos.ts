@@ -106,3 +106,6 @@ export type Evento =
     }
   | { tipo: "saiu"; pessoa: number; motivo: MotivoDeSaida }
   | ({ tipo: "fim" } & Fim);
+
+/** O evento de uma rodada disputada (o que o Duelo mostra). */
+export type EventoDaRodada = Extract<Evento, { tipo: "rodada" }>;

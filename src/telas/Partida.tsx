@@ -2,7 +2,6 @@
 // guerra no topo, só a sua carta na tela; a escolha abre o Duelo. A tela só
 // manda ações ao módulo de regras e desenha o estado e os eventos.
 import { useState } from "preact/hooks";
-import baralho from "../dados/baralho.json";
 import {
   aplicar,
   atributoDoComputador,
@@ -11,26 +10,17 @@ import {
   type Carta as CartaDasRegras,
   type ChaveAtributo,
   type Estado,
-  type Evento,
+  type EventoDaRodada,
 } from "../regras";
 import { Carta } from "./Carta";
 import { Duelo } from "./Duelo";
 import { BotaoSom } from "./BotaoSom";
+import { NOME_DO_ATRIBUTO } from "./doBaralho";
 import { MenuPartida } from "./MenuPartida";
 import type { AoMomento } from "./momentos";
 import { Placar } from "./Placar";
 import { selo } from "./Selos";
-
-// No modo solo, a Ordem da mesa é: você, depois o Computador.
-const VOCE = 0;
-const COMPUTADOR = 1;
-
-const NOME_DO_ATRIBUTO = Object.fromEntries(baralho.atributos.map((a) => [a.chave, a.nome])) as Record<
-  ChaveAtributo,
-  string
->;
-
-type EventoDaRodada = Extract<Evento, { tipo: "rodada" }>;
+import { COMPUTADOR, VOCE } from "./solo";
 
 /** O duelo em curso: o evento da rodada e o estado de antes dela (o placar só anda depois de "Próxima rodada"). */
 interface DueloEmCurso {

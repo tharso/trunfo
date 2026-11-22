@@ -1,8 +1,7 @@
 // Sorteio (docs/spec.md, parte 6): mostra quem começa. Quem começa já foi
 // sorteado pelo módulo de regras ao criar a partida; a tela só conta.
 import type { Estado } from "../regras";
-
-const VOCE = 0;
+import { NOME_DO_NIVEL, VOCE } from "./solo";
 
 interface Props {
   estado: Estado;
@@ -16,7 +15,7 @@ export function Sorteio({ estado, aoComecar }: Props) {
   return (
     <div class="tela">
       <main class="sorteio">
-        <p class="sorteio__nivel">Partida nova · Nível {estado.nivel === "facil" ? "Fácil" : "Normal"}</p>
+        <p class="sorteio__nivel">Partida nova · Nível {NOME_DO_NIVEL[estado.nivel]}</p>
         <div class="sorteio__moeda" aria-hidden="true">
           {voceComeca ? "🙋" : "🤖"}
         </div>

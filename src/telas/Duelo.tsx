@@ -4,24 +4,17 @@
 // "Pular ⏩" ou um toque em qualquer lugar vai direto ao resultado.
 // A rodada já foi decidida pelo módulo de regras: o duelo só mostra o evento.
 import { useEffect, useRef, useState } from "preact/hooks";
-import baralho from "../dados/baralho.json";
-import type { Carta as CartaDasRegras, Evento } from "../regras";
+import type { Carta as CartaDasRegras, EventoDaRodada } from "../regras";
 import { Carta, TEXTO_DA_ETAPA } from "./Carta";
 import { corDaNota } from "./cores";
+import { aparencia, NOME_DO_ATRIBUTO } from "./doBaralho";
 import type { AoMomento } from "./momentos";
 import { selo, textoDoMotivo } from "./Selos";
-
-const VOCE = 0;
-const COMPUTADOR = 1;
+import { COMPUTADOR, VOCE } from "./solo";
 
 const BARRA_MS = 1200;
 const PAUSA_MS = 350;
 const TOTAL_MS = 2 * BARRA_MS + PAUSA_MS;
-
-const NOME_DO_ATRIBUTO = Object.fromEntries(baralho.atributos.map((a) => [a.chave, a.nome])) as Record<string, string>;
-const DO_BARALHO = new Map(baralho.cartas.map((c) => [c.codigo, c]));
-
-type EventoDaRodada = Extract<Evento, { tipo: "rodada" }>;
 
 interface Props {
   evento: EventoDaRodada;
@@ -170,8 +163,7 @@ interface FaixaProps {
 }
 
 function Faixa({ carta, quem, pessoa, evento, k, pronto }: FaixaProps) {
-  const dados = DO_BARALHO.get(carta.codigo);
-  const cores = dados?.cores ?? ["#334155", "#94a3b8"];
+  const { cores, iniciais } = aparencia(carta);
   const nota = evento.mesa.find((m) => m.pessoa === pessoa)?.nota ?? 0;
   // O Super Trunfo enche a barra: ganha de qualquer carta (menos da Carta A).
   const alvo = carta.superTrunfo ? 100 : nota;
@@ -184,7 +176,7 @@ function Faixa({ carta, quem, pessoa, evento, k, pronto }: FaixaProps) {
     >
       <div class="duelo__quem">
         <span class="duelo__avatar" aria-hidden="true">
-          {dados?.iniciais ?? carta.nome.slice(0, 2)}
+          {iniciais}
         </span>
         <span>
           {carta.nome}
