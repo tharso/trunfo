@@ -173,3 +173,136 @@ describe("sair e cair", () => {
     expect(paraQuem(resultado, "id-Bia")).toBeUndefined();
   });
 });
+
+// A partida na sala (docs/spec.md, parte 9, itens 9 a 11): a sala roda o módulo
+// de regras e cada pessoa recebe só o que pode ver.
+describe("a partida", () => {
+  const SEMENTE = 9966;
+
+  function comecar(estado: EstadoDaSala, semente = SEMENTE): Resultado {
+    return receber(estado, "id-Ana", '{"tipo":"comecar"}', AGORA, { semente });
+  }
+
+  function escolher(estado: EstadoDaSala, id: string, atributo = "sprint"): Resultado {
+    return receber(estado, id, JSON.stringify({ tipo: "escolher", atributo }), AGORA);
+  }
+
+  /** Todas as mensagens que a pessoa `id` recebe neste resultado. */
+  function todasPara(resultado: Resultado, id: string): MensagemDaSala[] {
+    return resultado.paraPessoas.filter((envio) => envio.id === id).map((envio) => envio.mensagem);
+  }
+
+  function vistaDe(resultado: Resultado, id: string) {
+    const mensagem = todasPara(resultado, id).find((m) => m.tipo === "partida");
+    if (mensagem?.tipo !== "partida") throw new Error(`${id} não recebeu a partida`);
+    return mensagem.vista;
+  }
+
+  /** A carta de cima de cada pessoa, direto do estado da sala (o que ninguém de fora pode ver). */
+  function cartasDeCima(estado: EstadoDaSala): string[] {
+    return estado.partida!.estado.pessoas.map((p) => p.monte[0]);
+  }
+
+  /** Quem escolhe agora, pelo id. */
+  function quemEscolhe(estado: EstadoDaSala): string {
+    return estado.partida!.pessoas[estado.partida!.estado.quemEscolhe].id;
+  }
+
+  it("ao começar, cada pessoa recebe a partida com só a própria carta de cima", () => {
+    const resultado = comecar(comPessoas("Ana", "Bia"));
+    const [deAna, deBia] = cartasDeCima(resultado.estado!);
+    const ana = vistaDe(resultado, "id-Ana");
+    expect(ana).toMatchObject({
+      pessoas: [
+        { apelido: "Ana", cartas: 16 },
+        { apelido: "Bia", cartas: 16 },
+      ],
+      voce: 0,
+      monteDeEmpate: 0,
+      rodada: 1,
+      limiteDeRodadas: 100,
+      suaCarta: deAna,
+      fim: null,
+    });
+    expect(vistaDe(resultado, "id-Bia")).toMatchObject({ voce: 1, suaCarta: deBia });
+    expect(ana.quemEscolhe).toBe(vistaDe(resultado, "id-Bia").quemEscolhe);
+  });
+
+  it("joga limpo: fora do duelo, a mensagem de uma pessoa nunca tem a carta de cima da outra", () => {
+    let resultado = comecar(comPessoas("Ana", "Bia"));
+    for (let rodada = 0; rodada < 15; rodada++) {
+      const estado = resultado.estado!;
+      const [deAna, deBia] = cartasDeCima(estado);
+      for (const [id, daOutra] of [["id-Ana", deBia], ["id-Bia", deAna]] as const) {
+        for (const mensagem of todasPara(resultado, id)) {
+          // No evento da rodada, só o duelo mostra as cartas; a partida depois dele, não.
+          const foraDoDuelo = mensagem.tipo === "rodada" ? mensagem.depois : mensagem;
+          expect(JSON.stringify(foraDoDuelo)).not.toContain(`"${daOutra}"`);
+        }
+      }
+      resultado = escolher(estado, quemEscolhe(estado));
+      expect(resultado.paraPessoas.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("quem escolhe manda o atributo e as duas pessoas recebem o duelo, com a partida depois dele", () => {
+    const comecada = comecar(comPessoas("Ana", "Bia")).estado!;
+    const [deAna, deBia] = cartasDeCima(comecada);
+    const resultado = escolher(comecada, quemEscolhe(comecada), "montanha");
+    for (const id of ["id-Ana", "id-Bia"]) {
+      const [mensagem] = todasPara(resultado, id);
+      expect(mensagem).toMatchObject({ tipo: "rodada", evento: { rodada: 1, atributo: "montanha" }, depois: { rodada: 2 } });
+      expect(mensagem.tipo === "rodada" && mensagem.evento.mesa.map((m) => m.codigo)).toEqual([deAna, deBia]);
+    }
+    const [novaDeAna] = cartasDeCima(resultado.estado!);
+    expect(todasPara(resultado, "id-Ana")[0]).toMatchObject({ depois: { voce: 0, suaCarta: novaDeAna } });
+  });
+
+  it("quem não escolhe não consegue escolher, nem com atributo inventado", () => {
+    const comecada = comecar(comPessoas("Ana", "Bia")).estado!;
+    const outra = quemEscolhe(comecada) === "id-Ana" ? "id-Bia" : "id-Ana";
+    expect(escolher(comecada, outra).estado).toBe(comecada);
+    expect(escolher(comecada, quemEscolhe(comecada), "velocidade").estado).toBe(comecada);
+    expect(escolher(comPessoas("Ana", "Bia"), "id-Ana").paraPessoas).toEqual([]);
+  });
+
+  it("a partida vai até o fim, e o fim chega para todos", () => {
+    let estado = comecar(comPessoas("Ana", "Bia")).estado!;
+    let ultimo: Resultado | null = null;
+    while (!estado.partida!.estado.fim) {
+      ultimo = escolher(estado, quemEscolhe(estado));
+      estado = ultimo.estado!;
+    }
+    // Com esta semente e sempre Sprint, Ana fica com todas as cartas em 20 rodadas.
+    expect(todasPara(ultimo!, "id-Bia")[0]).toMatchObject({
+      tipo: "rodada",
+      depois: {
+        pessoas: [
+          { apelido: "Ana", cartas: 32 },
+          { apelido: "Bia", cartas: 0 },
+        ],
+        suaCarta: null,
+        fim: { vencedor: 0, motivo: "todasAsCartas", rodadasJogadas: 20 },
+      },
+    });
+  });
+
+  it("quem volta para a sala no meio da partida recebe a partida como está", () => {
+    const comecada = comecar(comPessoas("Ana", "Bia")).estado!;
+    const depois = escolher(comecada, quemEscolhe(comecada)).estado!;
+    const caiu = desconectar(depois, "id-Bia", AGORA).estado!;
+    const voltou = entrar(caiu, "id-Bia", "Bia");
+    expect(todasPara(voltou, "id-Bia").map((m) => m.tipo)).toEqual(["sala", "partida"]);
+    expect(vistaDe(voltou, "id-Bia")).toMatchObject({ voce: 1, rodada: 2, suaCarta: cartasDeCima(depois)[1] });
+    expect(todasPara(voltou, "id-Ana").map((m) => m.tipo)).toEqual(["sala"]);
+  });
+
+  it("no fim, quem toca em Sair sai da sala", () => {
+    let estado = comecar(comPessoas("Ana", "Bia")).estado!;
+    expect(receber(estado, "id-Bia", '{"tipo":"sair"}', AGORA).estado).toBe(estado);
+    while (!estado.partida!.estado.fim) estado = escolher(estado, quemEscolhe(estado)).estado!;
+    const saiu = receber(estado, "id-Bia", '{"tipo":"sair"}', AGORA);
+    expect(saiu.conexao).toBeNull();
+    expect(saiu.estado!.pessoas.map((p) => p.apelido)).toEqual(["Ana"]);
+  });
+});

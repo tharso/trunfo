@@ -1,49 +1,9 @@
-import { expect, test, type Browser, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { criarSala, entrarPeloCodigo, entrarPeloLink, novaPessoa, pessoasNaSala } from "./sala-ajuda";
 
 // A Sala do multiplayer (docs/spec.md, parte 9, itens 1 a 8), com o Durable
 // Object de verdade (Worker manda /sala/<código> para o DO). Cada pessoa é um
 // contexto de navegador próprio: celular próprio, localStorage próprio.
-
-async function novaPessoa(browser: Browser): Promise<Page> {
-  return (await browser.newContext()).newPage();
-}
-
-async function escreverApelido(pagina: Page, apelido: string, botao: "Criar sala" | "Entrar na sala") {
-  await pagina.getByLabel("Apelido").fill(apelido);
-  await pagina.getByRole("button", { name: botao }).click();
-}
-
-/** Início → Jogar com amigos → Criar sala → Apelido. Devolve o código da sala. */
-async function criarSala(pagina: Page, apelido: string): Promise<string> {
-  await pagina.goto("/");
-  await pagina.getByRole("button", { name: "Jogar com amigos" }).click();
-  await pagina.getByRole("button", { name: "Criar sala" }).click();
-  await escreverApelido(pagina, apelido, "Criar sala");
-  const codigo = pagina.locator(".sala__codigo");
-  await expect(codigo).toHaveText(/^[A-HJ-NP-Z]{3}$/);
-  return (await codigo.textContent())!;
-}
-
-/** O link da sala pula "Jogar com amigos" e vai direto para o Apelido. */
-async function entrarPeloLink(pagina: Page, codigo: string, apelido: string) {
-  await pagina.goto(`/s/${codigo}`);
-  await expect(pagina.getByText(`Sala ${codigo}`)).toBeVisible();
-  await escreverApelido(pagina, apelido, "Entrar na sala");
-}
-
-/** Início → Jogar com amigos → Entrar com código (digitado em minúsculas) → Apelido. */
-async function entrarPeloCodigo(pagina: Page, codigo: string, apelido: string) {
-  await pagina.goto("/");
-  await pagina.getByRole("button", { name: "Jogar com amigos" }).click();
-  await pagina.getByRole("button", { name: "Entrar com código" }).click();
-  await pagina.getByLabel("Código da sala").fill(codigo.toLowerCase());
-  await pagina.getByRole("button", { name: "Entrar", exact: true }).click();
-  await escreverApelido(pagina, apelido, "Entrar na sala");
-}
-
-function pessoasNaSala(pagina: Page) {
-  return pagina.getByRole("list", { name: "Pessoas na sala" }).getByRole("listitem");
-}
 
 test("uma pessoa entra pelo link, outra pelo código, na Ordem da mesa", async ({ browser }) => {
   const ana = await novaPessoa(browser);
@@ -65,7 +25,7 @@ test("uma pessoa entra pelo link, outra pelo código, na Ordem da mesa", async (
   await expect(bia.getByText("Esperando o Anfitrião começar…")).toBeVisible();
   await expect(bia.getByRole("button", { name: "Começar" })).toHaveCount(0);
   await ana.getByRole("button", { name: "Começar" }).click();
-  for (const pagina of [ana, bia, caio]) await expect(pagina.getByText("A partida vai começar…")).toBeVisible();
+  for (const pagina of [ana, bia, caio]) await expect(pagina.getByText("Rodada 1/100")).toBeVisible();
 
   // Durante a partida, ninguém entra.
   const davi = await novaPessoa(browser);

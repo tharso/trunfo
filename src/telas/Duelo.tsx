@@ -1,31 +1,38 @@
 // Tela do duelo (docs/spec.md, partes 6 e 7). Fundo escuro, ocupa a janela.
-// Tempo (~3 s): a sua barra cresce (1,2 s) com o número contando, depois a do
-// Computador (1,2 s); pausa (0,35 s); aparecem o resultado e os botões.
+// Tempo (~3 s): a sua barra cresce (1,2 s) com o número contando, depois as das
+// outras pessoas, juntas (1,2 s); pausa (0,35 s); aparecem o resultado e os botões.
+// Serve ao modo solo (contra o Computador) e à sala (contra os Apelidos): quem é
+// quem vem de `voce` e `nomes`. Com 3 ou 4 pessoas (ticket #39) já sai uma faixa
+// por pessoa da mesa; a spec (parte 9, item 12) pede o apelido em cada faixa.
 // "Pular ⏩" ou um toque em qualquer lugar vai direto ao resultado.
 // A rodada já foi decidida pelo módulo de regras: o duelo só mostra o evento.
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { Carta as CartaDasRegras, EventoDaRodada } from "../regras";
 import { Carta, TEXTO_DA_ETAPA } from "./Carta";
 import { corDaNota } from "./cores";
-import { aparencia, NOME_DO_ATRIBUTO } from "./doBaralho";
+import { aparencia, cartaPeloCodigo, NOME_DO_ATRIBUTO } from "./doBaralho";
+import { rodadaPara, type NomeNaTela } from "./mesa";
 import type { AoMomento } from "./momentos";
 import { selo, textoDoMotivo } from "./Selos";
-import { COMPUTADOR, rodadaParaVoce, VOCE } from "./solo";
 
 const BARRA_MS = 1200;
 const PAUSA_MS = 350;
 const TOTAL_MS = 2 * BARRA_MS + PAUSA_MS;
 
-const TITULO = {
-  ganhar: "Você ganhou a rodada!",
-  perder: "O computador ganhou.",
-  empate: "Empate!",
-};
+/** O título do resultado. Quem perdeu vê quem ganhou: "O computador ganhou.", "Ana ganhou.". */
+function titulo(evento: EventoDaRodada, voce: number, nomes: NomeNaTela[]): string {
+  const resultado = rodadaPara(evento.vencedor, voce);
+  if (resultado === "ganhar") return "Você ganhou a rodada!";
+  if (resultado === "empate") return "Empate!";
+  return `${nomes[evento.vencedor!].sujeito} ganhou.`;
+}
 
 interface Props {
   evento: EventoDaRodada;
-  /** As cartas da mesa, para as faixas e para "Ver as duas cartas". */
-  cartas: { voce: CartaDasRegras; computador: CartaDasRegras };
+  /** Quem olha: o índice da pessoa na mesa. */
+  voce: number;
+  /** Os nomes da mesa, na Ordem da mesa. */
+  nomes: NomeNaTela[];
   aoProximaRodada: () => void;
   /** Gancho para som e vibração (ticket 28): largada, barras subindo e resultado. */
   aoMomento?: AoMomento;
@@ -37,7 +44,7 @@ function suave(progresso: number): number {
   return 1 - (1 - limitado) ** 3;
 }
 
-export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
+export function Duelo({ evento, voce, nomes, aoProximaRodada, aoMomento }: Props) {
   const [tempo, setTempo] = useState(0);
   const [verCartas, setVerCartas] = useState(false);
   const pulou = useRef(false);
@@ -46,7 +53,7 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
   const proxima = useRef<HTMLButtonElement>(null);
 
   const pronto = tempo >= TOTAL_MS;
-  const computadorCorrendo = tempo >= BARRA_MS;
+  const outrosCorrendo = tempo >= BARRA_MS;
 
   // O relógio do duelo. Para sozinho no fim ou quando alguém pula.
   useEffect(() => {
@@ -64,12 +71,12 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
   }, []);
 
   useEffect(() => {
-    if (computadorCorrendo && !pronto) momento.current?.({ tipo: "barra", duracaoMs: BARRA_MS });
-  }, [computadorCorrendo]);
+    if (outrosCorrendo && !pronto) momento.current?.({ tipo: "barra", duracaoMs: BARRA_MS });
+  }, [outrosCorrendo]);
 
   useEffect(() => {
     if (!pronto) return;
-    momento.current?.({ tipo: "resultado", resultado: rodadaParaVoce(evento.vencedor) });
+    momento.current?.({ tipo: "resultado", resultado: rodadaPara(evento.vencedor, voce) });
     proxima.current?.focus();
   }, [pronto]);
 
@@ -80,7 +87,13 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
   }
 
   const etapa = TEXTO_DA_ETAPA[evento.atributo];
-  const quemEscolheu = evento.quemEscolheu === VOCE ? "Você escolheu" : "O computador escolheu";
+  const quemEscolheu = evento.quemEscolheu === voce ? "Você escolheu" : `${nomes[evento.quemEscolheu].sujeito} escolheu`;
+  // As cartas da mesa, a sua primeira; as outras na Ordem da mesa.
+  const mesa = [...evento.mesa]
+    .sort((a, b) => Number(b.pessoa === voce) - Number(a.pessoa === voce))
+    .map((m) => ({ ...m, carta: cartaPeloCodigo(m.codigo) }));
+  const rotulo = (pessoa: number, carta: CartaDasRegras) =>
+    `${pessoa === voce ? "Sua carta" : `Carta ${nomes[pessoa].de}`}: ${carta.nome}`;
 
   if (verCartas) {
     return (
@@ -88,13 +101,9 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
         <div class="duelo__conteudo">
           <h2 class="duelo__etapa">{etapa}</h2>
           <div class="duelo__cartas">
-            <Carta carta={cartas.voce} marcado={evento.atributo} selo={selo(cartas.voce)} rotulo={`Sua carta: ${cartas.voce.nome}`} />
-            <Carta
-              carta={cartas.computador}
-              marcado={evento.atributo}
-              selo={selo(cartas.computador)}
-              rotulo={`Carta do computador: ${cartas.computador.nome}`}
-            />
+            {mesa.map(({ pessoa, carta }) => (
+              <Carta key={pessoa} carta={carta} marcado={evento.atributo} selo={selo(carta)} rotulo={rotulo(pessoa, carta)} />
+            ))}
           </div>
           <button type="button" class="botao botao--secundario" onClick={() => setVerCartas(false)}>
             Voltar
@@ -104,13 +113,12 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
     );
   }
 
-  const titulo = TITULO[rodadaParaVoce(evento.vencedor)];
   // O motivo (Super Trunfo, Carta A, monte de empate) vem do evento `rodada` (ticket 23).
   const motivo = textoDoMotivo(evento);
   const leva =
     evento.vencedor === null
       ? null
-      : `${evento.vencedor === VOCE ? "Você leva" : "O computador leva"} ${evento.cartasLevadas} cartas.`;
+      : `${evento.vencedor === voce ? "Você leva" : `${nomes[evento.vencedor].sujeito} leva`} ${evento.cartasLevadas} cartas.`;
 
   return (
     <div class={`duelo${pronto ? " duelo--pronto" : ""}`} role="dialog" aria-modal="true" aria-label="Duelo" onClick={pular}>
@@ -124,20 +132,24 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
         <p class="duelo__sub">
           {quemEscolheu} {NOME_DO_ATRIBUTO[evento.atributo]}
         </p>
-        <Faixa carta={cartas.voce} quem="Você" pessoa={VOCE} evento={evento} crescimento={suave(tempo / BARRA_MS)} pronto={pronto} />
-        <Faixa
-          carta={cartas.computador}
-          quem="Computador"
-          pessoa={COMPUTADOR}
-          evento={evento}
-          crescimento={suave((tempo - BARRA_MS) / BARRA_MS)}
-          pronto={pronto}
-        />
+        {mesa.map(({ pessoa, carta, nota }) => (
+          <Faixa
+            key={pessoa}
+            carta={carta}
+            quem={pessoa === voce ? "Você" : nomes[pessoa].nome}
+            nota={nota}
+            evento={evento}
+            pessoa={pessoa}
+            // A sua barra cresce primeiro; as das outras pessoas, juntas, depois.
+            crescimento={suave((pessoa === voce ? tempo : tempo - BARRA_MS) / BARRA_MS)}
+            pronto={pronto}
+          />
+        ))}
         {!pronto && <p class="duelo__dica">toque na tela para pular</p>}
         <div class="duelo__resultado" aria-live="polite">
           {pronto && (
             <>
-              <h3 class="duelo__titulo">{titulo}</h3>
+              <h3 class="duelo__titulo">{titulo(evento, voce, nomes)}</h3>
               {motivo && <p class="resultado__motivo">{motivo}</p>}
               {leva && <p>{leva}</p>}
             </>
@@ -148,6 +160,7 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
             Próxima rodada
           </button>
           <button type="button" class="botao botao--secundario" onClick={() => setVerCartas(true)}>
+            {/* Com 3 ou 4 pessoas (#39), o texto do botão é decisão de produto em aberto. */}
             Ver as duas cartas
           </button>
         </div>
@@ -160,15 +173,15 @@ interface FaixaProps {
   carta: CartaDasRegras;
   quem: string;
   pessoa: number;
+  nota: number;
   evento: EventoDaRodada;
   /** Quanto a barra já cresceu, de 0 a 1. */
   crescimento: number;
   pronto: boolean;
 }
 
-function Faixa({ carta, quem, pessoa, evento, crescimento, pronto }: FaixaProps) {
+function Faixa({ carta, quem, pessoa, nota, evento, crescimento, pronto }: FaixaProps) {
   const { cores, iniciais } = aparencia(carta);
-  const nota = evento.mesa.find((m) => m.pessoa === pessoa)?.nota ?? 0;
   // O Super Trunfo enche a barra quando ganhou por ser Super Trunfo; contra a Carta A, vale a nota.
   const alvo = carta.superTrunfo && evento.motivo === "superTrunfo" ? 100 : nota;
   const vence = pronto && evento.vencedor === pessoa;

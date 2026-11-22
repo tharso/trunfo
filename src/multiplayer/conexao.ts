@@ -1,6 +1,7 @@
 import PartySocket from "partysocket";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { lerMensagemDaSala, type MensagemDaSala, type MensagemDoCliente, type MotivoDaRecusa } from "../sala/protocolo";
+import { avancar, filaVazia, receberNaFila, type FilaDaPartida } from "./fila";
 
 // A conversa do celular com a Sala (Durable Object atrás de /sala/<código>).
 // partysocket reconecta sozinho quando a rede cai ou o servidor reinicia; a cada
@@ -31,9 +32,13 @@ export type SituacaoDaSala =
   | { tipo: "naSala"; sala: SalaVista; conectado: boolean }
   | { tipo: "recusada"; motivo: MotivoDaRecusa };
 
-/** Entra na sala `codigo` e acompanha o que ela manda. */
+/**
+ * Entra na sala `codigo` e acompanha o que ela manda. As rodadas da partida vão
+ * para a fila (`fila`); "Próxima rodada" chama `avancarFila`.
+ */
 export function useSala(codigo: string, apelido: string, id: string) {
   const [situacao, setSituacao] = useState<SituacaoDaSala>({ tipo: "conectando" });
+  const [fila, setFila] = useState<FilaDaPartida>(filaVazia);
   const socket = useRef<PartySocket | null>(null);
 
   useEffect(() => {
@@ -51,8 +56,10 @@ export function useSala(codigo: string, apelido: string, id: string) {
       if (mensagem.tipo === "recusada") {
         conexao.close();
         setSituacao({ tipo: "recusada", motivo: mensagem.motivo });
-      } else {
+      } else if (mensagem.tipo === "sala") {
         setSituacao({ tipo: "naSala", sala: mensagem, conectado: true });
+      } else {
+        setFila((antes) => receberNaFila(antes, mensagem));
       }
     });
     return () => conexao.close();
@@ -62,5 +69,5 @@ export function useSala(codigo: string, apelido: string, id: string) {
     socket.current?.send(JSON.stringify(mensagem));
   }
 
-  return { situacao, enviar };
+  return { situacao, enviar, fila, avancarFila: () => setFila(avancar) };
 }

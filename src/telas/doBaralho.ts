@@ -12,6 +12,16 @@ export const NOME_DO_ATRIBUTO = Object.fromEntries(baralho.atributos.map((a) => 
   string
 >;
 
+/**
+ * A carta do baralho pelo código. Na sala, as mensagens trazem só o código;
+ * a tela tem o baralho inteiro (ele é sempre o mesmo).
+ */
+export function cartaPeloCodigo(codigo: string): Carta {
+  const carta = DO_BARALHO.get(codigo);
+  if (!carta) throw new Error(`Carta ${codigo} não está no baralho.`);
+  return carta;
+}
+
 /** Cores de reserva, para uma carta que não está no baralho. */
 const CORES_DE_RESERVA = ["#334155", "#94a3b8"];
 

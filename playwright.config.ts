@@ -25,5 +25,9 @@ export default defineConfig({
     url: `http://localhost:${porta}`,
     reuseExistingServer: false,
     timeout: 120_000,
+    // Só no build do teste: a sala sorteia sempre a mesma partida (src/worker/sala.ts).
+    // Com ela, e todo mundo escolhendo Sprint, Ana (a 1ª da mesa) começa, ganha
+    // as 7 primeiras rodadas e fica com todas as cartas na 20ª (e2e/partida-sala.spec.ts).
+    env: { VITE_SEMENTE_DA_SALA: "9966" },
   },
 });

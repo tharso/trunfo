@@ -134,3 +134,10 @@
   font-weight: 400;
   color: var(--texto-suave);
 }
+
+/* Fim da partida na sala (ticket #38): as cartas de cada pessoa, à direita. */
+.sala__cartas {
+  margin-left: auto;
+  font-weight: 400;
+  color: var(--texto-suave);
+}

@@ -1,11 +1,14 @@
 // Tela da sala (docs/spec.md, parte 9, itens 5 a 8): o código grande, "Mandar
-// link", a lista na Ordem da mesa e "Começar" (só o Anfitrião). A sala decide
-// tudo (src/sala/sala.ts); esta tela mostra o que ela manda.
+// link", a lista na Ordem da mesa e "Começar" (só o Anfitrião). Com a partida
+// começada, a tela é a da partida (PartidaDaSala). A sala decide tudo
+// (src/sala/sala.ts); esta tela mostra o que ela manda.
 import { useState } from "preact/hooks";
 import { useSala } from "../multiplayer/conexao";
 import { MAXIMO_DE_PESSOAS, MINIMO_PARA_COMECAR } from "../sala/sala";
 import { caminhoDaSala, MOTIVO_DA_RECUSA, PRECISA_DE_INTERNET, useInternet } from "./amigos";
+import { PartidaDaSala } from "./PartidaDaSala";
 import "./Sala.css";
+import { sentir } from "./sensacao";
 
 interface Props {
   codigo: string;
@@ -37,7 +40,7 @@ async function mandarLink(codigo: string): Promise<string | null> {
 
 export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) {
   const online = useInternet();
-  const { situacao, enviar } = useSala(codigo, apelido, id);
+  const { situacao, enviar, fila, avancarFila } = useSala(codigo, apelido, id);
   const [avisoDoLink, setAvisoDoLink] = useState<string | null>(null);
 
   if (situacao.tipo === "recusada") {
@@ -63,6 +66,23 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
   const souAnfitriao = sala !== null && sala.voce === sala.anfitriao;
   const podeComecar = sala !== null && sala.pessoas.length >= MINIMO_PARA_COMECAR && sala.pessoas.length <= MAXIMO_DE_PESSOAS;
   const semConexao = !online || (situacao.tipo === "naSala" && !situacao.conectado);
+  const sair = () => {
+    enviar({ tipo: "sair" });
+    aoSair();
+  };
+
+  if (sala?.emPartida) {
+    return (
+      <PartidaDaSala
+        fila={fila}
+        aviso={semConexao ? (online ? "Reconectando…" : PRECISA_DE_INTERNET) : null}
+        aoEscolher={(atributo) => enviar({ tipo: "escolher", atributo })}
+        aoAvancar={avancarFila}
+        aoSair={sair}
+        aoMomento={sentir}
+      />
+    );
+  }
 
   return (
     <div class="tela">
@@ -95,10 +115,7 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
                 </li>
               ))}
             </ol>
-            {sala.emPartida ? (
-              // A partida de verdade chega no ticket #38.
-              <p class="sala__aviso">A partida vai começar…</p>
-            ) : souAnfitriao ? (
+            {souAnfitriao ? (
               <>
                 <button type="button" class="botao" disabled={!podeComecar} onClick={() => enviar({ tipo: "comecar" })}>
                   Começar
@@ -110,14 +127,7 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
             )}
           </>
         )}
-        <button
-          type="button"
-          class="botao botao--secundario"
-          onClick={() => {
-            enviar({ tipo: "sair" });
-            aoSair();
-          }}
-        >
+        <button type="button" class="botao botao--secundario" onClick={sair}>
           Sair
         </button>
       </main>

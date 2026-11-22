@@ -102,7 +102,7 @@ body {
   font-size: 2rem;
 }
 
-/* Placar em cabo de guerra: verde = você, amarelo = monte de empate, vermelho = Computador. */
+/* Placar em cabo de guerra: verde = você, amarelo = monte de empate, vermelho = a outra pessoa (o Computador no solo). */
 .placar {
   display: flex;
   flex-direction: column;
@@ -142,7 +142,7 @@ body {
 .placar__empate {
   background: #d9b44a;
 }
-.placar__computador {
+.placar__outro {
   background: #c62828;
 }
 

@@ -4,7 +4,9 @@
 //
 // Tudo aqui é dado simples (vira JSON e volta igual), sem relógio próprio: quem
 // chama passa `agora` (ms).
-import { lerMensagemDoCliente, TAMANHO_MAXIMO_DO_APELIDO, type MensagemDaSala } from "./protocolo";
+import baralho from "../dados/baralho.json";
+import { aplicar, criarPartida, type Estado, type EventoDaRodada, type Sorteio } from "../regras";
+import { lerMensagemDoCliente, TAMANHO_MAXIMO_DO_APELIDO, type MensagemDaSala, type PartidaVista } from "./protocolo";
 
 export const MAXIMO_DE_PESSOAS = 4;
 export const MINIMO_PARA_COMECAR = 2;
@@ -18,6 +20,16 @@ export interface PessoaNaSala {
   conectada: boolean;
 }
 
+/**
+ * A partida em andamento (ou que acabou) na sala. O estado inteiro (os montes
+ * de todo mundo) fica só aqui, no Durable Object; cada celular recebe a sua vista.
+ */
+export interface PartidaNaSala {
+  estado: Estado;
+  /** Quem joga, na Ordem da mesa da partida (o índice é a pessoa nas regras). */
+  pessoas: { id: string; apelido: string }[];
+}
+
 export interface EstadoDaSala {
   codigo: string;
   /** Na Ordem da mesa (ordem de entrada). */
@@ -25,6 +37,8 @@ export interface EstadoDaSala {
   /** O `id` do Anfitrião; `null` enquanto ninguém entrou. */
   anfitriao: string | null;
   emPartida: boolean;
+  /** `null` antes da primeira partida. */
+  partida: PartidaNaSala | null;
   /** Quando a sala mudou pela última vez (ms). */
   atualizadaEm: number;
 }
@@ -49,7 +63,7 @@ export function emUso(estado: EstadoDaSala | null, agora: number): estado is Est
 /** Reserva o código para uma sala nova. `null` se o código está em uso. */
 export function reservar(estado: EstadoDaSala | null, codigo: string, agora: number): EstadoDaSala | null {
   if (emUso(estado, agora)) return null;
-  return { codigo, pessoas: [], anfitriao: null, emPartida: false, atualizadaEm: agora };
+  return { codigo, pessoas: [], anfitriao: null, emPartida: false, partida: null, atualizadaEm: agora };
 }
 
 /** Espaços em volta e repetidos saem; no máximo 20 letras. */
@@ -81,8 +95,44 @@ function mudou(estado: EstadoDaSala, conexao: string | null): Resultado {
   return { estado, conexao, paraPessoas: avisarTodos(estado) };
 }
 
+/** A partida como a pessoa `voce` (índice na partida) pode vê-la: só a própria carta de cima. */
+function vista(partida: PartidaNaSala, voce: number): PartidaVista {
+  const { estado } = partida;
+  return {
+    pessoas: partida.pessoas.map(({ apelido }, i) => ({ apelido, cartas: estado.pessoas[i].monte.length })),
+    voce,
+    monteDeEmpate: estado.monteDeEmpate.length,
+    rodada: estado.rodada,
+    limiteDeRodadas: estado.limiteDeRodadas,
+    quemEscolhe: estado.quemEscolhe,
+    suaCarta: estado.pessoas[voce].monte[0] ?? null,
+    fim: estado.fim,
+  };
+}
+
+/** Uma mensagem para cada pessoa da partida que está conectada. */
+function paraQuemJoga(
+  sala: EstadoDaSala,
+  partida: PartidaNaSala,
+  mensagem: (voce: number) => MensagemDaSala,
+): Resultado["paraPessoas"] {
+  const conectadas = new Set(sala.pessoas.filter((p) => p.conectada).map((p) => p.id));
+  return partida.pessoas.flatMap(({ id }, voce) => (conectadas.has(id) ? [{ id, mensagem: mensagem(voce) }] : []));
+}
+
+/** Como sortear a partida que começa. O Durable Object passa uma semente aleatória. */
+export interface NovaPartidaNaSala {
+  semente: Sorteio;
+}
+
 /** Uma mensagem (texto do WebSocket) chegou de uma conexão. */
-export function receber(estado: EstadoDaSala | null, conexao: string | null, texto: string, agora: number): Resultado {
+export function receber(
+  estado: EstadoDaSala | null,
+  conexao: string | null,
+  texto: string,
+  agora: number,
+  novaPartida: NovaPartidaNaSala = { semente: agora | 0 },
+): Resultado {
   const nada: Resultado = { estado, conexao, paraPessoas: [] };
   const mensagem = lerMensagemDoCliente(texto);
   if (mensagem === null) return nada;
@@ -94,7 +144,12 @@ export function receber(estado: EstadoDaSala | null, conexao: string | null, tex
     const ja = estado.pessoas.find((p) => p.id === mensagem.id);
     if (ja) {
       const pessoas = estado.pessoas.map((p) => (p === ja ? { ...p, conectada: true } : p));
-      return mudou({ ...estado, pessoas, atualizadaEm: agora }, ja.id);
+      const voltou = mudou({ ...estado, pessoas, atualizadaEm: agora }, ja.id);
+      // No meio da partida, quem volta recebe a partida como está.
+      const partida = estado.partida;
+      const voce = partida?.pessoas.findIndex((p) => p.id === ja.id) ?? -1;
+      if (partida && voce >= 0) voltou.paraPessoas.push({ id: ja.id, mensagem: { tipo: "partida", vista: vista(partida, voce) } });
+      return voltou;
     }
     if (estado.emPartida) return { ...nada, resposta: { tipo: "recusada", motivo: "emPartida" } };
     if (estado.pessoas.length >= MAXIMO_DE_PESSOAS) return { ...nada, resposta: { tipo: "recusada", motivo: "cheia" } };
@@ -114,12 +169,43 @@ export function receber(estado: EstadoDaSala | null, conexao: string | null, tex
       !estado.emPartida &&
       estado.pessoas.length >= MINIMO_PARA_COMECAR &&
       estado.pessoas.length <= MAXIMO_DE_PESSOAS;
-    // A partida de verdade (src/regras) vem no ticket #38.
-    return pode ? mudou({ ...estado, emPartida: true, atualizadaEm: agora }, conexao) : nada;
+    if (!pode) return nada;
+    const partida: PartidaNaSala = {
+      estado: criarPartida({
+        baralho: baralho.cartas,
+        pessoas: estado.pessoas.map(() => "humano"),
+        // O Nível é do Computador; numa partida só de pessoas, não vale nada.
+        nivel: "normal",
+        semente: novaPartida.semente,
+      }),
+      pessoas: estado.pessoas.map(({ id, apelido }) => ({ id, apelido })),
+    };
+    const comecada = { ...estado, emPartida: true, partida, atualizadaEm: agora };
+    const resultado = mudou(comecada, conexao);
+    resultado.paraPessoas.push(
+      ...paraQuemJoga(comecada, partida, (voce) => ({ tipo: "partida", vista: vista(partida, voce) })),
+    );
+    return resultado;
   }
 
-  // sair: antes da partida, a pessoa some da lista. Durante a partida é o ticket #40.
-  if (estado.emPartida) return nada;
+  if (mensagem.tipo === "escolher") {
+    const partida = estado.partida;
+    const pessoa = partida?.pessoas.findIndex((p) => p.id === conexao) ?? -1;
+    if (!partida || partida.estado.fim || pessoa !== partida.estado.quemEscolhe) return nada;
+    const { estado: depois, eventos } = aplicar(partida.estado, { tipo: "escolher", pessoa, atributo: mensagem.atributo });
+    const evento = eventos.find((e): e is EventoDaRodada => e.tipo === "rodada")!;
+    const jogada = { ...partida, estado: depois };
+    const sala = { ...estado, partida: jogada, atualizadaEm: agora };
+    return {
+      estado: sala,
+      conexao,
+      paraPessoas: paraQuemJoga(sala, jogada, (voce) => ({ tipo: "rodada", evento, depois: vista(jogada, voce) })),
+    };
+  }
+
+  // sair: antes da partida ou depois do fim dela, a pessoa some da lista.
+  // No meio da partida é o ticket #40.
+  if (estado.emPartida && !estado.partida?.estado.fim) return nada;
   const pessoas = estado.pessoas.filter((p) => p.id !== conexao);
   const anfitriao = estado.anfitriao === conexao ? (pessoas[0]?.id ?? null) : estado.anfitriao;
   return mudou({ ...estado, pessoas, anfitriao, atualizadaEm: agora }, null);

@@ -10,13 +10,25 @@ import { desconectar, receber, reservar, type EstadoDaSala, type Resultado } fro
 // (chave "sala") e quem está em cada socket vai no attachment do socket.
 //
 // Esta classe é só a casca de rede. As decisões (quem entra, Apelido, Ordem da
-// mesa, Anfitrião, "Começar") moram em src/sala/sala.ts, sem rede, com testes.
+// mesa, Anfitrião, "Começar", a partida com o módulo de regras e o que cada
+// pessoa pode ver) moram em src/sala/sala.ts, sem rede, com testes.
 
 const CHAVE = "sala";
 
 /** O que fica preso em cada socket: o identificador secreto de quem está nele. */
 interface Anexo {
   id: string | null;
+}
+
+/**
+ * A semente da partida que começa: aleatória. O build do teste Playwright fixa
+ * uma (VITE_SEMENTE_DA_SALA, em playwright.config.ts) para jogar sempre a mesma
+ * partida; no build do site ela não existe.
+ */
+function sementeDaPartida(): number {
+  const deTeste = import.meta.env.VITE_SEMENTE_DA_SALA;
+  if (deTeste !== undefined && /^-?\d+$/.test(deTeste)) return Number(deTeste) | 0;
+  return crypto.getRandomValues(new Int32Array(1))[0];
 }
 
 function idDoSocket(socket: WebSocket): string | null {
@@ -45,7 +57,7 @@ export class Sala extends DurableObject<Env> {
   async webSocketMessage(socket: WebSocket, mensagem: string | ArrayBuffer): Promise<void> {
     if (typeof mensagem !== "string") return;
     const conexao = idDoSocket(socket);
-    const resultado = receber(await this.ler(), conexao, mensagem, Date.now());
+    const resultado = receber(await this.ler(), conexao, mensagem, Date.now(), { semente: sementeDaPartida() });
     if (resultado.conexao !== conexao) socket.serializeAttachment({ id: resultado.conexao } satisfies Anexo);
     if (resultado.resposta) socket.send(JSON.stringify(resultado.resposta));
     await this.aplicar(resultado);
@@ -73,18 +85,21 @@ export class Sala extends DurableObject<Env> {
     return (await this.ctx.storage.get<EstadoDaSala>(CHAVE)) ?? null;
   }
 
-  /** Guarda o estado novo e entrega a mensagem de cada pessoa em todos os sockets dela. */
+  /** Guarda o estado novo e entrega as mensagens de cada pessoa, em ordem, em todos os sockets dela. */
   private async aplicar(resultado: Resultado): Promise<void> {
     if (resultado.estado !== null) await this.ctx.storage.put(CHAVE, resultado.estado);
     if (resultado.paraPessoas.length === 0) return;
-    const porPessoa = new Map(resultado.paraPessoas.map((envio) => [envio.id, JSON.stringify(envio.mensagem)]));
+    const porPessoa = new Map<string, string[]>();
+    for (const { id, mensagem } of resultado.paraPessoas) {
+      porPessoa.set(id, [...(porPessoa.get(id) ?? []), JSON.stringify(mensagem)]);
+    }
     for (const socket of this.ctx.getWebSockets()) {
-      const texto = porPessoa.get(idDoSocket(socket) ?? "");
-      if (texto === undefined) continue;
-      try {
-        socket.send(texto);
-      } catch {
-        // Socket fechando: webSocketClose cuida dele.
+      for (const texto of porPessoa.get(idDoSocket(socket) ?? "") ?? []) {
+        try {
+          socket.send(texto);
+        } catch {
+          // Socket fechando: webSocketClose cuida dele.
+        }
       }
     }
   }
