@@ -221,10 +221,12 @@ describe("empate e monte de empate", () => {
     expect(depois.quemEscolhe).toBe(0);
   });
 
-  it("com 2 pessoas, se quem escolhia sai no empate, a outra ganha a partida", () => {
+  it("com 2 pessoas, se quem escolhia sai no empate, a outra ganha a partida sem ficar com todas as cartas", () => {
     const estado = partidaArrumada([[carta("X", 60)], [carta("c", 60), carta("d")]], 0);
     const { estado: depois } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "sprint" });
-    expect(depois.fim).toMatchObject({ vencedor: 1, motivo: "todasAsCartas" });
+    // As cartas do empate ficam no monte de empate: quem ganhou não tem todas.
+    expect(depois.fim).toEqual({ vencedor: 1, motivo: "ultimaNaPartida", rodadasJogadas: 1 });
+    expect(depois.pessoas[1].monte).toEqual(["d"]);
   });
 
   it("se todo mundo fica sem cartas num empate, a partida termina empatada", () => {

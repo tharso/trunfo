@@ -6,6 +6,7 @@ import { COMPUTADOR, VOCE } from "./solo";
 
 const MOTIVO: Record<MotivoDoFim, string> = {
   todasAsCartas: "Ficou com todas as cartas.",
+  ultimaNaPartida: "Ficou sem cartas no empate.",
   limiteDeRodadas: "Chegou ao limite de rodadas. Ganha quem tem mais cartas.",
   semCartas: "Todo mundo ficou sem cartas no mesmo empate.",
   saida: "Alguém saiu da partida.",
@@ -17,10 +18,13 @@ const TITULO = {
   empate: "Empate.",
 };
 
-/** O motivo, com o caso do empate no limite de rodadas. */
+/** O motivo, com o caso do empate no limite de rodadas e quem ficou sem cartas no empate. */
 function motivo(fim: NonNullable<Estado["fim"]>): string {
   if (fim.motivo === "limiteDeRodadas" && fim.vencedor === null)
     return "Chegou ao limite de rodadas com o mesmo número de cartas.";
+  // No modo solo, quem ficou sem cartas é quem não ganhou.
+  if (fim.motivo === "ultimaNaPartida")
+    return fim.vencedor === VOCE ? "O computador ficou sem cartas." : "Você ficou sem cartas.";
   return MOTIVO[fim.motivo];
 }
 
@@ -46,7 +50,7 @@ export function Fim({ estado, aoJogarDeNovo, aoVoltar, aoMomento }: Props) {
       <main class="fim">
         <h1 class="fim__titulo">{titulo}</h1>
         <p>{motivo(fim)}</p>
-        {fim.vencedor === null && estado.monteDeEmpate.length > 0 && (
+        {estado.monteDeEmpate.length > 0 && (
           <p>As {estado.monteDeEmpate.length} cartas do monte de empate não contam.</p>
         )}
         <p>

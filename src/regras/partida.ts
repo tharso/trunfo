@@ -188,7 +188,9 @@ function disputarRodada(estado: Estado, atributo: ChaveAtributo): Evento[] {
 
   const restantes = naPartida(estado);
   if (restantes.length === 1) {
-    terminar(estado, eventos, restantes[0], "todasAsCartas", estado.rodada);
+    // Se a rodada empatou, as cartas dela ficaram no monte de empate: quem sobrou não tem todas.
+    const motivoDoFim = estado.monteDeEmpate.length > 0 ? "ultimaNaPartida" : "todasAsCartas";
+    terminar(estado, eventos, restantes[0], motivoDoFim, estado.rodada);
   } else if (restantes.length === 0) {
     // Todo mundo ficou sem cartas no mesmo empate.
     terminar(estado, eventos, null, "semCartas", estado.rodada);
