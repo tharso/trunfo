@@ -1,0 +1,22 @@
+/* Início: Retrospecto e "Continuar partida?" (ticket 27). */
+.retrospecto {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.continuar {
+  width: 100%;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.continuar__titulo {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.continuar__aviso {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}

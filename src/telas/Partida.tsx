@@ -14,6 +14,7 @@ import {
   type Evento,
 } from "../regras";
 import { Carta } from "./Carta";
+import { MenuPartida } from "./MenuPartida";
 import { selo, textoDoMotivo } from "./Selos";
 
 // No modo solo, a Ordem da mesa é: você, depois o Computador.
@@ -30,15 +31,20 @@ type EventoDaRodada = Extract<Evento, { tipo: "rodada" }>;
 interface Props {
   inicial: Estado;
   aoTerminar: (estado: Estado) => void;
+  /** Depois de cada rodada, com o estado novo (o App guarda a partida). */
+  aoMudar: (estado: Estado) => void;
+  /** "Sair" no menu ☰, com o estado atual. */
+  aoSair: (estado: Estado) => void;
 }
 
-export function Partida({ inicial, aoTerminar }: Props) {
+export function Partida({ inicial, aoTerminar, aoMudar, aoSair }: Props) {
   const [estado, setEstado] = useState(inicial);
   const [resultado, setResultado] = useState<EventoDaRodada | null>(null);
 
   function mandar(acao: Acao) {
     const r = aplicar(estado, acao);
     setEstado(r.estado);
+    aoMudar(r.estado);
     setResultado(r.eventos.find((e): e is EventoDaRodada => e.tipo === "rodada") ?? null);
   }
 
@@ -49,6 +55,7 @@ export function Partida({ inicial, aoTerminar }: Props) {
 
   return (
     <div class="tela partida">
+      <MenuPartida aoSair={() => aoSair(estado)} />
       <Placar estado={estado} />
       {resultado ? (
         <Resultado evento={resultado} aoSeguir={proximaRodada} />
