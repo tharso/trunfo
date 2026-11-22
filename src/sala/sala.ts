@@ -80,14 +80,14 @@ export interface Resultado {
   paraPessoas: { id: string; mensagem: MensagemDaSala }[];
 }
 
-/** Nada muda e ninguém recebe nada. */
-function semMudanca(estado: EstadoDaSala | null, conexao: string | null = null): Resultado {
+/** Ninguém recebe nada: o estado (mudado ou não) só fica guardado. */
+function semMensagens(estado: EstadoDaSala | null, conexao: string | null = null): Resultado {
   return { estado, conexao, paraPessoas: [] };
 }
 
 /** Só a conexão que mandou a mensagem fica sabendo por que não entrou. */
 function recusar(estado: EstadoDaSala | null, conexao: string | null, motivo: MotivoDaRecusa): Resultado {
-  return { ...semMudanca(estado, conexao), resposta: { tipo: "recusada", motivo } };
+  return { ...semMensagens(estado, conexao), resposta: { tipo: "recusada", motivo } };
 }
 
 /** A sala existe e não fechou: tem alguém conectado ou mudou há menos de `tempos.vazia`. */
@@ -290,14 +290,14 @@ export function receber(
   tempos: TemposDaSala = TEMPOS_DA_SALA,
 ): Resultado {
   const mensagem = lerMensagemDoCliente(texto);
-  if (mensagem === null) return semMudanca(estado, conexao);
+  if (mensagem === null) return semMensagens(estado, conexao);
 
   if (mensagem.tipo === "entrar") {
     // Um socket é de uma pessoa só: outro identificador na mesma conexão não vale.
-    if (conexao !== null && conexao !== mensagem.id) return semMudanca(estado, conexao);
+    if (conexao !== null && conexao !== mensagem.id) return semMensagens(estado, conexao);
     if (!emUso(estado, agora, tempos)) return recusar(estado, conexao, "acabou");
     const apelido = limparApelido(mensagem.apelido);
-    if (apelido === "") return semMudanca(estado, conexao);
+    if (apelido === "") return semMensagens(estado, conexao);
     const quemVolta = estado.pessoas.find((p) => p.id === mensagem.id);
     if (quemVolta) {
       const pessoas = estado.pessoas.map((p) => (p === quemVolta ? { ...p, conectada: true, caiuEm: null } : p));
@@ -327,11 +327,11 @@ export function receber(
   }
 
   // As outras mensagens só valem de quem já entrou.
-  if (estado === null || conexao === null || !estado.pessoas.some((p) => p.id === conexao)) return semMudanca(estado, conexao);
+  if (estado === null || conexao === null || !estado.pessoas.some((p) => p.id === conexao)) return semMensagens(estado, conexao);
 
   // "Começar" e, no fim, "Jogar de novo" (spec, item 23): com quem está na sala, inclusive quem estava De fora.
   if (mensagem.tipo === "comecar") {
-    if (conexao !== estado.anfitriao || !podeComecar(estado)) return semMudanca(estado, conexao);
+    if (conexao !== estado.anfitriao || !podeComecar(estado)) return semMensagens(estado, conexao);
     const sala = semQuemFoiEmbora(estado);
     const partida: PartidaNaSala = {
       estado: criarPartida({
@@ -356,9 +356,9 @@ export function receber(
   if (mensagem.tipo === "escolher") {
     const partida = estado.partida;
     const pessoa = partida?.pessoas.findIndex((p) => p.id === conexao) ?? -1;
-    if (!partida || partida.estado.fim || pessoa !== partida.estado.quemEscolhe) return semMudanca(estado, conexao);
+    if (!partida || partida.estado.fim || pessoa !== partida.estado.quemEscolhe) return semMensagens(estado, conexao);
     // Partida parada: alguém caiu e ainda pode voltar (spec, item 14).
-    if (semRede(estado).length > 0) return semMudanca(estado, conexao);
+    if (semRede(estado).length > 0) return semMensagens(estado, conexao);
     const { estado: depois, eventos } = aplicar(partida.estado, { tipo: "escolher", pessoa, atributo: mensagem.atributo });
     const evento = eventos.find((e): e is EventoDaRodada => e.tipo === "rodada")!;
     const jogada: PartidaNaSala = { ...partida, estado: depois, vezDesde: null, podeCutucar: false };
@@ -373,20 +373,20 @@ export function receber(
   if (mensagem.tipo === "naVez") {
     const partida = partidaEmJogo(estado);
     if (!partida || idDaVez(estado) !== conexao || partida.estado.rodada !== mensagem.rodada || partida.vezDesde !== null) {
-      return semMudanca(estado, conexao);
+      return semMensagens(estado, conexao);
     }
-    return { estado: { ...estado, partida: { ...partida, vezDesde: agora } }, conexao, paraPessoas: [] };
+    return semMensagens({ ...estado, partida: { ...partida, vezDesde: agora } }, conexao);
   }
 
   if (mensagem.tipo === "cutucar") {
     const daVez = idDaVez(estado);
-    if (!cutucavel(estado) || daVez === null || daVez === conexao) return semMudanca(estado, conexao);
-    return { ...semMudanca(estado, conexao), paraPessoas: [{ id: daVez, mensagem: { tipo: "cutucada" } }] };
+    if (!cutucavel(estado) || daVez === null || daVez === conexao) return semMensagens(estado, conexao);
+    return { ...semMensagens(estado, conexao), paraPessoas: [{ id: daVez, mensagem: { tipo: "cutucada" } }] };
   }
 
   if (mensagem.tipo === "tirar") {
     const caida = estado.pessoas.find((p) => p.numero === mensagem.numero);
-    if (conexao !== estado.anfitriao || !caida || !semRede(estado).includes(caida)) return semMudanca(estado, conexao);
+    if (conexao !== estado.anfitriao || !caida || !semRede(estado).includes(caida)) return semMensagens(estado, conexao);
     const pessoas = estado.pessoas.map((p) => (p === caida ? { ...p, caiuEm: null } : p));
     return resultadoComPartida(tirarDaPartida({ ...estado, pessoas }, indiceNaPartida(estado, caida.id), agora), conexao);
   }
@@ -404,7 +404,7 @@ export function receber(
 /** A última conexão da pessoa `id` fechou (rede caiu, aba fechou). */
 export function desconectar(estado: EstadoDaSala | null, id: string, agora: number): Resultado {
   if (estado === null || !estado.pessoas.some((p) => p.id === id && p.conectada)) {
-    return semMudanca(estado);
+    return semMensagens(estado);
   }
   const pessoas = estado.pessoas.map((p) => (p.id === id ? { ...p, conectada: false, caiuEm: agora } : p));
   const caiu = { ...estado, pessoas, atualizadaEm: agora };
@@ -442,8 +442,8 @@ export function proximoAlarme(estado: EstadoDaSala | null, tempos: TemposDaSala 
  * mesmo estado.
  */
 export function alarme(estado: EstadoDaSala | null, agora: number, tempos: TemposDaSala = TEMPOS_DA_SALA): Resultado {
-  if (estado === null) return semMudanca(estado);
-  if (semNinguem(estado) && agora - estado.atualizadaEm >= tempos.vazia) return semMudanca(null);
+  if (estado === null) return semMensagens(estado);
+  if (semNinguem(estado) && agora - estado.atualizadaEm >= tempos.vazia) return semMensagens(null);
   let sala = estado;
   let mudouASala = false;
   let mudouAPartida = false;
@@ -464,6 +464,6 @@ export function alarme(estado: EstadoDaSala | null, agora: number, tempos: Tempo
     mudouASala = true;
     sala = { ...sala, partida: { ...partida, podeCutucar: true } };
   }
-  if (!mudouASala) return semMudanca(estado);
+  if (!mudouASala) return semMensagens(estado);
   return mudouAPartida ? resultadoComPartida(sala, null) : resultadoComSala(sala, null);
 }
