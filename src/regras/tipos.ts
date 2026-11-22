@@ -36,7 +36,13 @@ export interface Pessoa {
   fora: MotivoDeSaida | null;
 }
 
-export type MotivoDoFim = "todasAsCartas" | "limiteDeRodadas" | "saida";
+/**
+ * - `todasAsCartas`: só uma pessoa ficou na partida;
+ * - `limiteDeRodadas`: chegou à rodada 100 (ganha quem tem mais cartas; empate se igual);
+ * - `semCartas`: todo mundo ficou sem cartas num empate (a partida termina empatada);
+ * - `saida`: alguém saiu no meio e sobrou uma pessoa.
+ */
+export type MotivoDoFim = "todasAsCartas" | "limiteDeRodadas" | "semCartas" | "saida";
 
 export interface Fim {
   /** Índice da pessoa que ganhou, ou `null` se a partida terminou empatada. */
@@ -72,8 +78,15 @@ export type Acao =
   /** Uma pessoa sai da partida no meio. As cartas dela saem do jogo. */
   | { tipo: "sair"; pessoa: number };
 
-/** Por que a rodada terminou como terminou. Super Trunfo e Carta A chegam no ticket 23. */
-export type MotivoDaRodada = "nota" | "empate";
+/**
+ * Por que a rodada terminou como terminou:
+ * - `nota`: a nota mais alta ganhou;
+ * - `superTrunfo`: o Super Trunfo ganhou;
+ * - `cartaA`: havia Carta A contra o Super Trunfo (com 2 cartas na mesa, a Carta A
+ *   ganhou; com 3–4, o Super Trunfo saiu da disputa e a nota mais alta ganhou);
+ * - `empate`: as cartas foram para o Monte de empate.
+ */
+export type MotivoDaRodada = "nota" | "superTrunfo" | "cartaA" | "empate";
 
 export type Evento =
   | {
@@ -88,6 +101,8 @@ export type Evento =
       motivo: MotivoDaRodada;
       /** Quantas cartas o vencedor leva (as da mesa + o monte de empate). 0 no empate. */
       cartasLevadas: number;
+      /** Quantas das cartas levadas vieram do Monte de empate. 0 no empate. */
+      doMonteDeEmpate: number;
     }
   | { tipo: "saiu"; pessoa: number; motivo: MotivoDeSaida }
   | ({ tipo: "fim" } & Fim);

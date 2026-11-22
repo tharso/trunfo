@@ -14,6 +14,7 @@ import {
   type Evento,
 } from "../regras";
 import { Carta } from "./Carta";
+import { selo, textoDoMotivo } from "./Selos";
 
 // No modo solo, a Ordem da mesa é: você, depois o Computador.
 const VOCE = 0;
@@ -89,7 +90,7 @@ function VezDeVoce({ carta, aoEscolher }: { carta: CartaDasRegras; aoEscolher: (
   return (
     <main class="rodada">
       <p class="rodada__aviso">Sua vez: escolha um atributo.</p>
-      <Carta carta={carta} marcado={marcado} aoTocar={tocar} rotulo={`Sua carta: ${carta.nome}`} />
+      <Carta carta={carta} marcado={marcado} aoTocar={tocar} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />
     </main>
   );
 }
@@ -98,7 +99,7 @@ function VezDoComputador({ carta, atributo, aoCorrer }: { carta: CartaDasRegras;
   return (
     <main class="rodada">
       <p class="rodada__aviso">O computador escolheu {NOME_DO_ATRIBUTO[atributo]}.</p>
-      <Carta carta={carta} marcado={atributo} rotulo={`Sua carta: ${carta.nome}`} />
+      <Carta carta={carta} marcado={atributo} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />
       <button type="button" class="botao" onClick={aoCorrer}>
         Correr!
       </button>
@@ -111,9 +112,10 @@ function Resultado({ evento, aoSeguir }: { evento: EventoDaRodada; aoSeguir: () 
   const computador = evento.mesa.find((m) => m.pessoa === COMPUTADOR);
   const titulo =
     evento.vencedor === VOCE ? "Você ganhou a rodada!" : evento.vencedor === COMPUTADOR ? "O computador ganhou." : "Empate!";
-  const detalhe =
+  const motivo = textoDoMotivo(evento);
+  const leva =
     evento.vencedor === null
-      ? "As cartas vão para o monte de empate."
+      ? null
       : `${evento.vencedor === VOCE ? "Você leva" : "O computador leva"} ${evento.cartasLevadas} cartas.`;
   return (
     <main class="resultado" aria-live="polite">
@@ -122,7 +124,8 @@ function Resultado({ evento, aoSeguir }: { evento: EventoDaRodada; aoSeguir: () 
         Você: {voce?.nota ?? "—"} · Computador: {computador?.nota ?? "—"}
       </p>
       <h2 class="resultado__titulo">{titulo}</h2>
-      <p>{detalhe}</p>
+      {motivo && <p class="resultado__motivo">{motivo}</p>}
+      {leva && <p>{leva}</p>}
       <button type="button" class="botao" onClick={aoSeguir}>
         Próxima rodada
       </button>

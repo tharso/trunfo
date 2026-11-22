@@ -4,6 +4,7 @@ import { expect, test } from "@playwright/test";
 // `?semente=231` fixa o sorteio (baralho, quem começa e as escolhas do Computador).
 // Com a pessoa escolhendo sempre a primeira linha (Sprint), essa semente acaba
 // em 20 rodadas. A semente só fixa o sorteio; quem decide as regras é o módulo.
+// Nela, o Computador joga o Super Trunfo na rodada 8 e você tem uma Carta A na 11.
 // A partida roda SEM INTERNET: a 1ª visita instala o service worker (PWA), depois
 // o teste corta a rede e recarrega. Assim o mesmo teste cobre o jogo e o offline.
 test("joga uma partida inteira contra o Computador até o Fim, sem internet", async ({ page, context }) => {
@@ -22,6 +23,7 @@ test("joga uma partida inteira contra o Computador até o Fim, sem internet", as
 
   for (let rodada = 1; rodada <= 100; rodada++) {
     await expect(page.getByText(`Rodada ${rodada}/100`)).toBeVisible();
+    if (rodada === 11) await expect(page.getByText("Carta A", { exact: true })).toBeVisible();
     if (await correr.isVisible()) {
       await expect(page.getByText(/^O computador escolheu /)).toBeVisible();
       await correr.click();
@@ -32,6 +34,7 @@ test("joga uma partida inteira contra o Computador até o Fim, sem internet", as
       await primeiraLinha.click();
     }
     await expect(page.getByRole("heading", { name: /Você ganhou a rodada!|O computador ganhou\.|Empate!/ })).toBeVisible();
+    if (rodada === 8) await expect(page.getByText(/^Super Trunfo! Ganha de qualquer carta\./)).toBeVisible();
     await proxima.click();
     if (await fim.isVisible()) break;
   }

@@ -111,17 +111,32 @@ function naPartida(estado: Estado): number[] {
   return estado.pessoas.flatMap((p, i) => (p.fora === null ? [i] : []));
 }
 
-/**
- * Quem ganha a disputa entre as cartas da mesa. Este é o ponto que o ticket 23
- * estende com Super Trunfo e Carta A.
- */
-function decidirRodada(
-  mesa: { pessoa: number; nota: number }[],
+type CartaNaMesa = { pessoa: number; nota: number; superTrunfo: boolean; cartaA: boolean };
+
+/** Quem ganha a disputa entre as cartas da mesa (docs/spec.md, parte 3, itens 3, 4 e 6). */
+function decidirRodada(mesa: CartaNaMesa[]): { vencedor: number | null; motivo: MotivoDaRodada } {
+  const superTrunfo = mesa.find((m) => m.superTrunfo);
+  if (!superTrunfo) return compararNotas(mesa, "nota");
+  const cartaA = mesa.find((m) => m.cartaA);
+  if (!cartaA) return { vencedor: superTrunfo.pessoa, motivo: "superTrunfo" };
+  // Com 2 cartas na mesa, a Carta A ganha. Com 3–4, o Super Trunfo sai da disputa
+  // e as outras cartas comparam o atributo.
+  if (mesa.length === 2) return { vencedor: cartaA.pessoa, motivo: "cartaA" };
+  return compararNotas(
+    mesa.filter((m) => m !== superTrunfo),
+    "cartaA",
+  );
+  return compararNotas(mesa, "nota");
+}
+
+function compararNotas(
+  mesa: CartaNaMesa[],
+  motivo: MotivoDaRodada,
 ): { vencedor: number | null; motivo: MotivoDaRodada } {
   const maior = Math.max(...mesa.map((m) => m.nota));
   const comMaior = mesa.filter((m) => m.nota === maior);
   if (comMaior.length > 1) return { vencedor: null, motivo: "empate" };
-  return { vencedor: comMaior[0].pessoa, motivo: "nota" };
+  return { vencedor: comMaior[0].pessoa, motivo };
 }
 
 /** Muda `estado` (já copiado) e devolve os eventos. */
@@ -129,15 +144,18 @@ function disputarRodada(estado: Estado, atributo: ChaveAtributo): Evento[] {
   const quemEscolheu = estado.quemEscolhe;
   const mesa = naPartida(estado).map((pessoa) => {
     const codigo = estado.pessoas[pessoa].monte.shift()!;
-    return { pessoa, codigo, nota: buscarCarta(estado, codigo).notas[atributo] };
+    const carta = buscarCarta(estado, codigo);
+    return { pessoa, codigo, nota: carta.notas[atributo], superTrunfo: carta.superTrunfo, cartaA: carta.cartaA };
   });
   const { vencedor, motivo } = decidirRodada(mesa);
   const cartasDaMesa = mesa.map((m) => m.codigo);
 
   let cartasLevadas = 0;
+  let doMonteDeEmpate = 0;
   if (vencedor === null) {
     estado.monteDeEmpate.push(...cartasDaMesa);
   } else {
+    doMonteDeEmpate = estado.monteDeEmpate.length;
     const levadas = [...cartasDaMesa, ...estado.monteDeEmpate];
     estado.pessoas[vencedor].monte.push(...levadas);
     estado.monteDeEmpate = [];
@@ -145,7 +163,17 @@ function disputarRodada(estado: Estado, atributo: ChaveAtributo): Evento[] {
   }
 
   const eventos: Evento[] = [
-    { tipo: "rodada", rodada: estado.rodada, quemEscolheu, atributo, mesa, vencedor, motivo, cartasLevadas },
+    {
+      tipo: "rodada",
+      rodada: estado.rodada,
+      quemEscolheu,
+      atributo,
+      mesa: mesa.map(({ pessoa, codigo, nota }) => ({ pessoa, codigo, nota })),
+      vencedor,
+      motivo,
+      cartasLevadas,
+      doMonteDeEmpate,
+    },
   ];
 
   // Quem ficou sem cartas sai.
@@ -160,8 +188,11 @@ function disputarRodada(estado: Estado, atributo: ChaveAtributo): Evento[] {
   estado.quemEscolhe = vencedor ?? proximaNaPartida(estado, quemEscolheu);
 
   const restantes = naPartida(estado);
-  if (restantes.length <= 1) {
-    terminar(estado, eventos, restantes[0] ?? null, "todasAsCartas", estado.rodada);
+  if (restantes.length === 1) {
+    terminar(estado, eventos, restantes[0], "todasAsCartas", estado.rodada);
+  } else if (restantes.length === 0) {
+    // Todo mundo ficou sem cartas no mesmo empate.
+    terminar(estado, eventos, null, "semCartas", estado.rodada);
   } else if (estado.rodada >= estado.limiteDeRodadas) {
     terminar(estado, eventos, quemTemMaisCartas(estado), "limiteDeRodadas", estado.rodada);
   } else {
