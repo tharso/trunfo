@@ -1,8 +1,9 @@
 // A partida na sala (docs/spec.md, parte 9, itens 9 a 11 e 20 a 21). A sala
 // (Durable Object) roda as regras e manda a cada celular só a sua carta; esta
 // tela desenha a fila (src/multiplayer/fila.ts) com as mesmas peças do modo
-// solo: Placar em cabo de guerra, Carta, Duelo, Fim, som e vibração. No lugar
-// de "computador", o Apelido da outra pessoa.
+// solo: Placar, Carta, Duelo, Fim, som e vibração. No lugar de "computador", o
+// Apelido das outras pessoas. Quem está De fora (saiu, caiu de vez ou ficou sem
+// cartas) continua vendo as rodadas, sem carta própria (itens 14 a 19).
 import { useEffect, useState } from "preact/hooks";
 import type { FilaDaPartida } from "../multiplayer/fila";
 import { resultadoDoFim, type ChaveAtributo } from "../regras";
@@ -11,7 +12,7 @@ import { BotaoSom } from "./BotaoSom";
 import { cartaPeloCodigo } from "./doBaralho";
 import { Duelo } from "./Duelo";
 import { motivoDoFim, tituloDoFim } from "./Fim";
-import { nomeDoApelido } from "./mesa";
+import { nomeDoApelido, ordemDoFim } from "./mesa";
 import type { AoMomento } from "./momentos";
 import { Placar } from "./Placar";
 import { AvisoDeQueda, BotaoCutucar, MenuDaSala, TEXTO_DE_FORA, type ControlesDaSala } from "./QuedaNaSala";
@@ -122,7 +123,7 @@ interface FimDaSalaProps {
 
 /**
  * O fim na sala (spec, itens 20 e 21): quem ganhou e todas as pessoas, em ordem
- * de cartas no monte, e quem saiu no meio no fim, com "saiu". "Jogar de novo"
+ * de cartas no monte; quem saiu da partida no fim, com "saiu". "Jogar de novo"
  * (só o Anfitrião) é o ticket #41.
  */
 function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
@@ -131,10 +132,7 @@ function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
   useEffect(() => {
     aoMomento?.({ tipo: "fim", resultado: resultadoDoFim(fim, vista.voce) });
   }, []);
-  // Em ordem de cartas; quem saiu no meio fica no fim, com "saiu" (spec, item 20).
-  const ordem = vista.pessoas
-    .map((p, i) => ({ ...p, i }))
-    .sort((a, b) => Number(a.fora === "saiu") - Number(b.fora === "saiu") || b.cartas - a.cartas);
+  const ordem = ordemDoFim(vista.pessoas).map((i) => ({ ...vista.pessoas[i], i }));
   return (
     <div class="tela">
       <main class="fim">
@@ -146,7 +144,7 @@ function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
             <li key={p.i} class="sala__pessoa">
               <span class="sala__apelido">{p.apelido}</span>
               {p.i === vista.voce && <span class="sala__marca">você</span>}
-              {p.fora === "saiu" ? <span class="sala__cartas">saiu</span> : <span class="sala__cartas">{p.cartas} cartas</span>}
+              <span class="sala__cartas">{p.fora === "saiu" ? "saiu" : `${p.cartas} cartas`}</span>
             </li>
           ))}
         </ol>

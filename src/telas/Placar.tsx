@@ -2,8 +2,10 @@
 // suas cartas (verde, sempre na esquerda), o monte de empate (amarelo) e as da
 // outra pessoa (vermelho): o Computador no modo solo, o Apelido na sala. As
 // larguras andam em 0,8 s (transição no CSS) quando os números mudam.
-// Com 3 ou 4 pessoas (ticket #39), `outros` tem mais de uma pessoa e a barra
-// vira uma parte por pessoa, em tons neutros com as iniciais (spec, item 13).
+// Com 3 ou 4 pessoas, o cabo de guerra vira uma barra dividida (spec, parte 9,
+// item 13): uma parte por pessoa, em tons neutros, com as iniciais do Apelido.
+// A linha de cima fica só com "Você" e a rodada, para caber no celular.
+import { iniciaisDoApelido } from "./mesa";
 
 interface Props {
   voce: number;
@@ -17,6 +19,7 @@ interface Props {
 export function Placar({ voce, empate, outros, rodada, limite }: Props) {
   const total = voce + empate + outros.reduce((soma, o) => soma + o.cartas, 0) || 1;
   const largura = (n: number) => ({ width: `${(100 * n) / total}%` });
+  const dividida = outros.length > 1;
   const descricao = [
     `Você ${voce} cartas`,
     `monte de empate ${empate}`,
@@ -32,17 +35,20 @@ export function Placar({ voce, empate, outros, rodada, limite }: Props) {
           </span>
           {empate > 0 && <span aria-label={`${empate} no monte de empate`}> · 🤝 {empate}</span>}
         </span>
-        {outros.map((o, i) => (
-          <span key={i}>
-            {o.cartas} {o.nome}
-          </span>
-        ))}
+        {!dividida &&
+          outros.map((o, i) => (
+            <span key={i}>
+              {o.cartas} {o.nome}
+            </span>
+          ))}
       </div>
-      <div class="placar__cabo" role="img" aria-label={descricao}>
+      <div class={`placar__cabo${dividida ? " placar__cabo--dividida" : ""}`} role="img" aria-label={descricao}>
         <i class="placar__voce" style={largura(voce)} />
         <i class="placar__empate" style={largura(empate)} />
         {outros.map((o, i) => (
-          <i key={i} class="placar__outro" style={largura(o.cartas)} />
+          <i key={i} class="placar__outro" style={largura(o.cartas)}>
+            {dividida && o.cartas > 0 ? iniciaisDoApelido(o.nome) : null}
+          </i>
         ))}
       </div>
     </header>

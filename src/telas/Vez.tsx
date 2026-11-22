@@ -3,6 +3,8 @@
 // - Sua vez: 2 toques na linha.
 // - A outra pessoa escolheu: a linha marcada, "Ana escolheu Montanha." e "Mostrar cartas!".
 // - A outra pessoa está escolhendo (só na sala): "Ana está escolhendo…".
+// Na sala, quem está De fora (saiu, caiu de vez ou ficou sem cartas com 3 ou 4
+// pessoas) continua vendo as rodadas, sem carta: o aviso fica no topo da partida.
 import { useState } from "preact/hooks";
 import type { Carta as CartaDasRegras, ChaveAtributo } from "../regras";
 import { Carta } from "./Carta";
@@ -38,6 +40,12 @@ export function VezDeVoce({ carta, aoTocar, aoEscolher, bloqueada = false }: Vez
   );
 }
 
+/** A sua carta de cima; De fora, nada (o texto De fora fica no topo da partida). */
+function SuaCarta({ carta, marcado }: { carta: CartaDasRegras | null; marcado: ChaveAtributo | null }) {
+  if (carta === null) return null;
+  return <Carta carta={carta} marcado={marcado} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />;
+}
+
 interface EscolhaDoOutroProps {
   /** Sua carta; `null` De fora (spec, parte 9, item 19: sem carta própria). */
   carta: CartaDasRegras | null;
@@ -53,7 +61,7 @@ export function EscolhaDoOutro({ carta, atributo, sujeito, aoMostrar }: EscolhaD
       <p class="rodada__aviso">
         {sujeito} escolheu {NOME_DO_ATRIBUTO[atributo]}.
       </p>
-      {carta && <Carta carta={carta} marcado={atributo} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />}
+      <SuaCarta carta={carta} marcado={atributo} />
       <button type="button" class="botao" onClick={aoMostrar}>
         Mostrar cartas!
       </button>
@@ -68,7 +76,7 @@ export function OutroEscolhendo({ carta, sujeito }: { carta: CartaDasRegras | nu
       <p class="rodada__aviso" aria-live="polite">
         {sujeito} está escolhendo…
       </p>
-      {carta && <Carta carta={carta} marcado={null} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />}
+      <SuaCarta carta={carta} marcado={null} />
     </main>
   );
 }
