@@ -1,7 +1,8 @@
 // Queda de rede, "Cutucar", saída no meio e De fora na tela da partida da sala
 // (docs/spec.md, parte 9, itens 14 a 19). Quem decide é a sala (src/sala/sala.ts):
-// ela manda quem está sendo esperado (`esperando`) e se dá para cutucar
+// ela manda quem caiu e está sendo esperado (`semRede`) e se dá para cutucar
 // (`podeCutucar`); estas peças só mostram e mandam o pedido.
+import { TEMPOS_DA_SALA } from "../sala/sala";
 import { MenuPartida } from "./MenuPartida";
 
 /** O texto no topo de quem está De fora (spec, item 19). */
@@ -10,7 +11,7 @@ export const TEXTO_DE_FORA = "De fora, só olhando. Você entra na próxima part
 /** O que a tela da partida precisa da sala (além da fila de rodadas). */
 export interface ControlesDaSala {
   /** Quem caiu e está sendo esperado: a partida está parada. */
-  esperando: { indice: number; apelido: string }[];
+  semRede: { indice: number; apelido: string }[];
   souAnfitriao: boolean;
   podeCutucar: boolean;
   aoTirar: (indice: number) => void;
@@ -22,13 +23,13 @@ export interface ControlesDaSala {
 }
 
 /** "Bia está sem rede…" e, para o Anfitrião, "Tirar". */
-export function AvisoDeQueda({ esperando, souAnfitriao, aoTirar }: ControlesDaSala) {
-  if (esperando.length === 0) return null;
+export function AvisoDeQueda({ semRede, souAnfitriao, aoTirar }: ControlesDaSala) {
+  if (semRede.length === 0) return null;
   return (
     <div class="queda" role="status">
-      {esperando.map(({ indice, apelido }) => (
+      {semRede.map(({ indice, apelido }) => (
         <p key={indice} class="queda__pessoa">
-          <span>{apelido} está sem rede. A partida espera até 60 s.</span>
+          <span>{`${apelido} está sem rede. A partida espera até ${TEMPOS_DA_SALA.queda / 1000} s.`}</span>
           {souAnfitriao && (
             <button
               type="button"

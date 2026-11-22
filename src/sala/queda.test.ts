@@ -70,7 +70,7 @@ describe("queda de rede", () => {
   it("quem cai no meio da partida para a partida: os outros sabem e ninguém escolhe", () => {
     const partida = emPartida("Ana", "Bia", "Caio");
     const caiu = desconectar(partida, "id-Bia", AGORA);
-    expect(salaPara(caiu, "id-Ana")).toMatchObject({ esperando: [1] });
+    expect(salaPara(caiu, "id-Ana")).toMatchObject({ semRede: [1] });
     const estado = caiu.estado!;
     expect(escolher(estado).estado).toBe(estado);
   });
@@ -80,7 +80,7 @@ describe("queda de rede", () => {
     const cartas = partida.partida!.estado.pessoas[1].monte;
     const caiu = desconectar(partida, "id-Bia", AGORA).estado!;
     const voltou = entrar(caiu, "Bia", AGORA + 59 * SEGUNDO);
-    expect(salaPara(voltou, "id-Ana")).toMatchObject({ esperando: [] });
+    expect(salaPara(voltou, "id-Ana")).toMatchObject({ semRede: [] });
     expect(voltou.estado!.partida!.estado.pessoas[1].monte).toEqual(cartas);
     expect(vistaPara(voltou, "id-Bia")).toMatchObject({ suaCarta: cartas[0] });
     expect(escolher(voltou.estado!).estado!.partida!.estado.rodada).toBe(2);
@@ -93,7 +93,7 @@ describe("queda de rede", () => {
     const estado = tocou.estado!;
     expect(estado.partida!.estado.pessoas[1]).toMatchObject({ monte: [], fora: "saiu" });
     expect(estado.partida!.estado.fim).toBeNull();
-    expect(salaPara(tocou, "id-Ana")).toMatchObject({ esperando: [] });
+    expect(salaPara(tocou, "id-Ana")).toMatchObject({ semRede: [] });
     expect(vistaPara(tocou, "id-Caio").pessoas[1]).toMatchObject({ cartas: 0, fora: "saiu" });
     expect(escolher(estado).estado!.partida!.estado.rodada).toBe(2);
   });
@@ -121,7 +121,7 @@ describe("queda de rede", () => {
     expect(mandar(caiu, "id-Ana", { tipo: "tirar", pessoa: 2 }).estado).toBe(caiu);
     const tirou = mandar(caiu, "id-Ana", { tipo: "tirar", pessoa: 1 }, AGORA + 5 * SEGUNDO);
     expect(tirou.estado!.partida!.estado.pessoas[1].fora).toBe("saiu");
-    expect(salaPara(tirou, "id-Caio")).toMatchObject({ esperando: [] });
+    expect(salaPara(tirou, "id-Caio")).toMatchObject({ semRede: [] });
     expect(proximoAlarme(tirou.estado!)).not.toBe(AGORA + 60 * SEGUNDO);
   });
 
@@ -185,7 +185,7 @@ describe("saída no meio", () => {
   it("quem saiu e cai depois não para a partida", () => {
     const deFora = mandar(emPartida("Ana", "Bia", "Caio"), "id-Bia", { tipo: "sair" }).estado!;
     const caiu = desconectar(deFora, "id-Bia", AGORA);
-    expect(salaPara(caiu, "id-Ana")).toMatchObject({ esperando: [] });
+    expect(salaPara(caiu, "id-Ana")).toMatchObject({ semRede: [] });
     expect(escolher(caiu.estado!).estado!.partida!.estado.rodada).toBe(2);
   });
 });

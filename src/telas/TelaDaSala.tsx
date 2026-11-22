@@ -3,9 +3,9 @@
 // começada, a tela é a da partida (PartidaDaSala), até a próxima. A sala decide tudo
 // (src/sala/sala.ts); esta tela mostra o que ela manda.
 import { useEffect, useState } from "preact/hooks";
-import { useSala } from "../multiplayer/conexao";
-import { MAXIMO_DE_PESSOAS, MINIMO_PARA_COMECAR } from "../sala/sala";
-import { caminhoDaSala, COMECA_COM, MOTIVO_DA_RECUSA, PRECISA_DE_INTERNET, useInternet } from "./amigos";
+import { useSala, type EntradaNaSala } from "../multiplayer/conexao";
+import { COMECA_COM, MOTIVO_DA_RECUSA, PRECISA_DE_INTERNET } from "./amigos";
+import { caminhoDaSala } from "./enderecoDaSala";
 import { PartidaDaSala } from "./PartidaDaSala";
 import "./Sala.css";
 import { sentir } from "./sensacao";
@@ -15,10 +15,7 @@ import { vibrar } from "./vibracao";
 const PADRAO_DA_CUTUCADA = [150, 80, 150, 80, 150];
 
 interface Props {
-  codigo: string;
-  apelido: string;
-  /** O identificador secreto do celular. */
-  id: string;
+  entrada: EntradaNaSala;
   aoSair: () => void;
   aoCriarSala: () => void;
 }
@@ -42,9 +39,9 @@ async function mandarLink(codigo: string): Promise<string | null> {
   }
 }
 
-export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) {
-  const online = useInternet();
-  const { situacao, enviar, fila, avancarFila, cutucadas } = useSala(codigo, apelido, id);
+export function TelaDaSala({ entrada, aoSair, aoCriarSala }: Props) {
+  const { codigo } = entrada;
+  const { online, situacao, enviar, fila, avancarFila, cutucadas } = useSala(entrada);
   const [avisoDoLink, setAvisoDoLink] = useState<string | null>(null);
 
   // Alguém cutucou você (spec, item 16): o celular vibra (só no Android).
@@ -73,8 +70,9 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
 
   const sala = situacao.tipo === "naSala" ? situacao.sala : null;
   const souAnfitriao = sala !== null && sala.voce === sala.anfitriao;
-  const podeComecar = sala !== null && sala.pessoas.length >= MINIMO_PARA_COMECAR && sala.pessoas.length <= MAXIMO_DE_PESSOAS;
+  const podeComecar = sala !== null && sala.podeComecar;
   const semConexao = !online || (situacao.tipo === "naSala" && !situacao.conectado);
+  const avisoDeRede = semConexao ? (online ? "Reconectando…" : PRECISA_DE_INTERNET) : null;
   const sair = () => {
     enviar({ tipo: "sair" });
     aoSair();
@@ -86,13 +84,13 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
     return (
       <PartidaDaSala
         fila={fila}
-        aviso={semConexao ? (online ? "Reconectando…" : PRECISA_DE_INTERNET) : null}
+        aviso={avisoDeRede}
         aoEscolher={(atributo) => enviar({ tipo: "escolher", atributo })}
         aoAvancar={avancarFila}
         aoSair={sair}
         jogarDeNovo={souAnfitriao ? { pode: podeComecar, aoJogar: () => enviar({ tipo: "comecar" }) } : null}
         controles={{
-          esperando: sala.esperando.map((indice) => ({ indice, apelido: sala.pessoas[indice].apelido })),
+          semRede: sala.semRede.map((indice) => ({ indice, apelido: sala.pessoas[indice].apelido })),
           souAnfitriao,
           podeCutucar: sala.podeCutucar,
           aoTirar: (pessoa) => enviar({ tipo: "tirar", pessoa }),
@@ -121,7 +119,7 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
         </button>
         {avisoDoLink && <p class="sala__aviso">{avisoDoLink}</p>}
 
-        {semConexao && <p class="amigos__aviso">{online ? "Reconectando…" : PRECISA_DE_INTERNET}</p>}
+        {avisoDeRede && <p class="amigos__aviso">{avisoDeRede}</p>}
 
         {sala === null ? (
           <p class="sala__aviso">Conectando…</p>

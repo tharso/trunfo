@@ -28,6 +28,28 @@ export function conectarSala(codigo: string): PartySocket {
   });
 }
 
+/** Quem entra em qual sala: o código, o Apelido e o identificador secreto do celular. */
+export interface EntradaNaSala {
+  codigo: string;
+  apelido: string;
+  id: string;
+}
+
+/** Se o navegador diz que tem internet; muda quando a rede cai ou volta. */
+export function useInternet(): boolean {
+  const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const atualizar = () => setOnline(navigator.onLine);
+    addEventListener("online", atualizar);
+    addEventListener("offline", atualizar);
+    return () => {
+      removeEventListener("online", atualizar);
+      removeEventListener("offline", atualizar);
+    };
+  }, []);
+  return online;
+}
+
 export type SalaVista = Extract<MensagemDaSala, { tipo: "sala" }>;
 
 export type SituacaoDaSala =
@@ -38,9 +60,11 @@ export type SituacaoDaSala =
 
 /**
  * Entra na sala `codigo` e acompanha o que ela manda. As rodadas da partida vão
- * para a fila (`fila`); "Próxima rodada" chama `avancarFila`.
+ * para a fila (`fila`); "Próxima rodada" chama `avancarFila`. `online` diz se o
+ * navegador tem internet (os mesmos avisos de rede que fazem reconectar).
  */
-export function useSala(codigo: string, apelido: string, id: string) {
+export function useSala({ codigo, apelido, id }: EntradaNaSala) {
+  const [online, setOnline] = useState(navigator.onLine);
   const [situacao, setSituacao] = useState<SituacaoDaSala>({ tipo: "conectando" });
   const [fila, setFila] = useState<FilaDaPartida>(filaVazia);
   /** Quantas vezes alguém cutucou você (a tela vibra a cada uma). */
@@ -77,15 +101,16 @@ export function useSala(codigo: string, apelido: string, id: string) {
     // sem o servidor saber. Fechar agora faz a sala ver a queda (a partida para,
     // spec item 14); quando a rede volta, reconecta na hora, sem esperar o
     // intervalo do partysocket.
-    const reconectar = () => {
+    const mudouARede = () => {
+      setOnline(navigator.onLine);
       if (!fechada) conexao.reconnect();
     };
-    addEventListener("offline", reconectar);
-    addEventListener("online", reconectar);
+    addEventListener("offline", mudouARede);
+    addEventListener("online", mudouARede);
     return () => {
       fechada = true;
-      removeEventListener("offline", reconectar);
-      removeEventListener("online", reconectar);
+      removeEventListener("offline", mudouARede);
+      removeEventListener("online", mudouARede);
       conexao.close();
     };
   }, [codigo, apelido, id]);
@@ -94,5 +119,5 @@ export function useSala(codigo: string, apelido: string, id: string) {
     socket.current?.send(JSON.stringify(mensagem));
   }
 
-  return { situacao, enviar, fila, avancarFila: () => setFila(avancar), cutucadas };
+  return { online, situacao, enviar, fila, avancarFila: () => setFila(avancar), cutucadas };
 }

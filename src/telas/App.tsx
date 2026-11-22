@@ -15,11 +15,12 @@ import {
   lerRetrospecto,
 } from "../armazenamento";
 import baralho from "../dados/baralho.json";
-import { criarSala } from "../multiplayer/conexao";
+import { criarSala, type EntradaNaSala } from "../multiplayer/conexao";
 import { aplicar, criarPartida, registrarPartida, resultadoDaPartida, type Estado, type Nivel } from "../regras";
 import { lerCodigo } from "../sala/codigo";
-import { caminhoDaSala, codigoDoCaminho, PRECISA_DE_INTERNET } from "./amigos";
+import { PRECISA_DE_INTERNET } from "./amigos";
 import { Apelido } from "./Apelido";
+import { caminhoDaSala, codigoDoCaminho } from "./enderecoDaSala";
 import { ComoJogar } from "./ComoJogar";
 import { Fim } from "./Fim";
 import { Inicio } from "./Inicio";
@@ -39,7 +40,7 @@ type Tela =
   | { nome: "amigos" }
   /** `codigo` é `null` quando a pessoa vai criar a sala. */
   | { nome: "apelido"; codigo: string | null; aviso: string | null }
-  | { nome: "sala"; codigo: string; apelido: string; id: string };
+  | { nome: "sala"; entrada: EntradaNaSala };
 
 /** A primeira tela: o link de uma sala (/s/<código>) vai direto para o Apelido. */
 function telaInicial(): Tela {
@@ -49,7 +50,7 @@ function telaInicial(): Tela {
 
 /** O endereço na barra acompanha a sala, para recarregar a página voltar a ela. */
 function caminhoDaTela(tela: Tela): string {
-  const codigo = tela.nome === "sala" || tela.nome === "apelido" ? tela.codigo : null;
+  const codigo = tela.nome === "sala" ? tela.entrada.codigo : tela.nome === "apelido" ? tela.codigo : null;
   return codigo ? caminhoDaSala(codigo) : "/";
 }
 
@@ -87,7 +88,7 @@ export function App() {
     setApelidoGuardado(apelido);
     try {
       const daSala = codigo ?? (await criarSala());
-      setTela({ nome: "sala", codigo: daSala, apelido, id: identificadorSecreto() });
+      setTela({ nome: "sala", entrada: { codigo: daSala, apelido, id: identificadorSecreto() } });
     } catch {
       setTela({ nome: "apelido", codigo, aviso: PRECISA_DE_INTERNET });
     }
@@ -194,10 +195,8 @@ export function App() {
     case "sala":
       return (
         <TelaDaSala
-          key={tela.codigo}
-          codigo={tela.codigo}
-          apelido={tela.apelido}
-          id={tela.id}
+          key={tela.entrada.codigo}
+          entrada={tela.entrada}
           aoSair={() => setTela({ nome: "inicio" })}
           aoCriarSala={() => setTela({ nome: "apelido", codigo: null, aviso: null })}
         />

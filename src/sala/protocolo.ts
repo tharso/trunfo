@@ -69,12 +69,14 @@ export type MensagemDaSala =
       /** Índice do Anfitrião em `pessoas`. */
       anfitriao: number;
       emPartida: boolean;
+      /** A sala tem de 2 a 4 pessoas e nenhuma partida em jogo: o Anfitrião pode tocar em "Começar" ou "Jogar de novo". */
+      podeComecar: boolean;
       /**
        * Quem caiu no meio da partida (índices em `pessoas`). Enquanto não está
        * vazio, a partida para: espera a pessoa voltar, o tempo de queda acabar
        * ou o Anfitrião tirar.
        */
-      esperando: number[];
+      semRede: number[];
       /** Quem escolhe demora: você já pode cutucar. */
       podeCutucar: boolean;
     }
@@ -88,8 +90,7 @@ export type MensagemDaSala =
 
 function lerJson(texto: string): Record<string, unknown> | null {
   try {
-    const valor: unknown = JSON.parse(texto);
-    return valor !== null && typeof valor === "object" && !Array.isArray(valor) ? (valor as Record<string, unknown>) : null;
+    return objeto(JSON.parse(texto));
   } catch {
     return null;
   }
@@ -137,7 +138,7 @@ export function lerMensagemDaSala(texto: string): MensagemDaSala | null {
   }
   if (dado?.tipo === "cutucada") return { tipo: "cutucada" };
   if (dado?.tipo !== "sala") return null;
-  const { codigo, pessoas, voce, anfitriao, emPartida, esperando, podeCutucar } = dado;
+  const { codigo, pessoas, voce, anfitriao, emPartida, podeComecar, semRede, podeCutucar } = dado;
   const pessoasValidas =
     Array.isArray(pessoas) &&
     pessoas.every((p) => p && typeof p.apelido === "string" && typeof p.conectada === "boolean");
@@ -149,8 +150,9 @@ export function lerMensagemDaSala(texto: string): MensagemDaSala | null {
     !indice(voce) ||
     !indice(anfitriao) ||
     typeof emPartida !== "boolean" ||
-    !Array.isArray(esperando) ||
-    !esperando.every(indice) ||
+    typeof podeComecar !== "boolean" ||
+    !Array.isArray(semRede) ||
+    !semRede.every(indice) ||
     typeof podeCutucar !== "boolean"
   ) {
     return null;
@@ -162,7 +164,8 @@ export function lerMensagemDaSala(texto: string): MensagemDaSala | null {
     voce: voce as number,
     anfitriao: anfitriao as number,
     emPartida,
-    esperando: esperando as number[],
+    podeComecar,
+    semRede: semRede as number[],
     podeCutucar,
   };
 }

@@ -60,7 +60,8 @@ describe("entrar na sala", () => {
       voce: 0,
       anfitriao: 0,
       emPartida: false,
-      esperando: [],
+      podeComecar: false,
+      semRede: [],
       podeCutucar: false,
     });
   });
@@ -147,6 +148,13 @@ describe("começar", () => {
     const estado = comPessoas("Ana", "Bia");
     expect(receber(estado, "id-Bia", '{"tipo":"comecar"}', AGORA).estado).toBe(estado);
     expect(receber(estado, null, '{"tipo":"comecar"}', AGORA).estado).toBe(estado);
+  });
+
+  it("a sala diz se dá para começar: com 2 a 4 pessoas e sem partida em jogo", () => {
+    const duas = entrar(comPessoas("Ana"), "id-Bia", "Bia");
+    expect(paraQuem(duas, "id-Ana")).toMatchObject({ tipo: "sala", podeComecar: true });
+    const comecou = receber(duas.estado, "id-Ana", '{"tipo":"comecar"}', AGORA);
+    expect(paraQuem(comecou, "id-Ana")).toMatchObject({ tipo: "sala", podeComecar: false });
   });
 
   it("sozinho não dá para começar", () => {

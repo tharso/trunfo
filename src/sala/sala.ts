@@ -6,12 +6,10 @@
 // chama passa `agora` (ms).
 import baralho from "../dados/baralho.json";
 import { aplicar, criarPartida, type Estado, type EventoDaRodada, type Sorteio } from "../regras";
-import { lerMensagemDoCliente, TAMANHO_MAXIMO_DO_APELIDO, type MensagemDaSala, type PartidaVista } from "./protocolo";
+import { lerMensagemDoCliente, TAMANHO_MAXIMO_DO_APELIDO, type MensagemDaSala, type MotivoDaRecusa, type PartidaVista } from "./protocolo";
 
 export const MAXIMO_DE_PESSOAS = 4;
 export const MINIMO_PARA_COMECAR = 2;
-/** A sala sem ninguém conectado fica reservada por este tempo (spec, item 22). */
-export const TEMPO_DA_SALA_VAZIA = 10 * 60_000;
 
 /** Os tempos da partida na sala (ms). O build do teste Playwright encurta (src/worker/sala.ts). */
 export interface TemposDaSala {
@@ -23,7 +21,7 @@ export interface TemposDaSala {
   vazia: number;
 }
 
-export const TEMPOS_DA_SALA: TemposDaSala = { queda: 60_000, cutucar: 30_000, vazia: TEMPO_DA_SALA_VAZIA };
+export const TEMPOS_DA_SALA: TemposDaSala = { queda: 60_000, cutucar: 30_000, vazia: 10 * 60_000 };
 
 export interface PessoaNaSala {
   /** O identificador secreto do celular. Nunca sai da sala. */
@@ -71,15 +69,30 @@ export interface Resultado {
   paraPessoas: { id: string; mensagem: MensagemDaSala }[];
 }
 
-/** A sala existe e não fechou: tem alguém conectado ou mudou há menos de 10 min. */
-export function emUso(estado: EstadoDaSala | null, agora: number): estado is EstadoDaSala {
+/** Nada muda e ninguém recebe nada. */
+function semMudanca(estado: EstadoDaSala | null, conexao: string | null = null): Resultado {
+  return { estado, conexao, paraPessoas: [] };
+}
+
+/** Só a conexão que mandou a mensagem fica sabendo por que não entrou. */
+function recusar(estado: EstadoDaSala | null, conexao: string | null, motivo: MotivoDaRecusa): Resultado {
+  return { ...semMudanca(estado, conexao), resposta: { tipo: "recusada", motivo } };
+}
+
+/** A sala existe e não fechou: tem alguém conectado ou mudou há menos de `tempos.vazia`. */
+export function emUso(estado: EstadoDaSala | null, agora: number, tempos: TemposDaSala = TEMPOS_DA_SALA): estado is EstadoDaSala {
   if (estado === null) return false;
-  return estado.pessoas.some((p) => p.conectada) || agora - estado.atualizadaEm < TEMPO_DA_SALA_VAZIA;
+  return !semNinguem(estado) || agora - estado.atualizadaEm < tempos.vazia;
 }
 
 /** Reserva o código para uma sala nova. `null` se o código está em uso. */
-export function reservar(estado: EstadoDaSala | null, codigo: string, agora: number): EstadoDaSala | null {
-  if (emUso(estado, agora)) return null;
+export function reservar(
+  estado: EstadoDaSala | null,
+  codigo: string,
+  agora: number,
+  tempos: TemposDaSala = TEMPOS_DA_SALA,
+): EstadoDaSala | null {
+  if (emUso(estado, agora, tempos)) return null;
   return { codigo, pessoas: [], anfitriao: null, partida: null, atualizadaEm: agora };
 }
 
@@ -103,15 +116,15 @@ function partidaEmJogo(estado: EstadoDaSala): PartidaNaSala | null {
 }
 
 /** O índice da pessoa `id` na partida em jogo, se ela ainda está na partida; senão -1. */
-function naPartida(estado: EstadoDaSala, id: string): number {
+function indiceNaPartida(estado: EstadoDaSala, id: string): number {
   const partida = partidaEmJogo(estado);
   const indice = partida?.pessoas.findIndex((p) => p.id === id) ?? -1;
   return indice >= 0 && partida!.estado.pessoas[indice].fora === null ? indice : -1;
 }
 
 /** Quem caiu e ainda está na partida: a partida para até essa lista esvaziar (spec, item 14). */
-function esperando(estado: EstadoDaSala): PessoaNaSala[] {
-  return estado.pessoas.filter((p) => !p.conectada && naPartida(estado, p.id) >= 0);
+function semRede(estado: EstadoDaSala): PessoaNaSala[] {
+  return estado.pessoas.filter((p) => !p.conectada && indiceNaPartida(estado, p.id) >= 0);
 }
 
 /** O `id` de quem escolhe na partida em jogo, ou `null`. */
@@ -122,7 +135,7 @@ function idDaVez(estado: EstadoDaSala): string | null {
 
 /** Os outros podem cutucar quem escolhe: a vez demorou e a partida não está parada. */
 function cutucavel(estado: EstadoDaSala): boolean {
-  return !!partidaEmJogo(estado)?.podeCutucar && esperando(estado).length === 0;
+  return !!partidaEmJogo(estado)?.podeCutucar && semRede(estado).length === 0;
 }
 
 /**
@@ -135,7 +148,7 @@ function passarAnfitriao(estado: EstadoDaSala, saindo: string): string | null {
   const inicio = estado.pessoas.findIndex((p) => p.id === saindo);
   const seguintes = [...estado.pessoas.slice(inicio + 1), ...estado.pessoas.slice(0, inicio)];
   const escolhida =
-    seguintes.find((p) => p.conectada && (!partidaEmJogo(estado) || naPartida(estado, p.id) >= 0)) ??
+    seguintes.find((p) => p.conectada && (!partidaEmJogo(estado) || indiceNaPartida(estado, p.id) >= 0)) ??
     seguintes.find((p) => p.conectada) ??
     seguintes[0];
   return escolhida?.id ?? null;
@@ -156,11 +169,19 @@ function semQuemFoiEmbora(estado: EstadoDaSala): EstadoDaSala {
   return estado.pessoas.reduce((sala, p) => (!p.conectada && p.caiuEm === null ? irEmbora(sala, p.id) : sala), estado);
 }
 
+/** Sem partida em jogo e com 2 a 4 pessoas (sem contar quem já foi embora), a partida pode começar. */
+function podeComecar(estado: EstadoDaSala): boolean {
+  if (partidaEmJogo(estado)) return false;
+  const quantas = semQuemFoiEmbora(estado).pessoas.length;
+  return quantas >= MINIMO_PARA_COMECAR && quantas <= MAXIMO_DE_PESSOAS;
+}
+
 /** A sala como cada pessoa conectada a vê. */
 function avisarTodos(estado: EstadoDaSala): Resultado["paraPessoas"] {
   const pessoas = estado.pessoas.map(({ apelido, conectada }) => ({ apelido, conectada }));
   const anfitriao = estado.pessoas.findIndex((p) => p.id === estado.anfitriao);
-  const caidas = esperando(estado).map((p) => estado.pessoas.indexOf(p));
+  const caidas = semRede(estado).map((p) => estado.pessoas.indexOf(p));
+  const comecar = podeComecar(estado);
   const podeCutucar = cutucavel(estado);
   const daVez = idDaVez(estado);
   return estado.pessoas.flatMap((pessoa, voce) =>
@@ -175,7 +196,8 @@ function avisarTodos(estado: EstadoDaSala): Resultado["paraPessoas"] {
               voce,
               anfitriao,
               emPartida: partidaEmJogo(estado) !== null,
-              esperando: caidas,
+              podeComecar: comecar,
+              semRede: caidas,
               podeCutucar: podeCutucar && pessoa.id !== daVez,
             } as const,
           },
@@ -184,12 +206,12 @@ function avisarTodos(estado: EstadoDaSala): Resultado["paraPessoas"] {
   );
 }
 
-function mudou(estado: EstadoDaSala, conexao: string | null): Resultado {
+function resultadoComSala(estado: EstadoDaSala, conexao: string | null): Resultado {
   return { estado, conexao, paraPessoas: avisarTodos(estado) };
 }
 
 /** A partida como a pessoa `voce` (índice na partida) pode vê-la: só a própria carta de cima. */
-function vista(partida: PartidaNaSala, voce: number): PartidaVista {
+function vistaDaPartida(partida: PartidaNaSala, voce: number): PartidaVista {
   const { estado } = partida;
   return {
     pessoas: partida.pessoas.map(({ apelido }, i) => ({
@@ -218,10 +240,10 @@ function paraQuemJoga(
 }
 
 /** A sala mudou e a partida também: todos recebem a sala, e quem está na partida (ou De fora) recebe a partida como está. */
-function mudouComPartida(estado: EstadoDaSala, conexao: string | null): Resultado {
-  const resultado = mudou(estado, conexao);
+function resultadoComPartida(estado: EstadoDaSala, conexao: string | null): Resultado {
+  const resultado = resultadoComSala(estado, conexao);
   const partida = estado.partida!;
-  resultado.paraPessoas.push(...paraQuemJoga(estado, partida, (voce) => ({ tipo: "partida", vista: vista(partida, voce) })));
+  resultado.paraPessoas.push(...paraQuemJoga(estado, partida, (voce) => ({ tipo: "partida", vista: vistaDaPartida(partida, voce) })));
   return resultado;
 }
 
@@ -254,44 +276,43 @@ export function receber(
   texto: string,
   agora: number,
   novaPartida: NovaPartidaNaSala = { semente: agora | 0 },
+  tempos: TemposDaSala = TEMPOS_DA_SALA,
 ): Resultado {
-  const nada: Resultado = { estado, conexao, paraPessoas: [] };
   const mensagem = lerMensagemDoCliente(texto);
-  if (mensagem === null) return nada;
+  if (mensagem === null) return semMudanca(estado, conexao);
 
   if (mensagem.tipo === "entrar") {
-    if (!emUso(estado, agora)) return { ...nada, resposta: { tipo: "recusada", motivo: "acabou" } };
+    if (!emUso(estado, agora, tempos)) return recusar(estado, conexao, "acabou");
     const apelido = limparApelido(mensagem.apelido);
-    if (apelido === "") return nada;
-    const ja = estado.pessoas.find((p) => p.id === mensagem.id);
-    if (ja) {
-      const pessoas = estado.pessoas.map((p) => (p === ja ? { ...p, conectada: true, caiuEm: null } : p));
-      const voltou = mudou({ ...estado, pessoas, atualizadaEm: agora }, ja.id);
+    if (apelido === "") return semMudanca(estado, conexao);
+    const quemVolta = estado.pessoas.find((p) => p.id === mensagem.id);
+    if (quemVolta) {
+      const pessoas = estado.pessoas.map((p) => (p === quemVolta ? { ...p, conectada: true, caiuEm: null } : p));
+      const voltou = resultadoComSala({ ...estado, pessoas, atualizadaEm: agora }, quemVolta.id);
       // No meio da partida, quem volta recebe a partida como está.
       const partida = estado.partida;
-      const voce = partida?.pessoas.findIndex((p) => p.id === ja.id) ?? -1;
-      if (partida && voce >= 0) voltou.paraPessoas.push({ id: ja.id, mensagem: { tipo: "partida", vista: vista(partida, voce) } });
+      const voce = partida?.pessoas.findIndex((p) => p.id === quemVolta.id) ?? -1;
+      if (partida && voce >= 0) voltou.paraPessoas.push({ id: quemVolta.id, mensagem: { tipo: "partida", vista: vistaDaPartida(partida, voce) } });
       return voltou;
     }
-    if (partidaEmJogo(estado)) return { ...nada, resposta: { tipo: "recusada", motivo: "emPartida" } };
+    if (partidaEmJogo(estado)) return recusar(estado, conexao, "emPartida");
     // Entre partidas, gente nova entra no fim da Ordem da mesa (spec, item 25).
     const sala = semQuemFoiEmbora(estado);
-    if (sala.pessoas.length >= MAXIMO_DE_PESSOAS) return { ...nada, resposta: { tipo: "recusada", motivo: "cheia" } };
+    if (sala.pessoas.length >= MAXIMO_DE_PESSOAS) return recusar(estado, conexao, "cheia");
     const nova = { id: mensagem.id, apelido: apelidoUnico(apelido, sala.pessoas), conectada: true, caiuEm: null };
-    return mudou(
+    return resultadoComSala(
       { ...sala, pessoas: [...sala.pessoas, nova], anfitriao: sala.anfitriao ?? nova.id, atualizadaEm: agora },
       nova.id,
     );
   }
 
   // As outras mensagens só valem de quem já entrou.
-  if (estado === null || conexao === null || !estado.pessoas.some((p) => p.id === conexao)) return nada;
+  if (estado === null || conexao === null || !estado.pessoas.some((p) => p.id === conexao)) return semMudanca(estado, conexao);
 
   // "Começar" e, no fim, "Jogar de novo" (spec, item 23): com quem está na sala, inclusive quem estava De fora.
   if (mensagem.tipo === "comecar") {
-    if (conexao !== estado.anfitriao || partidaEmJogo(estado)) return nada;
+    if (conexao !== estado.anfitriao || !podeComecar(estado)) return semMudanca(estado, conexao);
     const sala = semQuemFoiEmbora(estado);
-    if (sala.pessoas.length < MINIMO_PARA_COMECAR || sala.pessoas.length > MAXIMO_DE_PESSOAS) return nada;
     const partida: PartidaNaSala = {
       estado: criarPartida({
         baralho: baralho.cartas,
@@ -305,9 +326,9 @@ export function receber(
       podeCutucar: false,
     };
     const comecada = { ...sala, partida, atualizadaEm: agora };
-    const resultado = mudou(comecada, conexao);
+    const resultado = resultadoComSala(comecada, conexao);
     resultado.paraPessoas.push(
-      ...paraQuemJoga(comecada, partida, (voce) => ({ tipo: "partida", vista: vista(partida, voce) })),
+      ...paraQuemJoga(comecada, partida, (voce) => ({ tipo: "partida", vista: vistaDaPartida(partida, voce) })),
     );
     return resultado;
   }
@@ -315,14 +336,14 @@ export function receber(
   if (mensagem.tipo === "escolher") {
     const partida = estado.partida;
     const pessoa = partida?.pessoas.findIndex((p) => p.id === conexao) ?? -1;
-    if (!partida || partida.estado.fim || pessoa !== partida.estado.quemEscolhe) return nada;
+    if (!partida || partida.estado.fim || pessoa !== partida.estado.quemEscolhe) return semMudanca(estado, conexao);
     // Partida parada: alguém caiu e ainda pode voltar (spec, item 14).
-    if (esperando(estado).length > 0) return nada;
+    if (semRede(estado).length > 0) return semMudanca(estado, conexao);
     const { estado: depois, eventos } = aplicar(partida.estado, { tipo: "escolher", pessoa, atributo: mensagem.atributo });
     const evento = eventos.find((e): e is EventoDaRodada => e.tipo === "rodada")!;
     const jogada: PartidaNaSala = { ...partida, estado: depois, vezDesde: agora, podeCutucar: false };
     const sala = { ...estado, partida: jogada, atualizadaEm: agora };
-    const paraPessoas = paraQuemJoga(sala, jogada, (voce) => ({ tipo: "rodada", evento, depois: vista(jogada, voce) }));
+    const paraPessoas = paraQuemJoga(sala, jogada, (voce) => ({ tipo: "rodada", evento, depois: vistaDaPartida(jogada, voce) }));
     // O "Cutucar" que estava na tela some.
     if (partida.podeCutucar) paraPessoas.push(...avisarTodos(sala));
     return { estado: sala, conexao, paraPessoas };
@@ -330,34 +351,34 @@ export function receber(
 
   if (mensagem.tipo === "cutucar") {
     const daVez = idDaVez(estado);
-    if (!cutucavel(estado) || daVez === null || daVez === conexao) return nada;
-    return { ...nada, paraPessoas: [{ id: daVez, mensagem: { tipo: "cutucada" } }] };
+    if (!cutucavel(estado) || daVez === null || daVez === conexao) return semMudanca(estado, conexao);
+    return { ...semMudanca(estado, conexao), paraPessoas: [{ id: daVez, mensagem: { tipo: "cutucada" } }] };
   }
 
   if (mensagem.tipo === "tirar") {
     const caida = estado.pessoas[mensagem.pessoa];
-    if (conexao !== estado.anfitriao || !caida || !esperando(estado).includes(caida)) return nada;
+    if (conexao !== estado.anfitriao || !caida || !semRede(estado).includes(caida)) return semMudanca(estado, conexao);
     const pessoas = estado.pessoas.map((p) => (p === caida ? { ...p, caiuEm: null } : p));
-    return mudouComPartida(tirarDaPartida({ ...estado, pessoas }, naPartida(estado, caida.id), agora), conexao);
+    return resultadoComPartida(tirarDaPartida({ ...estado, pessoas }, indiceNaPartida(estado, caida.id), agora), conexao);
   }
 
   // sair, no meio da partida: sai da partida e fica De fora na sala (spec, itens 15 e 19).
-  const indice = naPartida(estado, conexao);
+  const indice = indiceNaPartida(estado, conexao);
   if (indice >= 0) {
     const saiu = tirarDaPartida(estado, indice, agora);
-    return mudouComPartida({ ...saiu, anfitriao: passarAnfitriao(saiu, conexao) }, conexao);
+    return resultadoComPartida({ ...saiu, anfitriao: passarAnfitriao(saiu, conexao) }, conexao);
   }
   // sair, antes da partida, no fim dela ou já De fora: a pessoa some da lista.
-  return mudou({ ...irEmbora(estado, conexao), atualizadaEm: agora }, null);
+  return resultadoComSala({ ...irEmbora(estado, conexao), atualizadaEm: agora }, null);
 }
 
 /** A última conexão da pessoa `id` fechou (rede caiu, aba fechou). */
 export function desconectar(estado: EstadoDaSala | null, id: string, agora: number): Resultado {
   if (estado === null || !estado.pessoas.some((p) => p.id === id && p.conectada)) {
-    return { estado, conexao: null, paraPessoas: [] };
+    return semMudanca(estado);
   }
   const pessoas = estado.pessoas.map((p) => (p.id === id ? { ...p, conectada: false, caiuEm: agora } : p));
-  return mudou({ ...estado, pessoas, atualizadaEm: agora }, null);
+  return resultadoComSala({ ...estado, pessoas, atualizadaEm: agora }, null);
 }
 
 /** Ninguém conectado: a sala conta o tempo para fechar desde a última mudança. */
@@ -388,8 +409,8 @@ export function proximoAlarme(estado: EstadoDaSala | null, tempos: TemposDaSala 
  * mesmo estado.
  */
 export function alarme(estado: EstadoDaSala | null, agora: number, tempos: TemposDaSala = TEMPOS_DA_SALA): Resultado {
-  if (estado === null) return { estado, conexao: null, paraPessoas: [] };
-  if (semNinguem(estado) && agora - estado.atualizadaEm >= tempos.vazia) return { estado: null, conexao: null, paraPessoas: [] };
+  if (estado === null) return semMudanca(estado);
+  if (semNinguem(estado) && agora - estado.atualizadaEm >= tempos.vazia) return semMudanca(null);
   let sala = estado;
   let mudouASala = false;
   let mudouAPartida = false;
@@ -397,7 +418,7 @@ export function alarme(estado: EstadoDaSala | null, agora: number, tempos: Tempo
     if (caida.conectada || caida.caiuEm === null || agora - caida.caiuEm < tempos.queda) continue;
     mudouASala = true;
     sala = { ...sala, pessoas: sala.pessoas.map((p) => (p.id === caida.id ? { ...p, caiuEm: null } : p)), atualizadaEm: agora };
-    const indice = naPartida(sala, caida.id);
+    const indice = indiceNaPartida(sala, caida.id);
     if (indice >= 0) {
       sala = tirarDaPartida(sala, indice, agora);
       mudouAPartida = true;
@@ -410,6 +431,6 @@ export function alarme(estado: EstadoDaSala | null, agora: number, tempos: Tempo
     mudouASala = true;
     sala = { ...sala, partida: { ...partida, podeCutucar: true } };
   }
-  if (!mudouASala) return { estado, conexao: null, paraPessoas: [] };
-  return mudouAPartida ? mudouComPartida(sala, null) : mudou(sala, null);
+  if (!mudouASala) return semMudanca(estado);
+  return mudouAPartida ? resultadoComPartida(sala, null) : resultadoComSala(sala, null);
 }

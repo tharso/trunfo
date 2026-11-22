@@ -2,7 +2,8 @@
 // "Entrar com código". Sem internet, só "Precisa de internet"; o modo solo segue.
 import { useState } from "preact/hooks";
 import { lerCodigo } from "../sala/codigo";
-import { PRECISA_DE_INTERNET, useInternet } from "./amigos";
+import { useInternet } from "../multiplayer/conexao";
+import { PRECISA_DE_INTERNET } from "./amigos";
 import "./Sala.css";
 
 interface Props {

@@ -48,11 +48,11 @@ function sementeDaPartida(): number {
  * playwright.config.ts) para o teste não esperar de verdade.
  */
 function temposDaSala(): TemposDaSala {
-  const ms = (texto: string | undefined, padrao: number) => (texto && /^\d+$/.test(texto) ? Number(texto) : padrao);
+  const doAmbiente = (texto: string | undefined, padrao: number) => (texto && /^\d+$/.test(texto) ? Number(texto) : padrao);
   return {
-    queda: ms(import.meta.env.VITE_TEMPO_DE_QUEDA_DA_SALA, TEMPOS_DA_SALA.queda),
-    cutucar: ms(import.meta.env.VITE_TEMPO_DE_CUTUCAR_DA_SALA, TEMPOS_DA_SALA.cutucar),
-    vazia: ms(import.meta.env.VITE_TEMPO_DA_SALA_VAZIA, TEMPOS_DA_SALA.vazia),
+    queda: doAmbiente(import.meta.env.VITE_TEMPO_DE_QUEDA_DA_SALA, TEMPOS_DA_SALA.queda),
+    cutucar: doAmbiente(import.meta.env.VITE_TEMPO_DE_CUTUCAR_DA_SALA, TEMPOS_DA_SALA.cutucar),
+    vazia: doAmbiente(import.meta.env.VITE_TEMPO_DA_SALA_VAZIA, TEMPOS_DA_SALA.vazia),
   };
 }
 
@@ -63,7 +63,7 @@ function idDoSocket(socket: WebSocket): string | null {
 export class Sala extends DurableObject<Env> {
   /** Chamado pelo Worker (RPC) ao criar sala: reserva o código se está livre. */
   async reservar(codigo: string): Promise<boolean> {
-    const estado = reservar(await this.ler(), codigo, Date.now());
+    const estado = reservar(await this.ler(), codigo, Date.now(), temposDaSala());
     if (estado === null) return false;
     // Sala criada e ninguém entra: fecha como a sala vazia.
     await this.aplicar({ estado, conexao: null, paraPessoas: [] });
@@ -83,7 +83,7 @@ export class Sala extends DurableObject<Env> {
   async webSocketMessage(socket: WebSocket, mensagem: string | ArrayBuffer): Promise<void> {
     if (typeof mensagem !== "string") return;
     const conexao = idDoSocket(socket);
-    const resultado = receber(await this.ler(), conexao, mensagem, Date.now(), { semente: sementeDaPartida() });
+    const resultado = receber(await this.ler(), conexao, mensagem, Date.now(), { semente: sementeDaPartida() }, temposDaSala());
     if (resultado.conexao !== conexao) socket.serializeAttachment({ id: resultado.conexao } satisfies Anexo);
     if (resultado.resposta) socket.send(JSON.stringify(resultado.resposta));
     await this.aplicar(resultado);

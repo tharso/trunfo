@@ -66,7 +66,7 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, joga
   const suaCarta = vista.suaCarta === null ? null : cartaPeloCodigo(vista.suaCarta);
   // Saiu da partida (ou ficou sem cartas) e continua na sala: só olhando.
   const deFora = vista.pessoas[voce].fora !== null;
-  const parada = controles.esperando.length > 0;
+  const parada = controles.semRede.length > 0;
 
   let conteudo;
   if (duelo && (duelo.evento.quemEscolheu === voce || mostrada === duelo.evento.rodada)) {

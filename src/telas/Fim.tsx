@@ -1,5 +1,5 @@
 // Fim da partida (docs/spec.md, parte 6): quem ganhou, o motivo, o placar e as rodadas jogadas.
-// Os textos do fim (título e motivo) servem também ao fim da sala (FimDaSala.tsx).
+// Os textos do fim (título e motivo) servem também ao fim da sala (FimDaSala, em PartidaDaSala.tsx).
 import { useEffect } from "preact/hooks";
 import { resultadoDaPartida, resultadoDoFim, type Estado, type Fim as FimDaPartida, type MotivoDoFim } from "../regras";
 import type { NomeNaTela } from "./mesa";
