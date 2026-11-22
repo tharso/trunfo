@@ -15,6 +15,7 @@ import {
 } from "../regras";
 import { Carta } from "./Carta";
 import { Duelo } from "./Duelo";
+import { MenuPartida } from "./MenuPartida";
 import type { AoMomento } from "./momentos";
 import { Placar } from "./Placar";
 import { selo } from "./Selos";
@@ -41,9 +42,13 @@ interface Props {
   aoTerminar: (estado: Estado) => void;
   /** Gancho para som e vibração (ticket 28). */
   aoMomento?: AoMomento;
+  /** Depois de cada rodada, com o estado novo (o App guarda a partida). */
+  aoMudar: (estado: Estado) => void;
+  /** "Sair" no menu ☰, com o estado atual. */
+  aoSair: (estado: Estado) => void;
 }
 
-export function Partida({ inicial, aoTerminar, aoMomento }: Props) {
+export function Partida({ inicial, aoTerminar, aoMomento, aoMudar, aoSair }: Props) {
   const [estado, setEstado] = useState(inicial);
   const [duelo, setDuelo] = useState<DueloEmCurso | null>(null);
 
@@ -51,6 +56,7 @@ export function Partida({ inicial, aoTerminar, aoMomento }: Props) {
     const r = aplicar(estado, acao);
     const evento = r.eventos.find((e): e is EventoDaRodada => e.tipo === "rodada");
     setEstado(r.estado);
+    aoMudar(r.estado);
     if (evento) setDuelo({ evento, antes: estado });
     else if (r.estado.fim) aoTerminar(r.estado);
   }
@@ -65,6 +71,7 @@ export function Partida({ inicial, aoTerminar, aoMomento }: Props) {
 
   return (
     <div class="tela partida">
+      <MenuPartida aoSair={() => aoSair(estado)} />
       <Placar
         voce={noPlacar.pessoas[VOCE].monte.length}
         empate={noPlacar.monteDeEmpate.length}

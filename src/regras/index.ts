@@ -7,12 +7,15 @@
 //   aplicar(estado, acao) → { estado, eventos }
 //   cartaDeCima(estado, pessoa), atributoDoComputador(estado): leituras para a tela
 //   escolhaDoComputador(carta, nivel, sorteio, baralho): a escolha do Computador, que só vê a própria carta (e o baralho fixo)
+//   retrospectoVazio(), registrarPartida(retrospecto, nivel, resultado), resultadoDaPartida(estado, pessoa): o Retrospecto
 //
 // O Estado é dado simples: vira JSON e volta igual (é o que se guarda no celular).
 // Testes de unidade ao lado, em `*.test.ts` (rodam com `npm test`).
 export { escolhaDoComputador } from "./computador";
 export { LIMITE_DE_RODADAS, aplicar, atributoDoComputador, cartaDeCima, criarPartida } from "./partida";
 export type { NovaPartida } from "./partida";
+export { registrarPartida, resultadoDaPartida, retrospectoVazio } from "./retrospecto";
+export type { PlacarDoNivel, ResultadoDaPartida, Retrospecto } from "./retrospecto";
 export type { Sorteio } from "./sorteio";
 export { ATRIBUTOS } from "./tipos";
 export type {

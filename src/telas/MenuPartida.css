@@ -1,0 +1,48 @@
+/* Menu ☰ da partida (ticket 27). Painel que sobe de baixo, como no protótipo. */
+.menu-partida {
+  align-self: flex-end;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: none;
+  color: var(--texto);
+  font: inherit;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.menu-partida:focus-visible {
+  outline: 3px solid var(--texto);
+}
+
+.menu-partida__fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgb(0 0 0 / 0.6);
+}
+
+.menu-partida__painel {
+  width: 100%;
+  max-width: var(--largura-coluna);
+  padding: 1.25rem 1rem max(1rem, env(safe-area-inset-bottom));
+  border-radius: 1.25rem 1.25rem 0 0;
+  background: var(--fundo);
+  border-top: 2px solid var(--texto-suave);
+  display: grid;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.menu-partida__titulo,
+.menu-partida__aviso {
+  margin: 0;
+}
+
+.menu-partida__aviso {
+  color: var(--texto-suave);
+}
