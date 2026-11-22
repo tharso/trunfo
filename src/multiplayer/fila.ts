@@ -62,3 +62,14 @@ export function avancar(fila: FilaDaPartida): FilaDaPartida {
   const [proxima = null, ...resto] = fila.esperando;
   return { vista: fila.duelo.depois, duelo: proxima, esperando: resto };
 }
+
+/**
+ * A rodada em que a tela mostra "Sua vez" (você escolhe, sem duelo na frente,
+ * fora do fim), ou `null`. Só chega depois do seu "Próxima rodada"; o celular
+ * avisa a sala (`naVez`), que conta o tempo do Cutucar daí (spec, item 16).
+ */
+export function rodadaDaSuaVez({ vista, duelo }: FilaDaPartida): number | null {
+  if (vista === null || duelo !== null || vista.fim !== null) return null;
+  const naVez = vista.quemEscolhe === vista.voce && vista.pessoas[vista.voce].fora === null;
+  return naVez ? vista.rodada : null;
+}

@@ -3,7 +3,7 @@
 import { describe, expect, it } from "vitest";
 import type { EventoDaRodada } from "../regras";
 import type { PartidaVista } from "../sala/protocolo";
-import { avancar, filaVazia, receberNaFila, type FilaDaPartida } from "./fila";
+import { avancar, filaVazia, receberNaFila, rodadaDaSuaVez, type FilaDaPartida } from "./fila";
 
 function vista(rodada: number, quemEscolhe = 0, fim: PartidaVista["fim"] = null): PartidaVista {
   return {
@@ -115,5 +115,25 @@ describe("a fila da partida", () => {
   it("Próxima rodada sem duelo não muda nada", () => {
     const fila = receberTodas({ tipo: "partida", vista: vista(1) });
     expect(avancar(fila)).toBe(fila);
+  });
+});
+
+describe("a sua vez na tela", () => {
+  it("é a rodada que você escolhe, assim que ela aparece (sem duelo antes dela)", () => {
+    expect(rodadaDaSuaVez(receberTodas({ tipo: "partida", vista: vista(1, 1) }))).toBe(1);
+    expect(rodadaDaSuaVez(receberTodas({ tipo: "partida", vista: vista(1, 0) }))).toBeNull();
+  });
+
+  it("só chega depois do seu Próxima rodada: com o duelo na tela, ainda não", () => {
+    const noDuelo = receberTodas({ tipo: "partida", vista: vista(1, 0) }, rodada(1, 1));
+    expect(rodadaDaSuaVez(noDuelo)).toBeNull();
+    expect(rodadaDaSuaVez(avancar(noDuelo))).toBe(2);
+  });
+
+  it("no fim e De fora não há vez", () => {
+    const fim = { vencedor: 0, motivo: "todasAsCartas", rodadasJogadas: 20 } as const;
+    expect(rodadaDaSuaVez(receberTodas({ tipo: "partida", vista: vista(20, 1, fim) }))).toBeNull();
+    const deFora = { ...vista(3, 1), pessoas: [vista(3).pessoas[0], { apelido: "Bia", cartas: 0, fora: "saiu" as const }] };
+    expect(rodadaDaSuaVez(receberTodas({ tipo: "partida", vista: deFora }))).toBeNull();
   });
 });

@@ -45,8 +45,12 @@ export interface PartidaNaSala {
   estado: Estado;
   /** Quem joga, na Ordem da mesa da partida (o índice é a pessoa nas regras). */
   pessoas: { id: string; apelido: string }[];
-  /** Desde quando (ms) a pessoa da vez está escolhendo. */
-  vezDesde: number;
+  /**
+   * Desde quando (ms) a pessoa da vez pode escolher: o celular dela avisa
+   * (`naVez`) quando chega na vez, depois do próprio "Próxima rodada" (spec,
+   * item 11). `null` até o aviso chegar: o tempo de cutucar ainda não conta.
+   */
+  vezDesde: number | null;
   /** Já passou o tempo de cutucar quem escolhe. */
   podeCutucar: boolean;
 }
@@ -265,7 +269,7 @@ function tirarDaPartida(estado: EstadoDaSala, indice: number, agora: number): Es
   const jogada: PartidaNaSala = {
     ...partida,
     estado: depois,
-    vezDesde: novaVez ? agora : partida.vezDesde,
+    vezDesde: novaVez ? null : partida.vezDesde,
     podeCutucar: novaVez ? false : partida.podeCutucar,
   };
   return { ...estado, partida: jogada, atualizadaEm: agora };
@@ -338,7 +342,7 @@ export function receber(
         semente: novaPartida.semente,
       }),
       pessoas: sala.pessoas.map(({ id, apelido }) => ({ id, apelido })),
-      vezDesde: agora,
+      vezDesde: null,
       podeCutucar: false,
     };
     const comecada = { ...sala, partida, atualizadaEm: agora };
@@ -357,12 +361,21 @@ export function receber(
     if (semRede(estado).length > 0) return semMudanca(estado, conexao);
     const { estado: depois, eventos } = aplicar(partida.estado, { tipo: "escolher", pessoa, atributo: mensagem.atributo });
     const evento = eventos.find((e): e is EventoDaRodada => e.tipo === "rodada")!;
-    const jogada: PartidaNaSala = { ...partida, estado: depois, vezDesde: agora, podeCutucar: false };
+    const jogada: PartidaNaSala = { ...partida, estado: depois, vezDesde: null, podeCutucar: false };
     const sala = { ...estado, partida: jogada, atualizadaEm: agora };
     const paraPessoas = paraQuemJoga(sala, jogada, (voce) => ({ tipo: "rodada", evento, depois: vistaDaPartida(jogada, voce) }));
     // O "Cutucar" que estava na tela some.
     if (partida.podeCutucar) paraPessoas.push(...avisarTodos(sala));
     return { estado: sala, conexao, paraPessoas };
+  }
+
+  // Quem escolhe chegou na vez na tela: daqui contam os 30 s do Cutucar (spec, item 16).
+  if (mensagem.tipo === "naVez") {
+    const partida = partidaEmJogo(estado);
+    if (!partida || idDaVez(estado) !== conexao || partida.estado.rodada !== mensagem.rodada || partida.vezDesde !== null) {
+      return semMudanca(estado, conexao);
+    }
+    return { estado: { ...estado, partida: { ...partida, vezDesde: agora } }, conexao, paraPessoas: [] };
   }
 
   if (mensagem.tipo === "cutucar") {
@@ -417,7 +430,7 @@ export function proximoAlarme(estado: EstadoDaSala | null, tempos: TemposDaSala 
   const instantes = estado.pessoas.flatMap((p) => (!p.conectada && p.caiuEm !== null ? [p.caiuEm + tempos.queda] : []));
   if (semNinguem(estado)) instantes.push(estado.atualizadaEm + tempos.vazia);
   const partida = partidaEmJogo(estado);
-  if (partida && !partida.podeCutucar) instantes.push(partida.vezDesde + tempos.cutucar);
+  if (partida && !partida.podeCutucar && partida.vezDesde !== null) instantes.push(partida.vezDesde + tempos.cutucar);
   return instantes.length > 0 ? Math.min(...instantes) : null;
 }
 
@@ -447,7 +460,7 @@ export function alarme(estado: EstadoDaSala | null, agora: number, tempos: Tempo
     sala = partidaEmJogo(sala) ? { ...sala, anfitriao: passarAnfitriao(sala, caida.id) } : irEmbora(sala, caida.id);
   }
   const partida = partidaEmJogo(sala);
-  if (partida && !partida.podeCutucar && agora - partida.vezDesde >= tempos.cutucar) {
+  if (partida && !partida.podeCutucar && partida.vezDesde !== null && agora - partida.vezDesde >= tempos.cutucar) {
     mudouASala = true;
     sala = { ...sala, partida: { ...partida, podeCutucar: true } };
   }

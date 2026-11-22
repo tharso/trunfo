@@ -4,6 +4,7 @@
 // (src/sala/sala.ts); esta tela mostra o que ela manda.
 import { useEffect, useState } from "preact/hooks";
 import { useSala, type EntradaNaSala } from "../multiplayer/conexao";
+import { rodadaDaSuaVez } from "../multiplayer/fila";
 import { COMECA_COM, MOTIVO_DA_RECUSA, PRECISA_DE_INTERNET } from "./amigos";
 import { caminhoDaSala } from "./enderecoDaSala";
 import { PartidaDaSala } from "./PartidaDaSala";
@@ -49,6 +50,14 @@ export function TelaDaSala({ entrada, aoSair, aoCriarSala }: Props) {
     if (cutucadas > 0) vibrar(PADRAO_DA_CUTUCADA);
   }, [cutucadas]);
 
+  // Chegou a sua vez na tela (depois do seu "Próxima rodada"): a sala conta o
+  // tempo do Cutucar daqui (spec, item 16). Manda de novo ao reconectar.
+  const conectado = situacao.tipo === "naSala" && situacao.conectado;
+  const suaVez = rodadaDaSuaVez(fila);
+  useEffect(() => {
+    if (conectado && suaVez !== null) enviar({ tipo: "naVez", rodada: suaVez });
+  }, [conectado, suaVez]);
+
   if (situacao.tipo === "recusada") {
     return (
       <div class="tela">
@@ -71,7 +80,7 @@ export function TelaDaSala({ entrada, aoSair, aoCriarSala }: Props) {
   const sala = situacao.tipo === "naSala" ? situacao.sala : null;
   const souAnfitriao = sala !== null && sala.voce === sala.anfitriao;
   const podeComecar = sala !== null && sala.podeComecar;
-  const semConexao = !online || (situacao.tipo === "naSala" && !situacao.conectado);
+  const semConexao = !online || (situacao.tipo === "naSala" && !conectado);
   const avisoDeRede = semConexao ? (online ? "Reconectando…" : PRECISA_DE_INTERNET) : null;
   const sair = () => {
     enviar({ tipo: "sair" });

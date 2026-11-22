@@ -25,6 +25,11 @@ export type MensagemDoCliente =
   | { tipo: "sair" }
   /** Só o Anfitrião: tira da partida quem caiu (`numero`: o número público da pessoa na sala). */
   | { tipo: "tirar"; numero: number }
+  /**
+   * Quem escolhe chegou na vez dele na tela (depois do próprio "Próxima
+   * rodada"): daqui a sala conta o tempo do Cutucar.
+   */
+  | { tipo: "naVez"; rodada: number }
   /** Faz o celular de quem escolhe vibrar (só quando a sala deixa: `podeCutucar`). */
   | { tipo: "cutucar" }
   /** Quem escolhe diz o atributo da rodada. */
@@ -110,6 +115,8 @@ export function lerMensagemDoCliente(texto: string): MensagemDoCliente | null {
     case "sair":
     case "cutucar":
       return { tipo: dado.tipo };
+    case "naVez":
+      return contagem(dado.rodada) ? { tipo: "naVez", rodada: dado.rodada } : null;
     case "tirar":
       return contagem(dado.numero) ? { tipo: "tirar", numero: dado.numero } : null;
     case "escolher":

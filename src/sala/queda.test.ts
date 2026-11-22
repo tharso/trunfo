@@ -59,6 +59,11 @@ function escolher(estado: EstadoDaSala, agora = AGORA): Resultado {
   return mandar(estado, quemEscolhe(estado), { tipo: "escolher", atributo: "sprint" }, agora);
 }
 
+/** Quem escolhe chegou na vez na tela: a sala começa a contar o tempo de cutucar. */
+function naVez(estado: EstadoDaSala, agora = AGORA): EstadoDaSala {
+  return mandar(estado, quemEscolhe(estado), { tipo: "naVez", rodada: estado.partida!.estado.rodada }, agora).estado!;
+}
+
 /** O alarme toca quando acaba o tempo de queda de quem caiu em AGORA. */
 function depoisDaQueda(estado: EstadoDaSala): Resultado {
   return alarme(estado, AGORA + 60 * SEGUNDO);
@@ -227,7 +232,7 @@ describe("saída no meio", () => {
 
 describe("cutucar", () => {
   it("depois de 30 s sem escolha, os outros podem cutucar; quem escolhe recebe a cutucada", () => {
-    const partida = emPartida("Ana", "Bia");
+    const partida = naVez(emPartida("Ana", "Bia"));
     const vez = quemEscolhe(partida);
     const outra = vez === "id-Ana" ? "id-Bia" : "id-Ana";
     expect(proximoAlarme(partida)).toBe(AGORA + 30 * SEGUNDO);
@@ -243,16 +248,32 @@ describe("cutucar", () => {
     expect(mandar(tocou.estado!, vez, { tipo: "cutucar" }).paraPessoas).toEqual([]);
   });
 
-  it("a rodada nova zera a espera de 30 s", () => {
+  it("os 30 s contam de quando quem escolhe chega na vez (depois do próprio Próxima rodada), não da escolha anterior", () => {
     const partida = emPartida("Ana", "Bia");
-    const cutucavel = tocarAlarme(partida).estado!;
+    expect(proximoAlarme(partida)).toBeNull();
+    expect(proximoAlarme(naVez(partida, AGORA + 10 * SEGUNDO))).toBe(AGORA + 40 * SEGUNDO);
+  });
+
+  it("só quem escolhe marca a vez, e só na rodada em jogo; marcar de novo não reinicia a conta", () => {
+    const partida = emPartida("Ana", "Bia");
+    const vez = quemEscolhe(partida);
+    const outra = vez === "id-Ana" ? "id-Bia" : "id-Ana";
+    expect(mandar(partida, outra, { tipo: "naVez", rodada: 1 }).estado).toBe(partida);
+    expect(mandar(partida, vez, { tipo: "naVez", rodada: 2 }).estado).toBe(partida);
+    const marcada = naVez(partida);
+    expect(proximoAlarme(naVez(marcada, AGORA + 20 * SEGUNDO))).toBe(AGORA + 30 * SEGUNDO);
+  });
+
+  it("a rodada nova zera a espera de 30 s", () => {
+    const cutucavel = tocarAlarme(naVez(emPartida("Ana", "Bia"))).estado!;
     const depois = escolher(cutucavel, AGORA + 40 * SEGUNDO);
     expect(salaPara(depois, "id-Ana")).toMatchObject({ podeCutucar: false });
-    expect(proximoAlarme(depois.estado!)).toBe(AGORA + 70 * SEGUNDO);
+    expect(proximoAlarme(depois.estado!)).toBeNull();
+    expect(proximoAlarme(naVez(depois.estado!, AGORA + 50 * SEGUNDO))).toBe(AGORA + 80 * SEGUNDO);
   });
 
   it("com a partida parada (alguém caiu), ninguém cutuca", () => {
-    const cutucavel = tocarAlarme(emPartida("Ana", "Bia", "Caio")).estado!;
+    const cutucavel = tocarAlarme(naVez(emPartida("Ana", "Bia", "Caio"))).estado!;
     const [caiu, olha] = ["id-Ana", "id-Bia", "id-Caio"].filter((id) => id !== quemEscolhe(cutucavel));
     const parada = desconectar(cutucavel, caiu, AGORA);
     expect(salaPara(parada, olha)).toMatchObject({ podeCutucar: false });
