@@ -70,6 +70,23 @@ test("a rede cai 10 s e a pessoa volta com as mesmas cartas", async ({ browser }
   await jogarUmaRodada(paginas[await quemEscolhe(paginas)], 1);
 });
 
+test("fechar a aba e abrir o link de novo volta direto para a partida, com as mesmas cartas", async ({ browser }) => {
+  const [ana, bia] = await partida(browser, ["Ana", "Bia", "Caio"]);
+  const cartaDeBia = await suaCarta(bia);
+  const endereco = bia.url();
+
+  await bia.close();
+  await expect(ana.getByText("Bia está sem rede. A partida espera até 60 s.")).toBeVisible();
+
+  // Mesmo celular (mesmo contexto: mesmo localStorage), aba nova, mesmo link: sem passar pelo Apelido.
+  const biaDeNovo = await bia.context().newPage();
+  await biaDeNovo.goto(endereco);
+  await expect(biaDeNovo.getByText("Rodada 1/100")).toBeVisible();
+  await expect(biaDeNovo.getByLabel("Apelido")).toHaveCount(0);
+  expect(await suaCarta(biaDeNovo)).toBe(cartaDeBia);
+  await expect(ana.getByText("Bia está sem rede.", { exact: false })).toHaveCount(0);
+});
+
 test("depois do tempo de queda, a pessoa fica De fora e a partida segue", async ({ browser }) => {
   const [ana, bia, caio] = await partida(browser, ["Ana", "Bia", "Caio"]);
 

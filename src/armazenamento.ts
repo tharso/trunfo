@@ -1,16 +1,18 @@
 // O que fica guardado no celular (docs/spec.md, partes 8 e 10): o Retrospecto, a
-// partida solo guardada e, no multiplayer, o Apelido e o identificador secreto,
-// no `localStorage`. Toda leitura e escrita tolera falha
+// partida solo guardada e, no multiplayer, o Apelido, o identificador secreto e
+// a última sala, no `localStorage`. Toda leitura e escrita tolera falha
 // (aba anônima, armazenamento cheio ou bloqueado, dado velho ou estragado):
 // sem armazenamento, o jogo funciona, só não lembra.
 import baralho from "./dados/baralho.json";
 import { retrospectoVazio, type Estado, type Nivel, type Retrospecto } from "./regras";
+import { lerCodigo } from "./sala/codigo";
 import { TAMANHO_MAXIMO_DO_APELIDO } from "./sala/protocolo";
 
 const CHAVE_RETROSPECTO = "trunfo:retrospecto";
 const CHAVE_PARTIDA = "trunfo:partida";
 const CHAVE_APELIDO = "trunfo:apelido";
 const CHAVE_IDENTIFICADOR = "trunfo:identificador";
+const CHAVE_ULTIMA_SALA = "trunfo:ultimaSala";
 // Muda quando o formato do Estado muda; partida guardada de outra versão é ignorada.
 const VERSAO_DA_PARTIDA = 1;
 
@@ -111,4 +113,20 @@ export function identificadorSecreto(): string {
   const novo = crypto.randomUUID();
   escrever(CHAVE_IDENTIFICADOR, novo);
   return novo;
+}
+
+/**
+ * A última sala em que o celular entrou e de onde não saiu pelo "Sair". Com
+ * ela e o Apelido guardado, fechar a aba e abrir o link de novo volta direto
+ * para a sala, sem passar pelo Apelido (spec, item 18). `null` se não há (ou
+ * se o guardado não é um código de sala).
+ */
+export function lerUltimaSala(): string | null {
+  const guardado = ler(CHAVE_ULTIMA_SALA);
+  return typeof guardado === "string" && lerCodigo(guardado) === guardado ? guardado : null;
+}
+
+/** Guarda o código da sala em que o celular entrou; `null` apaga (a pessoa saiu). */
+export function guardarUltimaSala(codigo: string | null): void {
+  escrever(CHAVE_ULTIMA_SALA, codigo);
 }

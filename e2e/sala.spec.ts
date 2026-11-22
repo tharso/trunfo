@@ -40,13 +40,18 @@ test("Apelido repetido ganha número; o celular lembra o Apelido e a pessoa", as
   await entrarPeloLink(outraAna, codigo, "Ana");
   await expect(pessoasNaSala(ana)).toHaveText([/Ana/, /Ana 2/]);
 
-  // Recarregar a página: o Apelido vem preenchido e o identificador secreto
-  // devolve a pessoa ao mesmo lugar, sem virar "Ana 3".
+  // Recarregar a página: o celular já estava nesta sala, então volta direto
+  // (sem o Apelido), e o identificador secreto devolve a pessoa ao mesmo
+  // lugar, sem virar "Ana 3".
   await outraAna.reload();
-  await expect(outraAna.getByLabel("Apelido")).toHaveValue("Ana");
-  await outraAna.getByRole("button", { name: "Entrar na sala" }).click();
   await expect(pessoasNaSala(outraAna)).toHaveText([/Ana/, /Ana 2.*você/]);
+  await expect(outraAna.getByLabel("Apelido")).toHaveCount(0);
   await expect(pessoasNaSala(ana)).toHaveCount(2);
+
+  // Depois do "Sair", o link volta a pedir o Apelido, que vem preenchido.
+  await outraAna.getByRole("button", { name: "Sair" }).click();
+  await outraAna.goto(`/s/${codigo}`);
+  await expect(outraAna.getByLabel("Apelido")).toHaveValue("Ana");
 });
 
 test("a quinta pessoa vê que a sala está cheia", async ({ browser }, info) => {

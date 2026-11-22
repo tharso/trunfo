@@ -1,7 +1,15 @@
 // Partida guardada no celular (docs/spec.md, parte 8): "Continuar" só aparece
 // para uma partida que ainda dá para jogar com o baralho atual.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { guardarApelido, guardarPartida, identificadorSecreto, lerApelido, lerPartida } from "./armazenamento";
+import {
+  guardarApelido,
+  guardarPartida,
+  guardarUltimaSala,
+  identificadorSecreto,
+  lerApelido,
+  lerPartida,
+  lerUltimaSala,
+} from "./armazenamento";
 import baralhoJson from "./dados/baralho.json";
 import { criarPartida, type Carta, type Estado } from "./regras";
 
@@ -75,5 +83,22 @@ describe("identificador secreto", () => {
     const novo = identificadorSecreto();
     expect(novo).toMatch(/^[0-9a-f-]{36}$/);
     expect(identificadorSecreto()).toBe(novo);
+  });
+});
+
+describe("última sala", () => {
+  it("começa sem sala, volta igual depois de guardada e some ao apagar", () => {
+    expect(lerUltimaSala()).toBeNull();
+    guardarUltimaSala("ABC");
+    expect(lerUltimaSala()).toBe("ABC");
+    guardarUltimaSala(null);
+    expect(lerUltimaSala()).toBeNull();
+  });
+
+  it("um valor que não é código de sala é ignorado", () => {
+    for (const estragado of ["AOI", "abc", 123, "ABCD"]) {
+      localStorage.setItem("trunfo:ultimaSala", JSON.stringify(estragado));
+      expect(lerUltimaSala()).toBeNull();
+    }
   });
 });

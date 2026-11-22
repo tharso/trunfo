@@ -1,6 +1,7 @@
 // Navegação entre as telas: Início (↔ Como jogar) → Sorteio → Partida → Fim.
 // Multiplayer: Início → Jogar com amigos → Apelido → Sala. O link da sala
-// (/s/<código>) abre direto no Apelido.
+// (/s/<código>) abre direto no Apelido; se o celular já estava nesta sala (e
+// não saiu pelo "Sair"), volta direto para ela.
 // A tela não decide regra: cria a partida e manda ações para o módulo de regras.
 // O App também guarda no celular (src/armazenamento.ts) a partida solo depois de
 // cada rodada e o Retrospecto quando a partida acaba (docs/spec.md, parte 8).
@@ -9,10 +10,12 @@ import {
   guardarApelido,
   guardarPartida,
   guardarRetrospecto,
+  guardarUltimaSala,
   identificadorSecreto,
   lerApelido,
   lerPartida,
   lerRetrospecto,
+  lerUltimaSala,
 } from "../armazenamento";
 import baralho from "../dados/baralho.json";
 import { criarSala, type EntradaNaSala } from "../multiplayer/conexao";
@@ -42,10 +45,19 @@ type Tela =
   | { nome: "apelido"; codigo: string | null; aviso: string | null }
   | { nome: "sala"; entrada: EntradaNaSala };
 
-/** A primeira tela: o link de uma sala (/s/<código>) vai direto para o Apelido. */
+/**
+ * A primeira tela: o link de uma sala (/s/<código>) vai direto para o Apelido.
+ * Se o celular já estava nesta sala e tem Apelido guardado (fechou a aba,
+ * recarregou), volta direto para a sala (spec, item 18).
+ */
 function telaInicial(): Tela {
   const codigo = lerCodigo(codigoDoCaminho(location.pathname) ?? "");
-  return codigo ? { nome: "apelido", codigo, aviso: null } : { nome: "inicio" };
+  if (!codigo) return { nome: "inicio" };
+  const apelido = lerApelido();
+  if (codigo === lerUltimaSala() && apelido !== "") {
+    return { nome: "sala", entrada: { codigo, apelido, id: identificadorSecreto() } };
+  }
+  return { nome: "apelido", codigo, aviso: null };
 }
 
 /** O endereço na barra acompanha a sala, para recarregar a página voltar a ela. */
@@ -88,6 +100,7 @@ export function App() {
     setApelidoGuardado(apelido);
     try {
       const daSala = codigo ?? (await criarSala());
+      guardarUltimaSala(daSala);
       setTela({ nome: "sala", entrada: { codigo: daSala, apelido, id: identificadorSecreto() } });
     } catch {
       setTela({ nome: "apelido", codigo, aviso: PRECISA_DE_INTERNET });
@@ -197,8 +210,14 @@ export function App() {
         <TelaDaSala
           key={tela.entrada.codigo}
           entrada={tela.entrada}
-          aoSair={() => setTela({ nome: "inicio" })}
-          aoCriarSala={() => setTela({ nome: "apelido", codigo: null, aviso: null })}
+          aoSair={() => {
+            guardarUltimaSala(null);
+            setTela({ nome: "inicio" });
+          }}
+          aoCriarSala={() => {
+            guardarUltimaSala(null);
+            setTela({ nome: "apelido", codigo: null, aviso: null });
+          }}
         />
       );
   }
