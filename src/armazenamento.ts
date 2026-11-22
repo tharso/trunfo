@@ -36,12 +36,12 @@ export function lerRetrospecto(): Retrospecto {
   const retrospecto = retrospectoVazio();
   if (!guardado || typeof guardado !== "object") return retrospecto;
   for (const nivel of Object.keys(retrospecto) as Nivel[]) {
-    const placar = guardado[nivel];
-    if (!placar || typeof placar !== "object") continue;
+    const doNivel = guardado[nivel];
+    if (!doNivel || typeof doNivel !== "object") continue;
     retrospecto[nivel] = {
-      vitorias: contagem(placar.vitorias),
-      derrotas: contagem(placar.derrotas),
-      empates: contagem(placar.empates),
+      vitorias: contagem(doNivel.vitorias),
+      derrotas: contagem(doNivel.derrotas),
+      empates: contagem(doNivel.empates),
     };
   }
   return retrospecto;

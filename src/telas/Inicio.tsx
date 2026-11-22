@@ -1,7 +1,7 @@
 // Tela de Início (docs/spec.md, parte 6): título, escolha do Nível, Retrospecto
 // do nível, "Jogar" (ou "Continuar partida?" quando há partida guardada),
 // "Como jogar" e o aviso de jogo de fã. O som vem em outro ticket.
-import type { Nivel, PlacarDoNivel } from "../regras";
+import type { Nivel, RetrospectoDoNivel } from "../regras";
 import { BotaoSom } from "./BotaoSom";
 import "./Inicio.css";
 
@@ -11,16 +11,16 @@ const NIVEIS: { nivel: Nivel; nome: string; explicacao: string }[] = [
 ];
 
 /** "Normal: você 7 × 4 computador · 1 empate". O empate só aparece quando é maior que zero. */
-function textoDoRetrospecto(nivel: Nivel, placar: PlacarDoNivel): string {
+function textoDoRetrospecto(nivel: Nivel, doNivel: RetrospectoDoNivel): string {
   const nome = NIVEIS.find((n) => n.nivel === nivel)!.nome;
-  const empates = placar.empates === 0 ? "" : ` · ${placar.empates} ${placar.empates === 1 ? "empate" : "empates"}`;
-  return `${nome}: você ${placar.vitorias} × ${placar.derrotas} computador${empates}`;
+  const empates = doNivel.empates === 0 ? "" : ` · ${doNivel.empates} ${doNivel.empates === 1 ? "empate" : "empates"}`;
+  return `${nome}: você ${doNivel.vitorias} × ${doNivel.derrotas} computador${empates}`;
 }
 
 interface Props {
   nivel: Nivel;
   /** O Retrospecto do nível escolhido. */
-  retrospecto: PlacarDoNivel;
+  retrospecto: RetrospectoDoNivel;
   temPartidaGuardada: boolean;
   aoMudarNivel: (nivel: Nivel) => void;
   aoJogar: () => void;

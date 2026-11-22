@@ -15,7 +15,7 @@ export { escolhaDoComputador } from "./computador";
 export { LIMITE_DE_RODADAS, aplicar, atributoDoComputador, cartaDeCima, criarPartida } from "./partida";
 export type { NovaPartida } from "./partida";
 export { registrarPartida, resultadoDaPartida, retrospectoVazio } from "./retrospecto";
-export type { PlacarDoNivel, ResultadoDaPartida, Retrospecto } from "./retrospecto";
+export type { RetrospectoDoNivel, ResultadoDaPartida, Retrospecto } from "./retrospecto";
 export type { Sorteio } from "./sorteio";
 export { ATRIBUTOS } from "./tipos";
 export type {
