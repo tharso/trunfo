@@ -144,6 +144,8 @@ body {
 .selo--carta-a {
   background: var(--texto);
   color: var(--fundo);
+}
+
 /* Início: escolha do Nível (ticket 26). */
 .niveis {
   width: 100%;
