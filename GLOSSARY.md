@@ -41,7 +41,7 @@ As 32 cartas do jogo. São sempre as mesmas, escolhidas entre os ciclistas mais 
 _Avoid_: deck, coleção
 
 **Super Trunfo**:
-A carta especial do baralho. Ganha de todas as outras, qualquer que seja o atributo, menos de algumas cartas marcadas.
+A carta especial do baralho. Ganha de todas as outras, qualquer que seja o atributo, menos de algumas cartas marcadas. Sozinho, o nome quer dizer sempre a carta; o jogo é o **Super Trunfo Ciclismo**.
 _Avoid_: coringa, carta mestra
 
 **Carta A**:
@@ -52,6 +52,26 @@ _Avoid_: anti-trunfo, carta especial
 O adversário do modo solo. Joga limpo: vê só a carta de cima do próprio monte e não lembra das cartas que já saíram.
 _Avoid_: bot, IA, CPU
 
+**Sala**:
+O lugar onde 2 a 4 pessoas se juntam para jogar uma partida juntas, cada uma no seu celular. Tem um código de 4 letras e um link.
+_Avoid_: lobby, mesa, servidor
+
+**Anfitrião**:
+A pessoa que criou a sala. Ela começa a partida e pode tirar alguém que caiu da rede.
+_Avoid_: host, dono, admin
+
+**Apelido**:
+O nome que uma pessoa digita ao entrar na sala. Não tem login; o celular lembra o apelido.
+_Avoid_: usuário, conta, nick
+
+**Ordem da mesa**:
+A ordem fixa das pessoas na sala, que é a ordem em que entraram. Decide quem é "a próxima pessoa".
+_Avoid_: vez, turno
+
 **Nível**:
 O jeito de jogar do computador. **Fácil** sorteia o atributo. **Normal** escolhe o atributo em que a sua carta ganha de mais cartas do baralho.
 _Avoid_: dificuldade, modo
+
+**Retrospecto**:
+As vitórias, derrotas e empates contra o computador, contados por nível e guardados no celular. Sair de uma partida no meio conta como derrota.
+_Avoid_: placar, histórico, estatísticas
