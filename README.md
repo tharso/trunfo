@@ -57,6 +57,18 @@ Como refazer: no navegador embutido, numa página do procyclingstats.com com `wi
 uv run --with openpyxl python scripts/montar_tabela.py
 ```
 
+## Fotos das cartas
+
+As fotos originais (Wikimedia Commons) ficam em `data/fotos/`, com `creditos.csv` (autor, licença, página)
+e `recorte.csv` (onde fica o rosto). O jogo usa as versões recortadas em `public/fotos/` e os créditos em
+`src/dados/fotos.json`, gerados por:
+
+```bash
+uv run --with pillow python scripts/gerar_fotos.py
+```
+
+Carta sem linha no `recorte.csv` mostra as iniciais. Ver `docs/adr/0004-carta-com-foto.md`.
+
 ## O Baralho do jogo (32 cartas)
 
 O jogo usa só 32 cartas (lista em `docs/spec.md`, parte 2). O arquivo que o jogo lê é
