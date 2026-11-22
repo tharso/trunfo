@@ -430,10 +430,10 @@
         "#000000"
       ],
       "notas": {
-        "sprint": 34,
-        "explosao": 70,
-        "montanha": 78,
-        "contrarrelogio": 72,
+        "sprint": 33,
+        "explosao": 65,
+        "montanha": 76,
+        "contrarrelogio": 82,
         "pave": 40,
         "voltas": 80
       },
@@ -441,8 +441,7 @@
         "pave"
       ],
       "superTrunfo": false,
-      "cartaA": false,
-      "provisoria": true
+      "cartaA": false
     },
     {
       "codigo": "4D",

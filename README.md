@@ -105,11 +105,25 @@ Os outros pesos e potências testados (só peso, FTP, W/kg) explicam menos os Pa
 
 ### João Almeida
 
-Ele não está entre os 180. As notas vêm da mesma coleta de confronto direto (2023–2026), registrada
-em `data/raw/joao_almeida.json` (campo `fonte`). O gerador lê as 6 notas do campo `notas`.
+Ele não está entre os 180. As notas vêm da **mesma coleta de confronto direto** (2023–2026),
+feita em 21–22/11/2026 no navegador embutido, com 3 s entre pedidos ao ProCyclingStats.
+Tudo está em `data/raw/joao_almeida.json` (campos `notas`, `elo` e `fonte`).
 
-- Enquanto `notas` for `null`, a carta usa uma **estimativa provisória**: a média das notas de
-  Ayuso, Lipowitz, Skjelmose e Enric Mas (perfil parecido: volta, bom crono, sem pavê). A carta sai
-  com `"provisoria": true` e o script avisa.
-- Ele não tem curva no modelo de potência. Para o Pavê estimado, o watt de 1 min dele é o peso
-  (63 kg) × a média de W/kg de 1 min desses mesmos 4 ciclistas.
+Como foi feito:
+1. `scripts/navegador/1_coleta_resultados.js` rodou com `window.RANK` = os 180 + `joao-almeida`.
+   Na 2ª fase, provas em que nenhum evento tinha 2 ou mais dos 181 com alguém no top 25 não
+   tiveram o perfil buscado (não entram em nenhum confronto, então o resultado é o mesmo).
+   Páginas que davam erro 500 (critérios e provas de juniores) ficaram sem perfil, como no 404.
+2. `scripts/navegador/2_elo.js` rodou sem as linhas de Izagirre e Sparfel: a página alternativa
+   deles (`rider.php`) veio com outro formato de tabela e as posições saíram erradas.
+   A saída com os 181 está em `data/raw/elo_com_almeida.json`.
+3. A nota do Elo de Almeida foi levada para a escala dos 180 de `data/raw/elo.json` por uma reta
+   ajustada nos outros ciclistas (correlação acima de 0,99 em 5 dos 6 tipos; 0,92 em Explosão).
+4. A nota de carta sai pela mesma conta de `scripts/cartas_elo.py`, com o mesmo pior e melhor
+   medidos dos 180. Resultado: Sprint 33, Explosão 65, Montanha 76, Contrarrelógio 82, Voltas 80.
+   Pavê 10 (nunca correu no pavê) vira estimativa, como nas outras cartas.
+5. Ele não tem curva no modelo de potência. Para o Pavê estimado, o watt de 1 min dele é o peso
+   (63 kg) × a média de W/kg de 1 min de Ayuso, Lipowitz, Skjelmose e Enric Mas.
+
+O gerador ainda aceita `"notas": null` (carta provisória, média desses 4 ciclistas), mas o
+arquivo hoje tem as notas finais.

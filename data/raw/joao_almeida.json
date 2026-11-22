@@ -6,8 +6,15 @@
   "idade": 28,
   "peso_kg": 63,
   "altura_m": 1.78,
-  "notas": null,
-  "elo": null,
-  "fonte": "https://www.procyclingstats.com/rider/joao-almeida (perfil, coletado em 21/11/2026). Notas: coleta de 2023-2026 em andamento pelo orquestrador.",
-  "provisorio": true
+  "notas": {"Sprint": 33, "Explosão": 65, "Montanha": 76, "Contrarrelógio": 82, "Pavê": 10, "Voltas": 80},
+  "elo": {
+    "sprint": {"elo": 1139, "provas": 36, "na_escala_dos_180": 1134},
+    "colinas": {"elo": 1613, "provas": 38, "na_escala_dos_180": 1608},
+    "montanha": {"elo": 1894, "provas": 71, "na_escala_dos_180": 1892},
+    "crono": {"elo": 1966, "provas": 25, "na_escala_dos_180": 1966},
+    "pave": {"elo": 1250, "provas": 0, "na_escala_dos_180": null},
+    "voltas": {"elo": 1944, "provas": 21, "na_escala_dos_180": 1953}
+  },
+  "fonte": "ProCyclingStats: perfil https://www.procyclingstats.com/rider/joao-almeida e resultados de 2023 a 2026 (/rider/joao-almeida/<ano>), coletados em 21-22/11/2026 no navegador embutido, 3 s entre pedidos. Mesmo cálculo das outras cartas: scripts/navegador/1_coleta_resultados.js e 2_elo.js rodados com os 180 + Almeida; a nota do Elo foi levada para a escala dos 180 por uma reta ajustada nos outros ciclistas (r > 0,99) e virou nota de carta com scripts/cartas_elo.py (mesmo pior e melhor medidos dos 180). Detalhes no README.",
+  "provisorio": false
 }
