@@ -1,64 +1,156 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Browser, type Page } from "@playwright/test";
 
-// Prova do ticket #36: dois navegadores trocam mensagens pelo Durable Object da
-// sala (Worker manda /sala/<código> para o DO). Usa a página de teste
-// sala-teste.html, que conecta com partysocket.
+// A Sala do multiplayer (docs/spec.md, parte 9, itens 1 a 8), com o Durable
+// Object de verdade (Worker manda /sala/<código> para o DO). Cada pessoa é um
+// contexto de navegador próprio: celular próprio, localStorage próprio.
 
-async function entrar(pagina: Page, codigo: string) {
-  await pagina.goto(`/sala-teste.html?sala=${codigo}`);
-  await expect(pagina.getByText("Conectado")).toBeVisible();
+async function novaPessoa(browser: Browser): Promise<Page> {
+  return (await browser.newContext()).newPage();
 }
 
-async function mandar(pagina: Page, texto: string) {
-  await pagina.getByLabel("Mensagem").fill(texto);
-  await pagina.getByRole("button", { name: "Mandar" }).click();
+async function escreverApelido(pagina: Page, apelido: string, botao: "Criar sala" | "Entrar na sala") {
+  await pagina.getByLabel("Apelido").fill(apelido);
+  await pagina.getByRole("button", { name: botao }).click();
 }
 
-test("dois navegadores trocam mensagens pela sala", async ({ browser }, info) => {
-  const codigo = `T${info.project.name}${Date.now()}`;
-  const ana = await (await browser.newContext()).newPage();
-  const bia = await (await browser.newContext()).newPage();
+/** Início → Jogar com amigos → Criar sala → Apelido. Devolve o código da sala. */
+async function criarSala(pagina: Page, apelido: string): Promise<string> {
+  await pagina.goto("/");
+  await pagina.getByRole("button", { name: "Jogar com amigos" }).click();
+  await pagina.getByRole("button", { name: "Criar sala" }).click();
+  await escreverApelido(pagina, apelido, "Criar sala");
+  const codigo = pagina.locator(".sala__codigo");
+  await expect(codigo).toHaveText(/^[A-HJ-NP-Z]{3}$/);
+  return (await codigo.textContent())!;
+}
 
-  await entrar(ana, codigo);
-  await entrar(bia, codigo);
+/** O link da sala pula "Jogar com amigos" e vai direto para o Apelido. */
+async function entrarPeloLink(pagina: Page, codigo: string, apelido: string) {
+  await pagina.goto(`/s/${codigo}`);
+  await expect(pagina.getByText(`Sala ${codigo}`)).toBeVisible();
+  await escreverApelido(pagina, apelido, "Entrar na sala");
+}
 
-  await mandar(ana, "oi, Bia");
-  await expect(bia.getByRole("listitem").filter({ hasText: "oi, Bia" })).toBeVisible();
+/** Início → Jogar com amigos → Entrar com código (digitado em minúsculas) → Apelido. */
+async function entrarPeloCodigo(pagina: Page, codigo: string, apelido: string) {
+  await pagina.goto("/");
+  await pagina.getByRole("button", { name: "Jogar com amigos" }).click();
+  await pagina.getByRole("button", { name: "Entrar com código" }).click();
+  await pagina.getByLabel("Código da sala").fill(codigo.toLowerCase());
+  await pagina.getByRole("button", { name: "Entrar", exact: true }).click();
+  await escreverApelido(pagina, apelido, "Entrar na sala");
+}
 
-  await mandar(bia, "oi, Ana");
-  await expect(ana.getByRole("listitem").filter({ hasText: "oi, Ana" })).toBeVisible();
+function pessoasNaSala(pagina: Page) {
+  return pagina.getByRole("list", { name: "Pessoas na sala" }).getByRole("listitem");
+}
+
+test("uma pessoa entra pelo link, outra pelo código, na Ordem da mesa", async ({ browser }) => {
+  const ana = await novaPessoa(browser);
+  const bia = await novaPessoa(browser);
+  const caio = await novaPessoa(browser);
+
+  const codigo = await criarSala(ana, "Ana");
+  await expect(ana).toHaveURL(`/s/${codigo}`);
+  await entrarPeloLink(bia, codigo, "Bia");
+  await entrarPeloCodigo(caio, codigo, "Caio");
+
+  for (const pagina of [ana, bia, caio]) {
+    await expect(pagina.locator(".sala__codigo")).toHaveText(codigo);
+    await expect(pessoasNaSala(pagina)).toHaveText([/^Ana.*Anfitrião/, /Bia/, /Caio/]);
+  }
+  await expect(pessoasNaSala(bia).nth(1)).toContainText("você");
+
+  // Só o Anfitrião vê "Começar".
+  await expect(bia.getByText("Esperando o Anfitrião começar…")).toBeVisible();
+  await expect(bia.getByRole("button", { name: "Começar" })).toHaveCount(0);
+  await ana.getByRole("button", { name: "Começar" }).click();
+  for (const pagina of [ana, bia, caio]) await expect(pagina.getByText("A partida vai começar…")).toBeVisible();
+
+  // Durante a partida, ninguém entra.
+  const davi = await novaPessoa(browser);
+  await entrarPeloCodigo(davi, codigo, "Davi");
+  await expect(davi.getByText("Esta sala está no meio de uma partida.", { exact: false })).toBeVisible();
+});
+
+test("Apelido repetido ganha número; o celular lembra o Apelido e a pessoa", async ({ browser }) => {
+  const ana = await novaPessoa(browser);
+  const outraAna = await novaPessoa(browser);
+  const codigo = await criarSala(ana, "Ana");
+  await entrarPeloLink(outraAna, codigo, "Ana");
+  await expect(pessoasNaSala(ana)).toHaveText([/Ana/, /Ana 2/]);
+
+  // Recarregar a página: o Apelido vem preenchido e o identificador secreto
+  // devolve a pessoa ao mesmo lugar, sem virar "Ana 3".
+  await outraAna.reload();
+  await expect(outraAna.getByLabel("Apelido")).toHaveValue("Ana");
+  await outraAna.getByRole("button", { name: "Entrar na sala" }).click();
+  await expect(pessoasNaSala(outraAna)).toHaveText([/Ana/, /Ana 2.*você/]);
+  await expect(pessoasNaSala(ana)).toHaveCount(2);
+});
+
+test("a quinta pessoa vê que a sala está cheia", async ({ browser }, info) => {
+  test.skip(info.project.name !== "desktop", "uma vez basta");
+  const ana = await novaPessoa(browser);
+  const codigo = await criarSala(ana, "Ana");
+  for (const apelido of ["Bia", "Caio", "Davi"]) await entrarPeloLink(await novaPessoa(browser), codigo, apelido);
+  await expect(pessoasNaSala(ana)).toHaveCount(4);
+
+  const eva = await novaPessoa(browser);
+  await entrarPeloLink(eva, codigo, "Eva");
+  await expect(eva.getByText("Esta sala está cheia: já tem 4 pessoas.")).toBeVisible();
+});
+
+test("link de uma sala que não existe mostra que ela já acabou", async ({ page }) => {
+  // ZZZ nunca foi criada por este teste; um código sorteado por outro teste
+  // nas últimas rodadas seria azar de 1 em 13.824.
+  await entrarPeloLink(page, "ZZZ", "Ana");
+  await expect(page.getByText("Esta sala já acabou")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Criar sala" })).toBeVisible();
+});
+
+test("sem internet, Jogar com amigos mostra Precisa de internet", async ({ page, context }) => {
+  await page.goto("/");
+  await context.setOffline(true);
+  await page.getByRole("button", { name: "Jogar com amigos" }).click();
+  await expect(page.getByText("Precisa de internet")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Criar sala" })).toHaveCount(0);
+  // O modo solo continua normal.
+  await page.getByRole("button", { name: "Voltar" }).click();
+  await page.getByRole("button", { name: "Jogar", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Ver minha primeira carta" })).toBeVisible();
 });
 
 // O workerd tira da memória o DO que só tem sockets hibernáveis e fica ~10 s
-// parado. A `instancia` (gerada no construtor) muda quando ele acorda; a conexão
-// do navegador continua a mesma ("conexão 1"), e o storage do DO sobrevive.
-test("as mensagens continuam passando depois que a sala hiberna", async ({ browser }, info) => {
+// parado. Quem entra depois disso tem de ver a mesma sala: o estado está no
+// storage do DO e quem está em cada socket, no attachment. Se a sala guardasse
+// algo em campo da classe, a lista viria vazia ou sem as pessoas de antes.
+test("a sala continua igual depois de hibernar", async ({ browser }, info) => {
   test.skip(info.project.name !== "desktop", "uma vez basta: o teste espera 15 s parado");
   test.slow();
-  const codigo = `H${Date.now()}`;
-  const ana = await (await browser.newContext()).newPage();
-  const bia = await (await browser.newContext()).newPage();
-  await entrar(ana, codigo);
-  await entrar(bia, codigo);
+  const ana = await novaPessoa(browser);
+  const bia = await novaPessoa(browser);
+  const codigo = await criarSala(ana, "Ana");
+  await entrarPeloLink(bia, codigo, "Bia");
+  await expect(pessoasNaSala(ana)).toHaveCount(2);
 
-  await mandar(ana, "antes");
-  const antes = bia.getByRole("listitem").filter({ hasText: "antes" });
-  await expect(antes).toContainText("mensagem 1");
-  const instanciaAntes = /instância (\w+)/.exec((await antes.textContent()) ?? "")![1];
+  await ana.waitForTimeout(15_000);
 
-  await bia.waitForTimeout(15_000);
-
-  await mandar(bia, "depois");
-  const depois = ana.getByRole("listitem").filter({ hasText: "depois" });
-  await expect(depois).toContainText("mensagem 2");
-  await expect(depois).not.toContainText(`instância ${instanciaAntes}`);
-  for (const pagina of [ana, bia]) await expect(pagina.getByText(/conexão 1\)/)).toBeVisible();
+  const caio = await novaPessoa(browser);
+  await entrarPeloCodigo(caio, codigo, "Caio");
+  for (const pagina of [ana, bia, caio]) {
+    await expect(pessoasNaSala(pagina)).toHaveText([/Ana.*Anfitrião/, /Bia/, /Caio/]);
+  }
+  // Ninguém precisou reconectar.
+  for (const pagina of [ana, bia]) await expect(pagina.getByText("Reconectando…")).toHaveCount(0);
+  await expect(ana.getByRole("button", { name: "Começar" })).toBeEnabled();
 });
 
 // O PWA serve o index.html do precache para qualquer navegação (modo solo sem
 // internet). /sala/* fica de fora: com o service worker no controle, quem
-// responde é o Durable Object (que só aceita WebSocket), não o jogo.
-test("o service worker do PWA não responde por /sala/*", async ({ page }) => {
+// responde é o Durable Object (que só aceita WebSocket), não o jogo. A página do
+// link (/s/<código>) é do jogo.
+test("o service worker do PWA não responde por /sala/*, só pela página do link", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
@@ -69,17 +161,8 @@ test("o service worker do PWA não responde por /sala/*", async ({ page }) => {
   const resposta = await page.goto("/sala/ABC");
   expect(resposta?.status()).toBe(426);
   await expect(page.getByText("Esta rota só aceita WebSocket.")).toBeVisible();
-});
 
-test("salas diferentes não se misturam", async ({ browser }, info) => {
-  const base = `T${info.project.name}${Date.now()}`;
-  const ana = await (await browser.newContext()).newPage();
-  const bia = await (await browser.newContext()).newPage();
-
-  await entrar(ana, `${base}a`);
-  await entrar(bia, `${base}b`);
-
-  await mandar(ana, "só para a sala A");
-  await expect(ana.getByRole("listitem").filter({ hasText: "só para a sala A" })).toBeVisible();
-  await expect(bia.getByRole("listitem")).toHaveCount(0);
+  await page.goto("/s/ABC");
+  await expect(page.getByText("Sala ABC")).toBeVisible();
+  await expect(page.getByLabel("Apelido")).toBeVisible();
 });

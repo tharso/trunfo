@@ -1,6 +1,6 @@
 // Tela de Início (docs/spec.md, parte 6): título, escolha do Nível, Retrospecto
 // do nível, "Jogar" (ou "Continuar partida?" quando há partida guardada),
-// "Como jogar" e o aviso de jogo de fã. O som vem em outro ticket.
+// "Jogar com amigos" (multiplayer, parte 9), "Como jogar" e o aviso de jogo de fã. O som vem em outro ticket.
 import type { Nivel, RetrospectoDoNivel } from "../regras";
 import { BotaoSom } from "./BotaoSom";
 import "./Inicio.css";
@@ -29,6 +29,7 @@ interface Props {
   /** Começa outra partida; a guardada conta como derrota. */
   aoNovaPartida: () => void;
   aoComoJogar: () => void;
+  aoJogarComAmigos: () => void;
 }
 
 export function Inicio({
@@ -40,6 +41,7 @@ export function Inicio({
   aoContinuar,
   aoNovaPartida,
   aoComoJogar,
+  aoJogarComAmigos,
 }: Props) {
   return (
     <div class="tela">
@@ -81,6 +83,9 @@ export function Inicio({
             Jogar
           </button>
         )}
+        <button type="button" class="botao botao--secundario" onClick={aoJogarComAmigos}>
+          Jogar com amigos
+        </button>
         <button type="button" class="botao botao--secundario" onClick={aoComoJogar}>
           Como jogar
         </button>

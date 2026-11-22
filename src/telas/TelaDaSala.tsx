@@ -1,0 +1,126 @@
+// Tela da sala (docs/spec.md, parte 9, itens 5 a 8): o código grande, "Mandar
+// link", a lista na Ordem da mesa e "Começar" (só o Anfitrião). A sala decide
+// tudo (src/sala/sala.ts); esta tela mostra o que ela manda.
+import { useState } from "preact/hooks";
+import { useSala } from "../multiplayer/conexao";
+import { MAXIMO_DE_PESSOAS, MINIMO_PARA_COMECAR } from "../sala/sala";
+import { caminhoDaSala, MOTIVO_DA_RECUSA, PRECISA_DE_INTERNET, useInternet } from "./amigos";
+import "./Sala.css";
+
+interface Props {
+  codigo: string;
+  apelido: string;
+  /** O identificador secreto do celular. */
+  id: string;
+  aoSair: () => void;
+  aoCriarSala: () => void;
+}
+
+/** Abre o menu de compartilhar do celular; sem ele, copia o link. Devolve o aviso a mostrar. */
+async function mandarLink(codigo: string): Promise<string | null> {
+  const url = new URL(caminhoDaSala(codigo), location.origin).href;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Super Trunfo Ciclismo", url });
+    } catch {
+      // A pessoa fechou o menu: nada a fazer.
+    }
+    return null;
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    return "Link copiado";
+  } catch {
+    return url;
+  }
+}
+
+export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) {
+  const online = useInternet();
+  const { situacao, enviar } = useSala(codigo, apelido, id);
+  const [avisoDoLink, setAvisoDoLink] = useState<string | null>(null);
+
+  if (situacao.tipo === "recusada") {
+    return (
+      <div class="tela">
+        <main class="inicio">
+          <p class="amigos__sala">Sala {codigo}</p>
+          <h1 class="amigos__recusa">{MOTIVO_DA_RECUSA[situacao.motivo]}</h1>
+          {situacao.motivo === "acabou" && (
+            <button type="button" class="botao" onClick={aoCriarSala}>
+              Criar sala
+            </button>
+          )}
+          <button type="button" class="botao botao--secundario" onClick={aoSair}>
+            Voltar ao início
+          </button>
+        </main>
+      </div>
+    );
+  }
+
+  const sala = situacao.tipo === "naSala" ? situacao.sala : null;
+  const souAnfitriao = sala !== null && sala.voce === sala.anfitriao;
+  const podeComecar = sala !== null && sala.pessoas.length >= MINIMO_PARA_COMECAR && sala.pessoas.length <= MAXIMO_DE_PESSOAS;
+  const semConexao = !online || (situacao.tipo === "naSala" && !situacao.conectado);
+
+  return (
+    <div class="tela">
+      <main class="sala">
+        <p class="sala__rotulo">Código da sala</p>
+        <p class="sala__codigo" aria-label={`Código da sala: ${codigo}`}>
+          {codigo}
+        </p>
+        <button
+          type="button"
+          class="botao botao--secundario"
+          onClick={async () => setAvisoDoLink(await mandarLink(codigo))}
+        >
+          Mandar link
+        </button>
+        {avisoDoLink && <p class="sala__aviso">{avisoDoLink}</p>}
+
+        {semConexao && <p class="amigos__aviso">{online ? "Reconectando…" : PRECISA_DE_INTERNET}</p>}
+
+        {sala === null ? (
+          <p class="sala__aviso">Conectando…</p>
+        ) : (
+          <>
+            <ol class="sala__pessoas" aria-label="Pessoas na sala">
+              {sala.pessoas.map((pessoa, indice) => (
+                <li key={indice} class={`sala__pessoa${pessoa.conectada ? "" : " sala__pessoa--sem-conexao"}`}>
+                  <span class="sala__apelido">{pessoa.apelido}</span>
+                  {indice === sala.voce && <span class="sala__marca">você</span>}
+                  {indice === sala.anfitriao && <span class="sala__marca">Anfitrião</span>}
+                </li>
+              ))}
+            </ol>
+            {sala.emPartida ? (
+              // A partida de verdade chega no ticket #38.
+              <p class="sala__aviso">A partida vai começar…</p>
+            ) : souAnfitriao ? (
+              <>
+                <button type="button" class="botao" disabled={!podeComecar} onClick={() => enviar({ tipo: "comecar" })}>
+                  Começar
+                </button>
+                {!podeComecar && <p class="sala__aviso">Começa com 2 a 4 pessoas.</p>}
+              </>
+            ) : (
+              <p class="sala__aviso">Esperando o Anfitrião começar…</p>
+            )}
+          </>
+        )}
+        <button
+          type="button"
+          class="botao botao--secundario"
+          onClick={() => {
+            enviar({ tipo: "sair" });
+            aoSair();
+          }}
+        >
+          Sair
+        </button>
+      </main>
+    </div>
+  );
+}

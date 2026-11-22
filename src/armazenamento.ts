@@ -1,12 +1,16 @@
-// O que fica guardado no celular (docs/spec.md, partes 8 e 10): o Retrospecto e a
-// partida solo guardada, no `localStorage`. Toda leitura e escrita tolera falha
+// O que fica guardado no celular (docs/spec.md, partes 8 e 10): o Retrospecto, a
+// partida solo guardada e, no multiplayer, o Apelido e o identificador secreto,
+// no `localStorage`. Toda leitura e escrita tolera falha
 // (aba anônima, armazenamento cheio ou bloqueado, dado velho ou estragado):
 // sem armazenamento, o jogo funciona, só não lembra.
 import baralho from "./dados/baralho.json";
 import { retrospectoVazio, type Estado, type Nivel, type Retrospecto } from "./regras";
+import { TAMANHO_MAXIMO_DO_APELIDO } from "./sala/protocolo";
 
 const CHAVE_RETROSPECTO = "trunfo:retrospecto";
 const CHAVE_PARTIDA = "trunfo:partida";
+const CHAVE_APELIDO = "trunfo:apelido";
+const CHAVE_IDENTIFICADOR = "trunfo:identificador";
 // Muda quando o formato do Estado muda; partida guardada de outra versão é ignorada.
 const VERSAO_DA_PARTIDA = 1;
 
@@ -80,4 +84,31 @@ export function lerPartida(): Estado | null {
 /** Guarda a partida solo em andamento; `null` apaga a partida guardada. */
 export function guardarPartida(estado: Estado | null): void {
   escrever(CHAVE_PARTIDA, estado === null ? null : { versao: VERSAO_DA_PARTIDA, estado });
+}
+
+/** O último Apelido usado neste celular, ou "" se não há (ou se o guardado não serve). */
+export function lerApelido(): string {
+  const guardado = ler(CHAVE_APELIDO);
+  return typeof guardado === "string" && guardado.trim() !== "" && guardado.length <= TAMANHO_MAXIMO_DO_APELIDO
+    ? guardado
+    : "";
+}
+
+export function guardarApelido(apelido: string): void {
+  escrever(CHAVE_APELIDO, apelido);
+}
+
+const FORMATO_DO_IDENTIFICADOR = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+/**
+ * O identificador secreto do celular: mostra à sala que é a mesma pessoa que
+ * voltou (spec, itens 18 e 24). Criado na primeira vez; sem armazenamento, vale
+ * só enquanto a página estiver aberta.
+ */
+export function identificadorSecreto(): string {
+  const guardado = ler(CHAVE_IDENTIFICADOR);
+  if (typeof guardado === "string" && FORMATO_DO_IDENTIFICADOR.test(guardado)) return guardado;
+  const novo = crypto.randomUUID();
+  escrever(CHAVE_IDENTIFICADOR, novo);
+  return novo;
 }

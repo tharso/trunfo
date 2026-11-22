@@ -1,25 +1,57 @@
 // Navegação entre as telas: Início (↔ Como jogar) → Sorteio → Partida → Fim.
+// Multiplayer: Início → Jogar com amigos → Apelido → Sala. O link da sala
+// (/s/<código>) abre direto no Apelido.
 // A tela não decide regra: cria a partida e manda ações para o módulo de regras.
 // O App também guarda no celular (src/armazenamento.ts) a partida solo depois de
 // cada rodada e o Retrospecto quando a partida acaba (docs/spec.md, parte 8).
-import { useState } from "preact/hooks";
-import { guardarPartida, guardarRetrospecto, lerPartida, lerRetrospecto } from "../armazenamento";
+import { useEffect, useState } from "preact/hooks";
+import {
+  guardarApelido,
+  guardarPartida,
+  guardarRetrospecto,
+  identificadorSecreto,
+  lerApelido,
+  lerPartida,
+  lerRetrospecto,
+} from "../armazenamento";
 import baralho from "../dados/baralho.json";
+import { criarSala } from "../multiplayer/conexao";
 import { aplicar, criarPartida, registrarPartida, resultadoDaPartida, type Estado, type Nivel } from "../regras";
+import { lerCodigo } from "../sala/codigo";
+import { caminhoDaSala, codigoDoCaminho, PRECISA_DE_INTERNET } from "./amigos";
+import { Apelido } from "./Apelido";
 import { ComoJogar } from "./ComoJogar";
 import { Fim } from "./Fim";
 import { Inicio } from "./Inicio";
+import { JogarComAmigos } from "./JogarComAmigos";
 import { Partida } from "./Partida";
 import { sentir } from "./sensacao";
 import { VOCE } from "./solo";
 import { Sorteio } from "./Sorteio";
+import { TelaDaSala } from "./TelaDaSala";
 
 type Tela =
   | { nome: "inicio" }
   | { nome: "comoJogar" }
   | { nome: "sorteio"; estado: Estado }
   | { nome: "partida"; estado: Estado }
-  | { nome: "fim"; estado: Estado };
+  | { nome: "fim"; estado: Estado }
+  | { nome: "amigos" }
+  /** `codigo` é `null` quando a pessoa vai criar a sala. */
+  | { nome: "apelido"; codigo: string | null; aviso: string | null }
+  | { nome: "sala"; codigo: string; apelido: string; id: string };
+
+/** A primeira tela: o link de uma sala (/s/<código>) vai direto para o Apelido. */
+function telaInicial(): Tela {
+  const codigo = lerCodigo(codigoDoCaminho(location.pathname) ?? "");
+  return codigo ? { nome: "apelido", codigo, aviso: null } : { nome: "inicio" };
+}
+
+/** O endereço na barra acompanha a sala, para recarregar a página voltar a ela. */
+function caminhoDaTela(tela: Tela): string {
+  const codigo = tela.nome === "sala" || tela.nome === "apelido" ? tela.codigo : null;
+  return codigo ? caminhoDaSala(codigo) : "/";
+}
 
 /**
  * A semente da fonte de sorteio. `?semente=123` na URL fixa a partida (o teste
@@ -36,12 +68,30 @@ function novaPartida(nivel: Nivel): Estado {
 }
 
 export function App() {
-  const [tela, setTela] = useState<Tela>({ nome: "inicio" });
+  const [tela, setTela] = useState<Tela>(telaInicial);
   // O Nível escolhido no Início vale para a partida (e para "Jogar de novo").
   const [nivel, setNivel] = useState<Nivel>("facil");
   const [retrospecto, setRetrospecto] = useState(lerRetrospecto);
   // A partida solo que ficou no meio (aba fechada, celular travou...).
   const [guardada, setGuardada] = useState(lerPartida);
+  const [apelidoGuardado, setApelidoGuardado] = useState(lerApelido);
+
+  useEffect(() => {
+    const caminho = caminhoDaTela(tela);
+    if (location.pathname !== caminho) history.replaceState(null, "", caminho);
+  }, [tela]);
+
+  /** Depois do Apelido: entra na sala do código, ou cria uma sala nova. */
+  async function confirmarApelido(codigo: string | null, apelido: string) {
+    guardarApelido(apelido);
+    setApelidoGuardado(apelido);
+    try {
+      const daSala = codigo ?? (await criarSala());
+      setTela({ nome: "sala", codigo: daSala, apelido, id: identificadorSecreto() });
+    } catch {
+      setTela({ nome: "apelido", codigo, aviso: PRECISA_DE_INTERNET });
+    }
+  }
 
   /** Uma partida acabou: soma no Retrospecto e apaga a partida guardada. */
   function registrarFim(estado: Estado) {
@@ -93,6 +143,7 @@ export function App() {
             jogar();
           }}
           aoComoJogar={() => setTela({ nome: "comoJogar" })}
+          aoJogarComAmigos={() => setTela({ nome: "amigos" })}
         />
       );
     case "comoJogar":
@@ -119,6 +170,36 @@ export function App() {
           aoJogarDeNovo={jogar}
           aoVoltar={() => setTela({ nome: "inicio" })}
           aoMomento={sentir}
+        />
+      );
+    case "amigos":
+      return (
+        <JogarComAmigos
+          aoCriar={() => setTela({ nome: "apelido", codigo: null, aviso: null })}
+          aoEntrar={(codigo) => setTela({ nome: "apelido", codigo, aviso: null })}
+          aoVoltar={() => setTela({ nome: "inicio" })}
+        />
+      );
+    case "apelido":
+      return (
+        <Apelido
+          key={tela.codigo}
+          codigo={tela.codigo}
+          apelidoGuardado={apelidoGuardado}
+          aviso={tela.aviso}
+          aoConfirmar={(apelido) => confirmarApelido(tela.codigo, apelido)}
+          aoVoltar={() => setTela(tela.codigo ? { nome: "inicio" } : { nome: "amigos" })}
+        />
+      );
+    case "sala":
+      return (
+        <TelaDaSala
+          key={tela.codigo}
+          codigo={tela.codigo}
+          apelido={tela.apelido}
+          id={tela.id}
+          aoSair={() => setTela({ nome: "inicio" })}
+          aoCriarSala={() => setTela({ nome: "apelido", codigo: null, aviso: null })}
         />
       );
   }

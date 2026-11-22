@@ -1,0 +1,136 @@
+/* Jogar com amigos, Apelido e tela da sala (ticket #37). */
+.amigos__escolha,
+.amigos__codigo {
+  width: 100%;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.amigos__aviso {
+  margin: 0;
+  font-weight: 700;
+  color: var(--destaque);
+}
+
+.amigos__sala {
+  margin: 0;
+  color: var(--texto-suave);
+  letter-spacing: 0.08em;
+}
+
+.amigos__recusa {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.campo {
+  display: grid;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.campo__rotulo {
+  color: var(--texto-suave);
+}
+
+.campo__entrada {
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0 1rem;
+  border: 2px solid var(--texto-suave);
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  font-size: 1.25rem;
+}
+
+.campo__entrada:focus-visible {
+  outline: none;
+  border-color: var(--destaque);
+}
+
+.campo__entrada--codigo {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+
+.botao:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.sala {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.sala p {
+  margin: 0;
+}
+
+.sala__rotulo,
+.sala__aviso {
+  color: var(--texto-suave);
+}
+
+.sala__codigo {
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.15em;
+  color: var(--destaque);
+}
+
+.sala__pessoas {
+  margin: 0.5rem 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: mesa;
+  display: grid;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.sala__pessoa {
+  counter-increment: mesa;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: #ffffff10;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.sala__pessoa::before {
+  content: counter(mesa) ".";
+  color: var(--texto-suave);
+  font-weight: 400;
+}
+
+.sala__pessoa--sem-conexao {
+  opacity: 0.5;
+}
+
+.sala__apelido {
+  overflow-wrap: anywhere;
+}
+
+.sala__marca {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--texto-suave);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--texto-suave);
+}
