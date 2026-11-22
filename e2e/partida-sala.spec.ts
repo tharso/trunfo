@@ -83,7 +83,10 @@ test("duas pessoas jogam uma partida inteira pela sala até o Fim", async ({ bro
   // Partidas do multiplayer não entram no Retrospecto.
   await bia.getByRole("button", { name: "Sair" }).click();
   await expect(bia.getByRole("heading", { level: 1, name: "Super Trunfo Ciclismo" })).toBeVisible();
+  // A sala cria a partida com o Nível "normal" por dentro: nenhum Nível conta a partida.
   await expect(bia.getByText("Fácil: você 0 × 0 computador", { exact: true })).toBeVisible();
+  await bia.getByText("Normal", { exact: true }).click();
+  await expect(bia.getByText("Normal: você 0 × 0 computador", { exact: true })).toBeVisible();
 });
 
 test("cada um no seu ritmo: quem é lento não trava quem escolhe", async ({ browser }) => {
