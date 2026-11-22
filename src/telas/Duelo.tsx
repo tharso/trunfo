@@ -169,8 +169,8 @@ interface FaixaProps {
 function Faixa({ carta, quem, pessoa, evento, k, pronto }: FaixaProps) {
   const { cores, iniciais } = aparencia(carta);
   const nota = evento.mesa.find((m) => m.pessoa === pessoa)?.nota ?? 0;
-  // O Super Trunfo enche a barra: ganha de qualquer carta (menos da Carta A).
-  const alvo = carta.superTrunfo ? 100 : nota;
+  // O Super Trunfo enche a barra quando ganhou por ser Super Trunfo; contra a Carta A, vale a nota.
+  const alvo = carta.superTrunfo && evento.motivo === "superTrunfo" ? 100 : nota;
   const vence = pronto && evento.vencedor === pessoa;
   const perde = pronto && evento.vencedor !== null && evento.vencedor !== pessoa;
   return (
