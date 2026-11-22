@@ -106,61 +106,7 @@ body {
   margin: 0;
 }
 
-.carta {
-  border-radius: 1rem;
-  background: #1e293b;
-  padding: 1rem;
-}
-
-.carta__nome {
-  margin: 0 0 0.75rem;
-  font-size: 1.5rem;
-}
-
-.carta__linhas {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.carta__linha {
-  width: 100%;
-  min-height: 3rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0 0.75rem;
-  border: 0;
-  border-radius: 0.5rem;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.carta__linha:disabled {
-  cursor: default;
-}
-
-.carta__linha--marcada {
-  background: #334155;
-  outline: 2px solid var(--destaque);
-}
-
-.carta__dica {
-  font-size: 0.8rem;
-  color: var(--destaque);
-}
-
-.carta__nota {
-  margin-left: auto;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
+/* A carta tem o próprio CSS: src/telas/Carta.css. */
 
 .resultado__etapa {
   font-size: 1.5rem;

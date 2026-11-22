@@ -4,8 +4,15 @@ import { expect, test } from "@playwright/test";
 // `?semente=231` fixa o sorteio (baralho, quem começa e as escolhas do Computador).
 // Com a pessoa escolhendo sempre a primeira linha (Sprint), essa semente acaba
 // em 20 rodadas. A semente só fixa o sorteio; quem decide as regras é o módulo.
-test("joga uma partida inteira contra o Computador até o Fim", async ({ page }) => {
+// A partida roda SEM INTERNET: a 1ª visita instala o service worker (PWA), depois
+// o teste corta a rede e recarrega. Assim o mesmo teste cobre o jogo e o offline.
+test("joga uma partida inteira contra o Computador até o Fim, sem internet", async ({ page, context }) => {
   await page.goto("/?semente=231");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+  await context.setOffline(true);
+  await page.reload();
   await page.getByRole("button", { name: "Jogar", exact: true }).click();
 
   const fim = page.getByRole("button", { name: "Jogar de novo" });
