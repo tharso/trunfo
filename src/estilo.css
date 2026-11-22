@@ -1,0 +1,479 @@
+/* Visual mínimo, mobile-first. As telas de verdade vêm em outros tickets. */
+:root {
+  --fundo: #0f172a;
+  --texto: #f8fafc;
+  --texto-suave: #94a3b8;
+  --destaque: #facc15;
+  --texto-no-destaque: #0f172a;
+  --largura-coluna: 28rem;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+/* Uma coluna estreita, centralizada no desktop. */
+.tela {
+  min-height: 100dvh;
+  max-width: var(--largura-coluna);
+  margin: 0 auto;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+}
+
+.inicio {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  text-align: center;
+}
+
+.inicio__titulo {
+  margin: 0;
+  font-size: 2.25rem;
+  line-height: 1.1;
+}
+
+.botao {
+  width: 100%;
+  min-height: 3.5rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--destaque);
+  color: var(--texto-no-destaque);
+  font: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.botao:focus-visible {
+  outline: 3px solid var(--texto);
+  outline-offset: 3px;
+}
+
+.botao--secundario {
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--texto-suave);
+}
+
+/* Partida (docs/spec.md, parte 6). */
+.partida {
+  gap: 1rem;
+}
+
+.rodada,
+.fim {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fim {
+  justify-content: center;
+  text-align: center;
+}
+
+.rodada__aviso,
+.fim p {
+  margin: 0;
+}
+
+/* A carta tem o próprio CSS: src/telas/Carta.css. */
+
+.fim__titulo {
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Placar em cabo de guerra: verde = você, amarelo = monte de empate, vermelho = Computador. */
+.placar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.placar__linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.placar__rodada {
+  color: var(--texto-suave);
+  font-weight: 400;
+}
+
+.placar__cabo {
+  display: flex;
+  height: 0.875rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #334155;
+}
+
+.placar__cabo i {
+  display: block;
+  height: 100%;
+  transition: width 0.8s ease-in-out;
+}
+
+.placar__voce {
+  background: #1b8a3a;
+}
+.placar__empate {
+  background: #d9b44a;
+}
+.placar__computador {
+  background: #c62828;
+}
+
+/* Sorteio. */
+.sorteio {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.sorteio p {
+  margin: 0;
+}
+
+.sorteio__nivel,
+.sorteio__texto {
+  color: var(--texto-suave);
+  line-height: 1.5;
+}
+
+.sorteio__moeda {
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: var(--destaque);
+  box-shadow: 0 6px 20px #0006;
+  animation: aparece 0.25s ease-out both;
+}
+
+.sorteio__titulo {
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Duelo: fundo escuro, ocupa a janela (no celular e no desktop). */
+.duelo {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow-y: auto;
+  background: #070b12;
+  color: #fff;
+}
+
+.duelo__conteudo {
+  position: relative;
+  max-width: 45rem;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1rem max(1.5rem, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.1rem;
+}
+
+.duelo__pular {
+  position: absolute;
+  right: 1rem;
+  top: max(1rem, env(safe-area-inset-top));
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #fff5;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.duelo__etapa {
+  margin: 0;
+  font-size: 2rem;
+  text-align: center;
+  animation: aparece 0.25s ease-out both;
+}
+
+.duelo__sub,
+.duelo__dica {
+  margin: 0;
+  text-align: center;
+  color: #fffa;
+  font-size: 0.9rem;
+}
+
+.duelo__dica {
+  font-size: 0.8rem;
+  color: #fff7;
+}
+
+.duelo__faixa {
+  padding: 0.75rem;
+  border-radius: 1rem;
+  background: #ffffff10;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.duelo__faixa--vence {
+  box-shadow: inset 0 0 0 3px #3ddc84;
+  transform: scale(1.02);
+}
+
+.duelo__faixa--perde {
+  opacity: 0.6;
+}
+
+.duelo__quem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+}
+
+.duelo__avatar {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 900;
+  background: var(--equipe-1);
+  box-shadow: 0 0 0 3px var(--equipe-2);
+  text-shadow: 0 1px 2px #0008;
+}
+
+.duelo__pessoa {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #fff9;
+}
+
+.duelo__nota {
+  margin-left: auto;
+  font-size: 2.1rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.duelo__pista {
+  height: 1.1rem;
+  margin-top: 0.6rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #ffffff18;
+}
+
+.duelo__pista i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.duelo__resultado {
+  min-height: 5.5rem;
+  text-align: center;
+}
+
+.duelo__resultado p {
+  margin: 0.25rem 0 0;
+  color: #fffc;
+}
+
+.duelo__titulo {
+  margin: 0;
+  font-size: 1.75rem;
+  animation: sobe 0.25s ease-out both;
+}
+
+.duelo__botoes {
+  display: grid;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: var(--largura-coluna);
+  margin: 0 auto;
+}
+
+/* Antes do resultado, os botões guardam o lugar mas não aparecem nem recebem toque. */
+.duelo:not(.duelo--pronto) .duelo__botoes {
+  visibility: hidden;
+}
+
+.duelo--pronto .duelo__botoes {
+  animation: sobe 0.25s ease-out both;
+}
+
+/* Ver as duas cartas: lado a lado quando cabe, uma embaixo da outra no celular. */
+.duelo__cartas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1rem;
+}
+
+.duelo__cartas .carta-e-etapa {
+  color: #fff;
+}
+
+@keyframes aparece {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes sobe {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.rodape {
+  padding-top: 1rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+/* Selos de Super Trunfo e Carta A (ticket 23). */
+.selo {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.selo--super-trunfo {
+  background: var(--destaque);
+  color: var(--texto-no-destaque);
+}
+.selo--carta-a {
+  background: var(--texto);
+  color: var(--fundo);
+}
+
+/* Início: escolha do Nível (ticket 26). */
+.niveis {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.niveis__titulo {
+  padding: 0 0 0.5rem;
+  color: var(--texto-suave);
+}
+
+.nivel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border: 2px solid var(--texto-suave);
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.nivel--marcado {
+  border-color: var(--destaque);
+}
+
+.nivel:has(input:focus-visible) {
+  outline: 3px solid var(--texto);
+  outline-offset: 3px;
+}
+
+.nivel input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nivel__nome {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.nivel__explicacao {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+/* Como jogar (ticket 26). */
+.como-jogar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  line-height: 1.5;
+}
+
+.como-jogar__titulo {
+  margin: 0 0 0.5rem;
+}
+
+.como-jogar h2 {
+  margin: 1rem 0 0;
+  font-size: 1.1rem;
+  color: var(--destaque);
+}
+
+.como-jogar p {
+  margin: 0;
+}
+
+.como-jogar .botao {
+  margin-top: 1.5rem;
+}

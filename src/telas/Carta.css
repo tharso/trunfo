@@ -1,0 +1,187 @@
+/* A carta em pé (docs/spec.md, parte 5). Cores da equipe chegam por variáveis:
+   --equipe-1, --equipe-2, --texto-topo, --marcacao, --texto-marcacao. */
+
+.carta-e-etapa {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.carta {
+  --tinta: #14181f;
+  --tinta-suave: #5d6672;
+  --linha: #d5dae0;
+  border-radius: 1.375rem;
+  overflow: hidden;
+  background: #fff;
+  color: var(--tinta);
+  border: 3px solid var(--equipe-1);
+  box-shadow: 0 6px 20px #0006;
+}
+
+/* Topo: faixa com as cores da equipe, iniciais, bandeira e código. */
+.carta__topo {
+  position: relative;
+  height: 10.5rem;
+  background: linear-gradient(
+    135deg,
+    var(--equipe-1) 0 55%,
+    var(--equipe-2) 55% 70%,
+    var(--equipe-1) 70%
+  );
+}
+
+.carta__codigo {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 900;
+  box-shadow: 0 1px 3px #0004;
+}
+
+/* Espaço do selo (Super Trunfo, Carta A), centralizado no alto. */
+.carta__selo {
+  position: absolute;
+  left: 50%;
+  top: 0.75rem;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.carta__bandeira {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.5rem;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.carta__iniciais {
+  position: absolute;
+  left: 50%;
+  top: 2.5rem;
+  transform: translateX(-50%);
+  width: 6.5rem;
+  height: 6.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  /* Fundo opaco: a faixa diagonal não corta as iniciais. */
+  background: color-mix(in srgb, var(--equipe-1) 82%, var(--texto-topo));
+  border: 3px solid color-mix(in srgb, var(--texto-topo) 55%, transparent);
+  color: var(--texto-topo);
+  font-size: 2.25rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+/* 4 letras (MVDP) não cabem no círculo no tamanho normal. */
+.carta__iniciais--longas {
+  font-size: 1.75rem;
+}
+
+.carta__nome {
+  margin: 0;
+  padding: 0.625rem 0.875rem 0.125rem;
+  font-size: 1.375rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.carta__sub {
+  margin: 0;
+  padding: 0 0.875rem 0.625rem;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--tinta-suave);
+}
+
+/* As 6 linhas: ícone, nome, barra e a nota grande. A linha inteira é a área de toque. */
+.carta__linhas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.carta__linha {
+  width: 100%;
+  min-height: 3.25rem;
+  display: grid;
+  grid-template-columns: 1fr 3rem;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.875rem;
+  border: 0;
+  border-top: 1px solid var(--linha);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.carta__linha:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.carta__linha:focus-visible {
+  outline: 3px solid var(--marcacao);
+  outline-offset: -3px;
+}
+
+.carta__linha--marcada {
+  background: var(--marcacao);
+  color: var(--texto-marcacao);
+}
+
+.carta__atributo {
+  display: block;
+  font-weight: 700;
+}
+
+.carta__dica {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.carta__barra {
+  display: block;
+  height: 0.5rem;
+  margin-top: 0.25rem;
+  border-radius: 3px;
+  background: var(--linha);
+}
+
+.carta__linha--marcada .carta__barra {
+  background: color-mix(in srgb, var(--texto-marcacao) 25%, transparent);
+}
+
+.carta__barra i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.carta__nota {
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-align: right;
+}
+
+/* Texto da etapa, embaixo da carta. A altura fica reservada para a tela não pular. */
+.carta__etapa {
+  margin: 0;
+  min-height: 1.5rem;
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
