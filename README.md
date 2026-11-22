@@ -56,10 +56,11 @@ O jogo usa só 32 cartas (lista em `docs/spec.md`, parte 2). O arquivo que o jog
 
 ```bash
 uv run python scripts/gerar_baralho.py
-uv run --with pytest pytest scripts/tests   # testes do baralho
+uv run --with pytest pytest scripts/tests   # testes do gerador do baralho
 ```
 
 O script é determinístico: rodar de novo com os mesmos dados dá o mesmo arquivo (há um teste para isso).
+O lado do jogo confere o mesmo arquivo em `src/dados/baralho.test.ts` (roda no `npm test`).
 
 Entradas:
 
