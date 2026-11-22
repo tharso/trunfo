@@ -1,4 +1,15 @@
-# Super Trunfo Ciclismo — tabela base
+# Super Trunfo Ciclismo
+
+## O jogo (site)
+
+Node 22 (`.nvmrc`). Depois de `npm install`:
+
+- `npm run dev`: roda o site local.
+- `npm run build`: gera a versão de produção em `dist/`.
+- `npm run deploy`: gera e publica na Cloudflare (pede `npx wrangler login` antes, uma vez).
+- `npm test` (unidade), `npm run typecheck`, `npm run test:e2e` (Playwright; na 1ª vez, `npx playwright install chromium`).
+
+## Tabela base
 
 Os 180 primeiros do ranking individual UCI de 17/11/2026.
 
