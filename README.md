@@ -9,6 +9,13 @@ Node 22 (`.nvmrc`). Depois de `npm install`:
 - `npm run deploy`: gera e publica na Cloudflare (pede `npx wrangler login` antes, uma vez).
 - `npm test` (unidade), `npm run typecheck`, `npm run test:e2e` (Playwright; na 1ª vez, `npx playwright install chromium`).
 
+As regras ficam em `src/regras/` (TypeScript puro, sem tela): `criarPartida` e `aplicar(estado, ação)`,
+que devolve o novo estado e os eventos. A tela (`src/telas/`) só manda ações e desenha.
+
+**Sorteio fixo pela URL**: `?semente=231` fixa o sorteio da partida (embaralhar, quem começa e as
+escolhas do Computador). Sem o parâmetro, a semente é aleatória. O teste Playwright usa isso para
+jogar sempre a mesma partida (curta). A semente não muda regra nenhuma, só o resultado do sorteio.
+
 ## Tabela base
 
 Os 180 primeiros do ranking individual UCI de 17/11/2026.

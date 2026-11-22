@@ -1,5 +1,5 @@
 import { render } from "preact";
-import { Inicio } from "./telas/Inicio";
+import { App } from "./telas/App";
 import "./estilo.css";
 
-render(<Inicio />, document.getElementById("app")!);
+render(<App />, document.getElementById("app")!);
