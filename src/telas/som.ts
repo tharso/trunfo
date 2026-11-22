@@ -10,14 +10,14 @@ let contexto: AudioContext | null = null;
 /** Osciladores do tique-taque em curso, para parar quando o duelo é pulado. */
 let relogio: OscillatorNode[] = [];
 
-function ctx(): AudioContext | null {
+function contextoDeAudio(): AudioContext | null {
   if (!contexto) {
-    const C: Construtor | undefined =
+    const ConstrutorDoContexto: Construtor | undefined =
       typeof window === "undefined"
         ? undefined
         : (window.AudioContext ?? (window as unknown as { webkitAudioContext?: Construtor }).webkitAudioContext);
-    if (!C) return null;
-    contexto = new C();
+    if (!ConstrutorDoContexto) return null;
+    contexto = new ConstrutorDoContexto();
   }
   if (contexto.state === "suspended") void contexto.resume().catch(() => {});
   return contexto;
@@ -25,46 +25,52 @@ function ctx(): AudioContext | null {
 
 interface Opcoes {
   tipo?: OscillatorType;
-  vol?: number;
+  volume?: number;
   /** Segundos a partir de agora. */
   quando?: number;
   /** Frequência final (desliza até ela). */
   ate?: number;
 }
 
-function tom(f: number, dur: number, { tipo = "sine", vol = 0.18, quando = 0, ate }: Opcoes = {}): OscillatorNode | null {
-  const c = ctx();
-  if (!c) return null;
-  const t = c.currentTime + quando;
-  const o = c.createOscillator();
-  const g = c.createGain();
-  o.type = tipo;
-  o.frequency.setValueAtTime(f, t);
-  if (ate) o.frequency.exponentialRampToValueAtTime(ate, t + dur);
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(vol, t + 0.01);
-  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-  o.connect(g).connect(c.destination);
-  o.start(t);
-  o.stop(t + dur + 0.02);
-  return o;
+/** Um tom de `frequencia` Hz por `duracao` segundos. */
+function tom(
+  frequencia: number,
+  duracao: number,
+  { tipo = "sine", volume = 0.18, quando = 0, ate }: Opcoes = {},
+): OscillatorNode | null {
+  const audio = contextoDeAudio();
+  if (!audio) return null;
+  const inicio = audio.currentTime + quando;
+  const oscilador = audio.createOscillator();
+  const ganho = audio.createGain();
+  oscilador.type = tipo;
+  oscilador.frequency.setValueAtTime(frequencia, inicio);
+  if (ate) oscilador.frequency.exponentialRampToValueAtTime(ate, inicio + duracao);
+  ganho.gain.setValueAtTime(0, inicio);
+  ganho.gain.linearRampToValueAtTime(volume, inicio + 0.01);
+  ganho.gain.exponentialRampToValueAtTime(0.001, inicio + duracao);
+  oscilador.connect(ganho).connect(audio.destination);
+  oscilador.start(inicio);
+  oscilador.stop(inicio + duracao + 0.02);
+  return oscilador;
 }
 
-function notas(fs: number[], dur: number, passo: number) {
-  fs.forEach((f, i) => tom(f, dur, { tipo: "triangle", quando: i * passo }));
+/** Uma sequência de notas, uma a cada `passo` segundos. */
+function notas(frequencias: number[], duracao: number, passo: number) {
+  frequencias.forEach((frequencia, i) => tom(frequencia, duracao, { tipo: "triangle", quando: i * passo }));
 }
 
 const SONS: Record<Som, (duracaoMs: number) => void> = {
-  tique: () => tom(1200, 0.04, { tipo: "square", vol: 0.06 }),
+  tique: () => tom(1200, 0.04, { tipo: "square", volume: 0.06 }),
   largada: () => {
-    tom(440, 0.12, { tipo: "square", vol: 0.08 });
-    tom(880, 0.2, { tipo: "square", vol: 0.08, quando: 0.14 });
+    tom(440, 0.12, { tipo: "square", volume: 0.08 });
+    tom(880, 0.2, { tipo: "square", volume: 0.08, quando: 0.14 });
   },
   tiqueTaque: (duracaoMs) => {
-    const d = duracaoMs / 1000;
-    for (let t = 0; t < d; t += 0.18) {
-      const o = tom(t % 0.36 < 0.18 ? 1000 : 800, 0.03, { tipo: "square", vol: 0.05, quando: t });
-      if (o) relogio.push(o);
+    const segundos = duracaoMs / 1000;
+    for (let quando = 0; quando < segundos; quando += 0.18) {
+      const oscilador = tom(quando % 0.36 < 0.18 ? 1000 : 800, 0.03, { tipo: "square", volume: 0.05, quando });
+      if (oscilador) relogio.push(oscilador);
     }
   },
   ganhar: () => notas([523, 659, 784], 0.18, 0.09),
@@ -85,9 +91,9 @@ export function tocar(som: Som, duracaoMs = 0): void {
 
 /** Para o tique-taque que ainda está tocando (o duelo foi pulado ou acabou). */
 export function pararTiqueTaque(): void {
-  for (const o of relogio) {
+  for (const oscilador of relogio) {
     try {
-      o.stop();
+      oscilador.stop();
     } catch {
       // Já parou.
     }

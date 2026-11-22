@@ -32,9 +32,9 @@ interface Props {
 }
 
 /** Sai rápido e chega devagar, como o protótipo. */
-function suave(k: number): number {
-  const t = Math.min(1, Math.max(0, k));
-  return 1 - (1 - t) ** 3;
+function suave(progresso: number): number {
+  const limitado = Math.min(1, Math.max(0, progresso));
+  return 1 - (1 - limitado) ** 3;
 }
 
 export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
@@ -124,13 +124,13 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
         <p class="duelo__sub">
           {quemEscolheu} {NOME_DO_ATRIBUTO[evento.atributo]}
         </p>
-        <Faixa carta={cartas.voce} quem="Você" pessoa={VOCE} evento={evento} k={suave(tempo / BARRA_MS)} pronto={pronto} />
+        <Faixa carta={cartas.voce} quem="Você" pessoa={VOCE} evento={evento} crescimento={suave(tempo / BARRA_MS)} pronto={pronto} />
         <Faixa
           carta={cartas.computador}
           quem="Computador"
           pessoa={COMPUTADOR}
           evento={evento}
-          k={suave((tempo - BARRA_MS) / BARRA_MS)}
+          crescimento={suave((tempo - BARRA_MS) / BARRA_MS)}
           pronto={pronto}
         />
         {!pronto && <p class="duelo__dica">toque na tela para pular</p>}
@@ -162,11 +162,11 @@ interface FaixaProps {
   pessoa: number;
   evento: EventoDaRodada;
   /** Quanto a barra já cresceu, de 0 a 1. */
-  k: number;
+  crescimento: number;
   pronto: boolean;
 }
 
-function Faixa({ carta, quem, pessoa, evento, k, pronto }: FaixaProps) {
+function Faixa({ carta, quem, pessoa, evento, crescimento, pronto }: FaixaProps) {
   const { cores, iniciais } = aparencia(carta);
   const nota = evento.mesa.find((m) => m.pessoa === pessoa)?.nota ?? 0;
   // O Super Trunfo enche a barra quando ganhou por ser Super Trunfo; contra a Carta A, vale a nota.
@@ -186,10 +186,10 @@ function Faixa({ carta, quem, pessoa, evento, k, pronto }: FaixaProps) {
           {carta.nome}
           <span class="duelo__pessoa">{quem}</span>
         </span>
-        <span class="duelo__nota">{Math.round(nota * k)}</span>
+        <span class="duelo__nota">{Math.round(nota * crescimento)}</span>
       </div>
       <div class="duelo__pista" aria-hidden="true">
-        <i style={{ width: `${alvo * k}%`, background: corDaNota(nota) }} />
+        <i style={{ width: `${alvo * crescimento}%`, background: corDaNota(nota) }} />
       </div>
     </div>
   );
