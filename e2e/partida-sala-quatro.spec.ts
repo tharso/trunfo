@@ -95,8 +95,8 @@ test("quatro pessoas jogam até o fim, e quem fica sem cartas sai e continua ven
     }
 
     if (rodada === 8) {
-      // Caio ficou sem cartas: fica olhando, sem carta própria.
-      await expect(caio.getByText("Você ficou sem cartas.")).toBeVisible();
+      // Caio ficou sem cartas: fica De fora, olhando, sem carta própria.
+      await expect(caio.getByText("De fora, só olhando. Você entra na próxima partida.")).toBeVisible();
       await expect(caio.getByRole("region", { name: /^Sua carta: / })).toHaveCount(0);
     }
   }

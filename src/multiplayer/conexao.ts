@@ -21,6 +21,10 @@ export function conectarSala(codigo: string): PartySocket {
     host: location.host,
     protocol: location.protocol === "https:" ? "wss" : "ws",
     basePath: `sala/${encodeURIComponent(codigo)}`,
+    // Quem cai tem 60 s para voltar (spec, item 14): tentar de novo a cada 4 s
+    // no máximo (o padrão do partysocket chega a 10 s).
+    minReconnectionDelay: 1000,
+    maxReconnectionDelay: 4000,
   });
 }
 
@@ -46,6 +50,8 @@ export function useSala(codigo: string, apelido: string, id: string) {
   useEffect(() => {
     const conexao = conectarSala(codigo);
     socket.current = conexao;
+    /** Fechada de vez (saiu da tela ou a sala recusou): não reconecta mais. */
+    let fechada = false;
     conexao.addEventListener("open", () => {
       conexao.send(JSON.stringify({ tipo: "entrar", id, apelido } satisfies MensagemDoCliente));
     });
@@ -56,6 +62,7 @@ export function useSala(codigo: string, apelido: string, id: string) {
       const mensagem = lerMensagemDaSala(evento.data);
       if (mensagem === null) return;
       if (mensagem.tipo === "recusada") {
+        fechada = true;
         conexao.close();
         setSituacao({ tipo: "recusada", motivo: mensagem.motivo });
       } else if (mensagem.tipo === "sala") {
@@ -66,7 +73,21 @@ export function useSala(codigo: string, apelido: string, id: string) {
         setFila((antes) => receberNaFila(antes, mensagem));
       }
     });
-    return () => conexao.close();
+    // O navegador avisa que a rede caiu: um WebSocket aberto pode ficar "pendurado"
+    // sem o servidor saber. Fechar agora faz a sala ver a queda (a partida para,
+    // spec item 14); quando a rede volta, reconecta na hora, sem esperar o
+    // intervalo do partysocket.
+    const reconectar = () => {
+      if (!fechada) conexao.reconnect();
+    };
+    addEventListener("offline", reconectar);
+    addEventListener("online", reconectar);
+    return () => {
+      fechada = true;
+      removeEventListener("offline", reconectar);
+      removeEventListener("online", reconectar);
+      conexao.close();
+    };
   }, [codigo, apelido, id]);
 
   function enviar(mensagem: MensagemDoCliente) {
