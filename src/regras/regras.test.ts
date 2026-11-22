@@ -182,12 +182,65 @@ describe("Computador", () => {
     const escolhas = new Set<string>();
     let sorteio = 1;
     for (let i = 0; i < 60; i++) {
-      const r = escolhaDoComputador(cartaDele, "facil", sorteio);
+      const r = escolhaDoComputador(cartaDele, "facil", sorteio, baralho);
       escolhas.add(r.atributo);
       sorteio = r.sorteio;
     }
     expect(escolhas).toEqual(new Set(ATRIBUTOS));
-    expect(escolhaDoComputador(cartaDele, "facil", 42)).toEqual(escolhaDoComputador(cartaDele, "facil", 42));
+    expect(escolhaDoComputador(cartaDele, "facil", 42, baralho)).toEqual(
+      escolhaDoComputador(cartaDele, "facil", 42, baralho),
+    );
+  });
+
+  // Baralho de teste: a carta do Computador (C) e as outras.
+  // Montanha 80 ganha de 3 cartas; Sprint 60 ganha de 2; os outros 50 ganham de 1 (de D).
+  const C = carta("C", 50, { sprint: 60, montanha: 80 });
+  const outras = [carta("D", 10), carta("E", 55, { montanha: 70 }), carta("F", 55, { sprint: 70, montanha: 79 })];
+
+  it("Normal: escolhe o atributo em que a carta ganha de mais cartas do baralho", () => {
+    const r = escolhaDoComputador(C, "normal", 7, [C, ...outras]);
+    expect(r.atributo).toBe("montanha");
+  });
+
+  it("Normal: nota igual não conta como ganhar", () => {
+    // Sprint 90 ganha de 2 cartas; Voltas 50 empata com as duas (não ganha de nenhuma).
+    const X = carta("X", 50, { sprint: 90 });
+    const baralhoX = [X, carta("Y", 50, { sprint: 89 }), carta("Z", 50, { sprint: 10 })];
+    for (const sorteio of [1, 2, 3, 42]) expect(escolhaDoComputador(X, "normal", sorteio, baralhoX).atributo).toBe("sprint");
+  });
+
+  it("Normal: empate entre atributos é sorteado, só entre os empatados, e o sorteio fixo repete", () => {
+    // Sprint e Pavê ganham das 2 outras cartas; os outros atributos, de nenhuma.
+    const X = carta("X", 10, { sprint: 90, pave: 90 });
+    const baralhoX = [X, carta("Y", 50), carta("Z", 50)];
+    const escolhas = new Set<string>();
+    let sorteio = 1;
+    for (let i = 0; i < 40; i++) {
+      const r = escolhaDoComputador(X, "normal", sorteio, baralhoX);
+      escolhas.add(r.atributo);
+      expect(r.sorteio).not.toBe(sorteio);
+      sorteio = r.sorteio;
+    }
+    expect(escolhas).toEqual(new Set(["sprint", "pave"]));
+    expect(escolhaDoComputador(X, "normal", 42, baralhoX)).toEqual(escolhaDoComputador(X, "normal", 42, baralhoX));
+  });
+
+  it("Normal: com o baralho de verdade, escolhe o melhor atributo da carta", () => {
+    // Para cada carta, a escolha ganha de pelo menos tantas cartas quanto qualquer outro atributo.
+    const ganhaDe = (c: Carta, a: (typeof ATRIBUTOS)[number]) =>
+      baralho.filter((o) => o.codigo !== c.codigo && c.notas[a] > o.notas[a]).length;
+    for (const c of baralho) {
+      const { atributo } = escolhaDoComputador(c, "normal", 3, baralho);
+      expect(ganhaDe(c, atributo)).toBe(Math.max(...ATRIBUTOS.map((a) => ganhaDe(c, a))));
+    }
+  });
+
+  it("Normal: na partida, o Computador escolhe pelo nível da partida", () => {
+    const C2 = carta("C", 50, { montanha: 99 });
+    const estado = { ...partidaArrumada([[carta("H", 60, { montanha: 98 })], [C2]], 1), nivel: "normal" as const };
+    expect(atributoDoComputador(estado)).toBe("montanha");
+    const { eventos } = aplicar(estado, { tipo: "computadorEscolhe" });
+    expect(eventos[0]).toMatchObject({ tipo: "rodada", atributo: "montanha" });
   });
 });
 
