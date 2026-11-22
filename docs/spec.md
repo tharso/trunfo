@@ -12,7 +12,7 @@ Vocabulário: [`GLOSSARY.md`](../GLOSSARY.md). Decisões difíceis de desfazer: 
 - Base: o Super Trunfo clássico, com ciclistas profissionais.
 - Dois modos:
   - **Modo solo**: você contra o **Computador**. É a **Primeira versão**.
-  - **Multiplayer**: 2 a 4 pessoas numa **Sala**, cada uma no seu celular. Vem depois.
+  - **Multiplayer**: 2 a 4 pessoas numa **Sala**, cada uma no seu celular. É a segunda versão.
 - Nome: **Super Trunfo Ciclismo**. A tela de Início tem um aviso de jogo de fã no rodapé: "Jogo de fã, sem fins lucrativos. Sem ligação com a Grow, a UCI, as equipes ou os ciclistas." Ver [ADR 0003](adr/0003-nome-super-trunfo.md) e [Nome do jogo](https://github.com/tharso/trunfo/issues/11).
 
 ## 2. Baralho
@@ -162,29 +162,45 @@ Detalhe: [Fim de jogo e reinício](https://github.com/tharso/trunfo/issues/13).
   - **Sair no meio conta como derrota**: pelo menu ☰, ou com "Nova partida" quando há uma partida guardada.
 - **Partida guardada**: o celular guarda a partida solo depois de cada rodada. Se a aba fecha ou o celular trava, o Início mostra "Continuar partida?". Só a saída pelo menu ☰ acaba a partida de vez.
 
-## 9. Multiplayer (não entra na primeira versão)
+## 9. Multiplayer (segunda versão)
 
-Detalhe: [Salas do multiplayer](https://github.com/tharso/trunfo/issues/12) e [Fim de jogo e reinício](https://github.com/tharso/trunfo/issues/13). As regras da parte 3 valem aqui.
+Detalhe: [Salas do multiplayer](https://github.com/tharso/trunfo/issues/12), [Fim de jogo e reinício](https://github.com/tharso/trunfo/issues/13) e a conversa de 22/11/2026 sobre a segunda versão. As regras da parte 3 valem aqui.
+
+A segunda versão entrega esta parte inteira de uma vez. A construção vai em fatias, mas só vai para o público quando tudo estiver pronto.
 
 ### Entrar na sala
-1. Quem cria a sala é o **Anfitrião**. A sala tem um código de 4 letras (sem O/0, I/1) e um link com o código.
-2. Cada pessoa digita um **Apelido**. O celular guarda o apelido. Apelido repetido recebe um número ("Ana 2").
-3. O Anfitrião toca em "Começar" quando a sala tem de 2 a 4 pessoas. Durante a partida, ninguém entra.
-4. **Ordem da mesa** = ordem de entrada na sala. A 1ª rodada continua sorteada.
+1. O Início ganha o botão **"Jogar com amigos"**. Ele abre uma tela com "Criar sala" e "Entrar com código".
+2. Quem cria a sala é o **Anfitrião**. O jogo cria o código da sala: **3 letras** (sem O e I). O Anfitrião não escolhe o código. Todas as pessoas usam o mesmo código.
+3. A sala também tem um link com o código. O link pula a tela de "Jogar com amigos" e vai direto para o Apelido. O código serve para quem não tem WhatsApp: a pessoa abre o jogo, toca em "Entrar com código" e digita as 3 letras.
+4. Cada pessoa digita um **Apelido**. O celular guarda o apelido. Apelido repetido recebe um número ("Ana 2").
+5. **Tela da sala**: o código em letras grandes, o botão "Mandar link" (abre o menu de compartilhar do celular) e a lista de apelidos na ordem da mesa. Só o Anfitrião vê "Começar". As outras pessoas veem "Esperando o Anfitrião começar…".
+6. O Anfitrião toca em "Começar" quando a sala tem de 2 a 4 pessoas. Durante a partida, ninguém entra.
+7. **Ordem da mesa** = ordem de entrada na sala. A 1ª rodada continua sorteada.
+8. **Sem internet**: "Jogar com amigos" mostra "Precisa de internet". O modo solo continua normal.
 
 ### Durante a partida
-5. **Queda de rede**: a partida para e espera até 60 s. Depois, a pessoa sai e o jogo continua sem ela. O Anfitrião tem o botão "Tirar" para usar antes dos 60 s.
-6. **Saída no meio**: as cartas da pessoa saem do jogo e não vão para ninguém. Com 2 pessoas, quem fica ganha.
-7. **Quem escolhe demora**: sem relógio. Depois de 30 s, os outros veem "Cutucar", que faz o celular da pessoa vibrar.
-8. **Anfitrião cai ou sai**: o papel passa para a próxima pessoa da ordem da mesa.
-9. **Fechar a aba e abrir de novo**: em até 60 s, conta como queda de rede, e a pessoa volta com as mesmas cartas. Depois de 60 s, ela já saiu.
+9. **Joga limpo**: a sala guarda a partida. Cada celular recebe só a carta de cima da própria pessoa. As cartas das outras pessoas aparecem só no duelo.
+10. **Quem não escolhe**: vê a sua carta e "Ana está escolhendo…". Depois vê a linha marcada, "Ana escolheu Montanha" e o botão "Mostrar cartas!", como no modo solo.
+11. **Cada um no seu ritmo**: cada celular mostra o duelo e o "Próxima rodada" no seu ritmo. Se a próxima escolha chega antes de a pessoa tocar em "Próxima rodada", ela espera na fila. Quem escolhe só escolhe depois de tocar no seu próprio "Próxima rodada".
+12. **Duelo com 3 ou 4 pessoas**: uma faixa por pessoa, com o apelido. A sua barra cresce primeiro (1,2 s). Depois, as barras das outras pessoas crescem juntas (1,2 s). O tempo total fica em ~3 s.
+13. **Placar com 3 ou 4 pessoas**: o cabo de guerra vira uma barra dividida, uma parte por pessoa. A sua parte é verde e fica sempre na esquerda. O monte de empate é amarelo. As outras pessoas ficam em tons neutros, com as iniciais do apelido.
+14. **Queda de rede**: a partida para e espera até 60 s. Depois, a pessoa sai e o jogo continua sem ela. O Anfitrião tem o botão "Tirar" para usar antes dos 60 s.
+15. **Saída no meio**: as cartas da pessoa saem do jogo e não vão para ninguém. Com 2 pessoas, quem fica ganha.
+16. **Quem escolhe demora**: sem relógio. Depois de 30 s, os outros veem "Cutucar", que faz o celular da pessoa vibrar.
+17. **Anfitrião cai ou sai**: o papel passa para a próxima pessoa da ordem da mesa.
+18. **Fechar a aba e abrir de novo**: em até 60 s, conta como queda de rede, e a pessoa volta com as mesmas cartas. Depois de 60 s, ela já saiu.
+19. **De fora**: quem saiu da partida fica na sala. Vê o placar e o duelo de cada rodada, sem carta própria. O texto no topo diz "De fora, só olhando. Você entra na próxima partida."
+
+### Fim
+20. A tela de fim mostra quem ganhou e uma lista com todas as pessoas, em ordem de cartas no monte. Quem saiu fica no fim da lista, com "saiu".
+21. O Anfitrião vê "Jogar de novo". Todas as pessoas veem "Sair".
 
 ### Vida da sala
-10. A sala fecha 10 min depois que a última pessoa sai. Um link velho mostra "Esta sala já acabou" e um botão "Criar sala".
-11. "Jogar de novo": o Anfitrião começa uma nova partida na mesma sala, com quem ficou. Quem quer ir embora toca em "Sair".
-12. Quem saiu de uma partida fica na sala olhando e entra na próxima. O celular guarda um identificador secreto que mostra que é a mesma pessoa.
-13. Gente nova entra entre partidas se a sala tem menos de 4 pessoas, e vai para o fim da ordem da mesa.
-14. Partidas do multiplayer **não entram** no retrospecto.
+22. A sala fecha 10 min depois que a última pessoa sai. Um link velho mostra "Esta sala já acabou" e um botão "Criar sala".
+23. "Jogar de novo": o Anfitrião começa uma nova partida na mesma sala, com quem ficou.
+24. Quem está de fora entra na próxima partida. O celular guarda um identificador secreto que mostra que é a mesma pessoa.
+25. Gente nova entra entre partidas se a sala tem menos de 4 pessoas, e vai para o fim da ordem da mesa.
+26. Partidas do multiplayer **não entram** no retrospecto.
 
 ## 10. Tecnologia
 

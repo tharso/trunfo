@@ -16,6 +16,10 @@ _Avoid_: stat, característica
 O menor jogo que vale publicar: o modo solo contra o computador.
 _Avoid_: MVP, v1
 
+**Segunda versão**:
+O multiplayer: de 2 a 4 pessoas numa sala, cada uma no seu celular.
+_Avoid_: v2
+
 **Partida**:
 Um jogo completo, do sorteio inicial até o fim. Acaba quando uma pessoa tem todas as cartas ou quando chega o limite de rodadas.
 _Avoid_: jogo, sessão
@@ -53,7 +57,7 @@ O adversário do modo solo. Joga limpo: vê só a carta de cima do próprio mont
 _Avoid_: bot, IA, CPU
 
 **Sala**:
-O lugar onde 2 a 4 pessoas se juntam para jogar uma partida juntas, cada uma no seu celular. Tem um código de 4 letras e um link.
+O lugar onde 2 a 4 pessoas se juntam para jogar uma partida juntas, cada uma no seu celular. Tem um código de 3 letras, criado pelo jogo, e um link.
 _Avoid_: lobby, mesa, servidor
 
 **Anfitrião**:
@@ -63,6 +67,10 @@ _Avoid_: host, dono, admin
 **Apelido**:
 O nome que uma pessoa digita ao entrar na sala. Não tem login; o celular lembra o apelido.
 _Avoid_: usuário, conta, nick
+
+**De fora**:
+Quem saiu da partida mas continua na sala. Vê os duelos sem carta própria e entra na próxima partida.
+_Avoid_: espectador, torcida, eliminado
 
 **Ordem da mesa**:
 A ordem fixa das pessoas na sala, que é a ordem em que entraram. Decide quem é "a próxima pessoa".
