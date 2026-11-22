@@ -2,6 +2,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "super-trunfo-ciclismo",
   "compatibility_date": "2026-11-01",
+  // Subdomínio próprio. Exige a zona tharso.com na mesma conta Cloudflare;
+  // a Cloudflare cria o DNS e o certificado HTTPS no deploy.
+  "routes": [
+    { "pattern": "supertrunfo.tharso.com", "custom_domain": true }
+  ],
   // Primeira versão sem servidor (ADR 0001): só arquivos estáticos, em modo SPA.
   "assets": {
     "not_found_handling": "single-page-application"
