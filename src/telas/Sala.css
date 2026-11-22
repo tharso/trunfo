@@ -90,6 +90,11 @@
   color: var(--destaque);
 }
 
+/* No fim da partida o código divide a tela com o resultado: menor. */
+.fim .sala__codigo {
+  font-size: 2.5rem;
+}
+
 .sala__pessoas {
   margin: 0.5rem 0;
   padding: 0;

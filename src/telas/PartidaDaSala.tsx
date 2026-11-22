@@ -5,6 +5,7 @@
 // Apelido das outras pessoas. Quem está De fora (saiu, caiu de vez ou ficou sem
 // cartas) continua vendo as rodadas, sem carta própria (itens 14 a 19).
 import { useEffect, useState } from "preact/hooks";
+import type { SalaVista } from "../multiplayer/conexao";
 import type { FilaDaPartida } from "../multiplayer/fila";
 import { ordemDoFim, resultadoDoFim, type ChaveAtributo } from "../regras";
 import type { PartidaVista } from "../sala/protocolo";
@@ -15,11 +16,14 @@ import { Duelo } from "./Duelo";
 import { motivoDoFim, tituloDoFim } from "./Fim";
 import { nomeDoApelido } from "./mesa";
 import type { AoMomento } from "./momentos";
+import { CodigoDaSala, ListaDaSala } from "./PecasDaSala";
 import { Placar } from "./Placar";
 import { AvisoDeQueda, BotaoCutucar, MenuDaSala, TEXTO_DE_FORA, type ControlesDaSala } from "./QuedaNaSala";
 import { EscolhaDoOutro, OutroEscolhendo, VezDeVoce } from "./Vez";
 
 interface Props {
+  /** A sala agora: no fim, o código, "Mandar link" e a lista (quem chegou entre partidas). */
+  sala: SalaVista;
   fila: FilaDaPartida;
   /** Aviso de rede no topo ("Reconectando…"), ou `null`. */
   aviso: string | null;
@@ -41,7 +45,7 @@ interface JogarDeNovo {
   aoJogar: () => void;
 }
 
-export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, jogarDeNovo, controles, aoMomento }: Props) {
+export function PartidaDaSala({ sala, fila, aviso, aoEscolher, aoAvancar, aoSair, jogarDeNovo, controles, aoMomento }: Props) {
   // Quem não escolheu toca em "Mostrar cartas!" para ver o duelo da rodada.
   const [mostrada, setMostrada] = useState<number | null>(null);
   const { vista, duelo } = fila;
@@ -57,7 +61,7 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, joga
   }
 
   if (duelo === null && vista.fim) {
-    return <FimDaSala vista={vista} aoSair={aoSair} jogarDeNovo={jogarDeNovo} aoMomento={aoMomento} />;
+    return <FimDaSala sala={sala} vista={vista} aoSair={aoSair} jogarDeNovo={jogarDeNovo} aoMomento={aoMomento} />;
   }
 
   const nomes = vista.pessoas.map((p) => nomeDoApelido(p.apelido));
@@ -127,6 +131,7 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, joga
 }
 
 interface FimDaSalaProps {
+  sala: SalaVista;
   vista: PartidaVista;
   aoSair: () => void;
   jogarDeNovo: JogarDeNovo | null;
@@ -136,9 +141,10 @@ interface FimDaSalaProps {
 /**
  * O fim na sala (spec, itens 20, 21 e 23): quem ganhou e todas as pessoas, em
  * ordem de cartas no monte; quem saiu da partida no fim, com "saiu". O
- * Anfitrião vê "Jogar de novo"; todo mundo vê "Sair".
+ * Anfitrião vê "Jogar de novo"; todo mundo vê "Sair". Entre partidas, o
+ * código, "Mandar link" e a lista da sala, para convidar gente (item 25).
  */
-function FimDaSala({ vista, aoSair, jogarDeNovo, aoMomento }: FimDaSalaProps) {
+function FimDaSala({ sala, vista, aoSair, jogarDeNovo, aoMomento }: FimDaSalaProps) {
   const fim = vista.fim!;
   const nomes = vista.pessoas.map((p) => nomeDoApelido(p.apelido));
   useEffect(() => {
@@ -161,6 +167,8 @@ function FimDaSala({ vista, aoSair, jogarDeNovo, aoMomento }: FimDaSalaProps) {
           ))}
         </ol>
         <p>Rodadas jogadas: {fim.rodadasJogadas}</p>
+        <CodigoDaSala codigo={sala.codigo} />
+        <ListaDaSala sala={sala} />
         {jogarDeNovo && (
           <>
             <button type="button" class="botao" disabled={!jogarDeNovo.pode} onClick={jogarDeNovo.aoJogar}>

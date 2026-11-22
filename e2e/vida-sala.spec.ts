@@ -39,8 +39,12 @@ test("três partidas seguidas na mesma sala, com gente nova entrando entre elas"
   await entrarPeloLink(caio, codigo, "Caio");
   await expect(pessoasNaSala(caio)).toHaveText([/Ana.*Anfitrião/, /Bia/, /Caio.*você/]);
   await expect(caio.getByText("Esperando o Anfitrião começar…")).toBeVisible();
-  // Quem jogou continua na tela de fim.
+  // Quem jogou continua na tela de fim, que mostra o código, "Mandar link" e
+  // a lista da sala com quem chegou (para convidar gente entre partidas).
   await expect(bia.getByRole("heading", { level: 1, name: "Ana ganhou." })).toBeVisible();
+  await expect(bia.locator(".sala__codigo")).toHaveText(codigo);
+  await expect(bia.getByRole("button", { name: "Mandar link" })).toBeVisible();
+  await expect(pessoasNaSala(bia)).toHaveText([/Ana.*Anfitrião/, /Bia.*você/, /Caio/]);
 
   // 2ª partida: Ana joga de novo com quem ficou (Bia, que estava De fora) e Caio.
   await ana.getByRole("button", { name: "Jogar de novo" }).click();

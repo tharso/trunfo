@@ -2,12 +2,12 @@
 // link", a lista na Ordem da mesa e "Começar" (só o Anfitrião). Com a partida
 // começada, a tela é a da partida (PartidaDaSala), até a próxima. A sala decide tudo
 // (src/sala/sala.ts); esta tela mostra o que ela manda.
-import { useEffect, useState } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 import { useSala, type EntradaNaSala } from "../multiplayer/conexao";
 import { rodadaDaSuaVez } from "../multiplayer/fila";
 import { COMECA_COM, MOTIVO_DA_RECUSA, PRECISA_DE_INTERNET } from "./amigos";
-import { caminhoDaSala } from "./enderecoDaSala";
 import { PartidaDaSala } from "./PartidaDaSala";
+import { CodigoDaSala, ListaDaSala } from "./PecasDaSala";
 import "./Sala.css";
 import { sentir } from "./sensacao";
 import { vibrar } from "./vibracao";
@@ -21,29 +21,9 @@ interface Props {
   aoCriarSala: () => void;
 }
 
-/** Abre o menu de compartilhar do celular; sem ele, copia o link. Devolve o aviso a mostrar. */
-async function mandarLink(codigo: string): Promise<string | null> {
-  const url = new URL(caminhoDaSala(codigo), location.origin).href;
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: "Super Trunfo Ciclismo", url });
-    } catch {
-      // A pessoa fechou o menu: nada a fazer.
-    }
-    return null;
-  }
-  try {
-    await navigator.clipboard.writeText(url);
-    return "Link copiado";
-  } catch {
-    return url;
-  }
-}
-
 export function TelaDaSala({ entrada, aoSair, aoCriarSala }: Props) {
   const { codigo } = entrada;
   const { online, situacao, enviar, fila, avancarFila, cutucadas } = useSala(entrada);
-  const [avisoDoLink, setAvisoDoLink] = useState<string | null>(null);
 
   // Alguém cutucou você (spec, item 16): o celular vibra (só no Android).
   useEffect(() => {
@@ -92,6 +72,7 @@ export function TelaDaSala({ entrada, aoSair, aoCriarSala }: Props) {
   if (sala && (sala.emPartida || fila.vista !== null)) {
     return (
       <PartidaDaSala
+        sala={sala}
         fila={fila}
         aviso={avisoDeRede}
         aoEscolher={(atributo) => enviar({ tipo: "escolher", atributo })}
@@ -115,18 +96,7 @@ export function TelaDaSala({ entrada, aoSair, aoCriarSala }: Props) {
   return (
     <div class="tela">
       <main class="sala">
-        <p class="sala__rotulo">Código da sala</p>
-        <p class="sala__codigo" aria-label={`Código da sala: ${codigo}`}>
-          {codigo}
-        </p>
-        <button
-          type="button"
-          class="botao botao--secundario"
-          onClick={async () => setAvisoDoLink(await mandarLink(codigo))}
-        >
-          Mandar link
-        </button>
-        {avisoDoLink && <p class="sala__aviso">{avisoDoLink}</p>}
+        <CodigoDaSala codigo={codigo} />
 
         {avisoDeRede && <p class="amigos__aviso">{avisoDeRede}</p>}
 
@@ -134,15 +104,7 @@ export function TelaDaSala({ entrada, aoSair, aoCriarSala }: Props) {
           <p class="sala__aviso">Conectando…</p>
         ) : (
           <>
-            <ol class="sala__pessoas" aria-label="Pessoas na sala">
-              {sala.pessoas.map((pessoa, indice) => (
-                <li key={indice} class={`sala__pessoa${pessoa.conectada ? "" : " sala__pessoa--sem-conexao"}`}>
-                  <span class="sala__apelido">{pessoa.apelido}</span>
-                  {indice === sala.voce && <span class="sala__marca">você</span>}
-                  {indice === sala.anfitriao && <span class="sala__marca">Anfitrião</span>}
-                </li>
-              ))}
-            </ol>
+            <ListaDaSala sala={sala} />
             {souAnfitriao ? (
               <>
                 <button type="button" class="botao" disabled={!podeComecar} onClick={() => enviar({ tipo: "comecar" })}>
