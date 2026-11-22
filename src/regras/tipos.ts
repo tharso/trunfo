@@ -101,6 +101,8 @@ export type Evento =
       motivo: MotivoDaRodada;
       /** Quantas cartas o vencedor leva (as da mesa + o monte de empate). 0 no empate. */
       cartasLevadas: number;
+      /** Quantas das cartas levadas vieram do Monte de empate. 0 no empate. */
+      doMonteDeEmpate: number;
     }
   | { tipo: "saiu"; pessoa: number; motivo: MotivoDeSaida }
   | ({ tipo: "fim" } & Fim);

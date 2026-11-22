@@ -196,7 +196,7 @@ describe("empate e monte de empate", () => {
     expect(segundo.quemEscolhe).toBe(0);
 
     const { estado: depois, eventos } = aplicar(segundo, { tipo: "escolher", pessoa: 0, atributo: "sprint" });
-    expect(eventos[0]).toMatchObject({ vencedor: 0, motivo: "nota", cartasLevadas: 6 });
+    expect(eventos[0]).toMatchObject({ vencedor: 0, motivo: "nota", cartasLevadas: 6, doMonteDeEmpate: 4 });
     expect(depois.pessoas[0].monte).toEqual(["a", "C", "F", "A", "D", "B", "E"]);
     expect(depois.monteDeEmpate).toEqual([]);
   });

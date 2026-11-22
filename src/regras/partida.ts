@@ -151,9 +151,11 @@ function disputarRodada(estado: Estado, atributo: ChaveAtributo): Evento[] {
   const cartasDaMesa = mesa.map((m) => m.codigo);
 
   let cartasLevadas = 0;
+  let doMonteDeEmpate = 0;
   if (vencedor === null) {
     estado.monteDeEmpate.push(...cartasDaMesa);
   } else {
+    doMonteDeEmpate = estado.monteDeEmpate.length;
     const levadas = [...cartasDaMesa, ...estado.monteDeEmpate];
     estado.pessoas[vencedor].monte.push(...levadas);
     estado.monteDeEmpate = [];
@@ -170,6 +172,7 @@ function disputarRodada(estado: Estado, atributo: ChaveAtributo): Evento[] {
       vencedor,
       motivo,
       cartasLevadas,
+      doMonteDeEmpate,
     },
   ];
 

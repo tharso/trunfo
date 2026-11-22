@@ -13,6 +13,7 @@ import {
   type Estado,
   type Evento,
 } from "../regras";
+import { Selos, textoDoMotivo } from "./Selos";
 
 // No modo solo, a Ordem da mesa é: você, depois o Computador.
 const VOCE = 0;
@@ -117,6 +118,7 @@ function CartaSimples({
   return (
     <section class="carta" aria-label={`Sua carta: ${carta.nome}`}>
       <h2 class="carta__nome">{carta.nome}</h2>
+      <Selos carta={carta} />
       <ul class="carta__linhas">
         {ATRIBUTOS.map((atributo) => (
           <li key={atributo}>
@@ -143,9 +145,10 @@ function Resultado({ evento, aoSeguir }: { evento: EventoDaRodada; aoSeguir: () 
   const computador = evento.mesa.find((m) => m.pessoa === COMPUTADOR);
   const titulo =
     evento.vencedor === VOCE ? "Você ganhou a rodada!" : evento.vencedor === COMPUTADOR ? "O computador ganhou." : "Empate!";
-  const detalhe =
+  const motivo = textoDoMotivo(evento);
+  const leva =
     evento.vencedor === null
-      ? "As cartas vão para o monte de empate."
+      ? null
       : `${evento.vencedor === VOCE ? "Você leva" : "O computador leva"} ${evento.cartasLevadas} cartas.`;
   return (
     <main class="resultado" aria-live="polite">
@@ -154,7 +157,8 @@ function Resultado({ evento, aoSeguir }: { evento: EventoDaRodada; aoSeguir: () 
         Você: {voce?.nota ?? "—"} · Computador: {computador?.nota ?? "—"}
       </p>
       <h2 class="resultado__titulo">{titulo}</h2>
-      <p>{detalhe}</p>
+      {motivo && <p class="resultado__motivo">{motivo}</p>}
+      {leva && <p>{leva}</p>}
       <button type="button" class="botao" onClick={aoSeguir}>
         Próxima rodada
       </button>
