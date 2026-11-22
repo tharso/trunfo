@@ -7,6 +7,17 @@ import { VitePWA } from "vite-plugin-pwa";
 const corDoTema = "#0f172a";
 
 export default defineConfig({
+  environments: {
+    client: {
+      build: {
+        rollupOptions: {
+          // sala-teste.html: página de prova do DO da sala (ticket #36). Fica
+          // em environments.client: no build.* de cima, o Worker herdaria a entrada.
+          input: { main: "index.html", salaTeste: "sala-teste.html" },
+        },
+      },
+    },
+  },
   plugins: [
     preact(),
     cloudflare(),
@@ -42,6 +53,8 @@ export default defineConfig({
         globIgnores: ["wrangler.json"],
         // SPA: qualquer navegação sem internet abre o index.html do precache.
         navigateFallback: "/index.html",
+        // /sala/* é do Durable Object (multiplayer): o SW nunca responde por ela.
+        navigateFallbackDenylist: [/^\/sala\//],
         cleanupOutdatedCaches: true,
       },
     }),

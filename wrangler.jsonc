@@ -7,8 +7,18 @@
   "routes": [
     { "pattern": "supertrunfo.tharso.com", "custom_domain": true }
   ],
-  // Primeira versão sem servidor (ADR 0001): só arquivos estáticos, em modo SPA.
+  // Segunda versão (multiplayer): o Worker do site também tem o Durable Object
+  // das salas. Só /sala/* passa pelo Worker; o resto são os arquivos estáticos,
+  // em modo SPA, como na primeira versão.
+  "main": "src/worker/index.ts",
   "assets": {
-    "not_found_handling": "single-page-application"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/sala/*"]
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "SALA", "class_name": "Sala" }]
+  },
+  // DO com SQLite (o que o plano grátis aceita).
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Sala"] }]
 }
