@@ -17,10 +17,13 @@ export default defineConfig({
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
   ],
   // Sobe a versão de produção (build + preview no runtime do Worker).
+  // Cada rodada sobe o seu servidor: reaproveitar um servidor já na porta
+  // testaria o build de outro worktree. Porta ocupada = erro (--strictPort);
+  // use PORTA=<outra> para rodar dois worktrees ao mesmo tempo.
   webServer: {
     command: `npm run build && npm run preview -- --port ${porta} --strictPort`,
     url: `http://localhost:${porta}`,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });

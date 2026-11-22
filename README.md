@@ -6,7 +6,7 @@ Node 22 (`.nvmrc`). Depois de `npm install`:
 
 - `npm run dev`: roda o site local.
 - `npm run build`: gera a versão de produção em `dist/`.
-- `npm run deploy`: gera e publica na Cloudflare (pede `npx wrangler login` antes, uma vez).
+- Deploy: automático. Cada merge no `main` publica em https://supertrunfo.tharso.com (Workers Builds da Cloudflare, ligado ao GitHub). `npm run deploy` publica à mão, se preciso (pede `npx wrangler login` antes, uma vez).
 - `npm test` (unidade), `npm run typecheck`, `npm run test:e2e` (Playwright; na 1ª vez, `npx playwright install chromium`).
 
 As regras ficam em `src/regras/` (TypeScript puro, sem tela): `criarPartida` e `aplicar(estado, ação)`,
