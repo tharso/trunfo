@@ -1,0 +1,904 @@
+{
+  "atributos": [
+    {
+      "chave": "sprint",
+      "nome": "Sprint"
+    },
+    {
+      "chave": "explosao",
+      "nome": "Explosão"
+    },
+    {
+      "chave": "montanha",
+      "nome": "Montanha"
+    },
+    {
+      "chave": "contrarrelogio",
+      "nome": "Contrarrelógio"
+    },
+    {
+      "chave": "pave",
+      "nome": "Pavê"
+    },
+    {
+      "chave": "voltas",
+      "nome": "Voltas"
+    }
+  ],
+  "modeloPave": {
+    "a": -15.0941,
+    "b": 0.096916,
+    "ciclistasMedidos": 74,
+    "piso": 15,
+    "teto": 53
+  },
+  "cartas": [
+    {
+      "codigo": "1A",
+      "slug": "valentin-paret-peintre",
+      "nome": "Valentin Paret-Peintre",
+      "nomePcs": "PARET-PEINTRE Valentin",
+      "iniciais": "VPP",
+      "pais": "FR",
+      "paisNome": "France",
+      "idade": 25,
+      "equipe": "Soudal Quick-Step",
+      "cores": [
+        "#003F87",
+        "#3FA9F5"
+      ],
+      "notas": {
+        "sprint": 42,
+        "explosao": 52,
+        "montanha": 63,
+        "contrarrelogio": 38,
+        "pave": 29,
+        "voltas": 56
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": true,
+      "cartaA": false
+    },
+    {
+      "codigo": "1B",
+      "slug": "tadej-pogacar",
+      "nome": "Tadej Pogačar",
+      "nomePcs": "POGAČAR Tadej",
+      "iniciais": "TP",
+      "pais": "SI",
+      "paisNome": "Slovenia",
+      "idade": 28,
+      "equipe": "UAE Team Emirates - XRG",
+      "cores": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "notas": {
+        "sprint": 67,
+        "explosao": 99,
+        "montanha": 99,
+        "contrarrelogio": 93,
+        "pave": 98,
+        "voltas": 99
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "1C",
+      "slug": "remco-evenepoel",
+      "nome": "Remco Evenepoel",
+      "nomePcs": "EVENEPOEL Remco",
+      "iniciais": "RE",
+      "pais": "BE",
+      "paisNome": "Belgium",
+      "idade": 26,
+      "equipe": "Red Bull - BORA - hansgrohe",
+      "cores": [
+        "#1B2A4A",
+        "#DB0A40"
+      ],
+      "notas": {
+        "sprint": 59,
+        "explosao": 86,
+        "montanha": 85,
+        "contrarrelogio": 99,
+        "pave": 44,
+        "voltas": 85
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "1D",
+      "slug": "jonas-vingegaard",
+      "nome": "Jonas Vingegaard",
+      "nomePcs": "VINGEGAARD Jonas",
+      "iniciais": "JV",
+      "pais": "DK",
+      "paisNome": "Denmark",
+      "idade": 29,
+      "equipe": "Team Visma | Lease a Bike",
+      "cores": [
+        "#FFE500",
+        "#000000"
+      ],
+      "notas": {
+        "sprint": 51,
+        "explosao": 84,
+        "montanha": 92,
+        "contrarrelogio": 85,
+        "pave": 36,
+        "voltas": 98
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "2A",
+      "slug": "matteo-jorgenson",
+      "nome": "Matteo Jorgenson",
+      "nomePcs": "JORGENSON Matteo",
+      "iniciais": "MJ",
+      "pais": "US",
+      "paisNome": "United States",
+      "idade": 27,
+      "equipe": "Team Visma | Lease a Bike",
+      "cores": [
+        "#FFE500",
+        "#000000"
+      ],
+      "notas": {
+        "sprint": 58,
+        "explosao": 73,
+        "montanha": 73,
+        "contrarrelogio": 81,
+        "pave": 64,
+        "voltas": 76
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "2B",
+      "slug": "paul-seixas",
+      "nome": "Paul Seixas",
+      "nomePcs": "SEIXAS Paul",
+      "iniciais": "PS",
+      "pais": "FR",
+      "paisNome": "France",
+      "idade": 20,
+      "equipe": "Decathlon CMA CGM Team",
+      "cores": [
+        "#0082C3",
+        "#14234B"
+      ],
+      "notas": {
+        "sprint": 53,
+        "explosao": 80,
+        "montanha": 83,
+        "contrarrelogio": 77,
+        "pave": 47,
+        "voltas": 81
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "2C",
+      "slug": "tom-pidcock",
+      "nome": "Tom Pidcock",
+      "nomePcs": "PIDCOCK Tom",
+      "iniciais": "TP",
+      "pais": "GB",
+      "paisNome": "Great Britain",
+      "idade": 27,
+      "equipe": "Pinarello Q36.5 Pro Cycling Team",
+      "cores": [
+        "#141414",
+        "#A7D3E8"
+      ],
+      "notas": {
+        "sprint": 63,
+        "explosao": 80,
+        "montanha": 76,
+        "contrarrelogio": 61,
+        "pave": 59,
+        "voltas": 78
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "2D",
+      "slug": "wout-van-aert",
+      "nome": "Wout van Aert",
+      "nomePcs": "VAN AERT Wout",
+      "iniciais": "WVA",
+      "pais": "BE",
+      "paisNome": "Belgium",
+      "idade": 32,
+      "equipe": "Team Visma | Lease a Bike",
+      "cores": [
+        "#FFE500",
+        "#000000"
+      ],
+      "notas": {
+        "sprint": 79,
+        "explosao": 66,
+        "montanha": 60,
+        "contrarrelogio": 72,
+        "pave": 89,
+        "voltas": 44
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "3A",
+      "slug": "isaac-del-toro",
+      "nome": "Isaac del Toro",
+      "nomePcs": "DEL TORO Isaac",
+      "iniciais": "IDT",
+      "pais": "MX",
+      "paisNome": "Mexico",
+      "idade": 22,
+      "equipe": "UAE Team Emirates - XRG",
+      "cores": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "notas": {
+        "sprint": 45,
+        "explosao": 76,
+        "montanha": 82,
+        "contrarrelogio": 73,
+        "pave": 46,
+        "voltas": 83
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "3B",
+      "slug": "mads-pedersen",
+      "nome": "Mads Pedersen",
+      "nomePcs": "PEDERSEN Mads",
+      "iniciais": "MP",
+      "pais": "DK",
+      "paisNome": "Denmark",
+      "idade": 30,
+      "equipe": "Lidl - Trek",
+      "cores": [
+        "#0050AA",
+        "#FFF000"
+      ],
+      "notas": {
+        "sprint": 88,
+        "explosao": 70,
+        "montanha": 42,
+        "contrarrelogio": 67,
+        "pave": 90,
+        "voltas": 48
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "3C",
+      "slug": "primoz-roglic",
+      "nome": "Primož Roglič",
+      "nomePcs": "ROGLIČ Primož",
+      "iniciais": "PR",
+      "pais": "SI",
+      "paisNome": "Slovenia",
+      "idade": 37,
+      "equipe": "Red Bull - BORA - hansgrohe",
+      "cores": [
+        "#1B2A4A",
+        "#DB0A40"
+      ],
+      "notas": {
+        "sprint": 42,
+        "explosao": 71,
+        "montanha": 81,
+        "contrarrelogio": 85,
+        "pave": 40,
+        "voltas": 84
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "3D",
+      "slug": "florian-lipowitz",
+      "nome": "Florian Lipowitz",
+      "nomePcs": "LIPOWITZ Florian",
+      "iniciais": "FL",
+      "pais": "DE",
+      "paisNome": "Germany",
+      "idade": 26,
+      "equipe": "Red Bull - BORA - hansgrohe",
+      "cores": [
+        "#1B2A4A",
+        "#DB0A40"
+      ],
+      "notas": {
+        "sprint": 51,
+        "explosao": 69,
+        "montanha": 81,
+        "contrarrelogio": 76,
+        "pave": 43,
+        "voltas": 82
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "4A",
+      "slug": "mattias-skjelmose-jensen",
+      "nome": "Mattias Skjelmose",
+      "nomePcs": "SKJELMOSE Mattias",
+      "iniciais": "MS",
+      "pais": "DK",
+      "paisNome": "Denmark",
+      "idade": 26,
+      "equipe": "Lidl - Trek",
+      "cores": [
+        "#0050AA",
+        "#FFF000"
+      ],
+      "notas": {
+        "sprint": 42,
+        "explosao": 75,
+        "montanha": 78,
+        "contrarrelogio": 72,
+        "pave": 43,
+        "voltas": 79
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "4B",
+      "slug": "richard-carapaz",
+      "nome": "Richard Carapaz",
+      "nomePcs": "CARAPAZ Richard",
+      "iniciais": "RC",
+      "pais": "EC",
+      "paisNome": "Ecuador",
+      "idade": 33,
+      "equipe": "EF Education - EasyPost",
+      "cores": [
+        "#EF4D8B",
+        "#1B2346"
+      ],
+      "notas": {
+        "sprint": 58,
+        "explosao": 70,
+        "montanha": 80,
+        "contrarrelogio": 53,
+        "pave": 41,
+        "voltas": 81
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "4C",
+      "slug": "joao-almeida",
+      "nome": "João Almeida",
+      "nomePcs": "ALMEIDA João",
+      "iniciais": "JA",
+      "pais": "PT",
+      "paisNome": "Portugal",
+      "idade": 28,
+      "equipe": "UAE Team Emirates - XRG",
+      "cores": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "notas": {
+        "sprint": 34,
+        "explosao": 70,
+        "montanha": 78,
+        "contrarrelogio": 72,
+        "pave": 40,
+        "voltas": 80
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false,
+      "provisoria": true
+    },
+    {
+      "codigo": "4D",
+      "slug": "mathieu-van-der-poel",
+      "nome": "Mathieu van der Poel",
+      "nomePcs": "VAN DER POEL Mathieu",
+      "iniciais": "MVDP",
+      "pais": "NL",
+      "paisNome": "Netherlands",
+      "idade": 31,
+      "equipe": "Alpecin - Premier Tech",
+      "cores": [
+        "#002855",
+        "#00A1DE"
+      ],
+      "notas": {
+        "sprint": 75,
+        "explosao": 76,
+        "montanha": 20,
+        "contrarrelogio": 57,
+        "pave": 99,
+        "voltas": 47
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "5A",
+      "slug": "juan-ayuso-pesquera",
+      "nome": "Juan Ayuso",
+      "nomePcs": "AYUSO Juan",
+      "iniciais": "JA",
+      "pais": "ES",
+      "paisNome": "Spain",
+      "idade": 24,
+      "equipe": "Lidl - Trek",
+      "cores": [
+        "#0050AA",
+        "#FFF000"
+      ],
+      "notas": {
+        "sprint": 21,
+        "explosao": 69,
+        "montanha": 79,
+        "contrarrelogio": 78,
+        "pave": 42,
+        "voltas": 80
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "5B",
+      "slug": "jasper-philipsen",
+      "nome": "Jasper Philipsen",
+      "nomePcs": "PHILIPSEN Jasper",
+      "iniciais": "JP",
+      "pais": "BE",
+      "paisNome": "Belgium",
+      "idade": 28,
+      "equipe": "Alpecin - Premier Tech",
+      "cores": [
+        "#002855",
+        "#00A1DE"
+      ],
+      "notas": {
+        "sprint": 99,
+        "explosao": 56,
+        "montanha": 34,
+        "contrarrelogio": 36,
+        "pave": 82,
+        "voltas": 44
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": true
+    },
+    {
+      "codigo": "5C",
+      "slug": "lenny-martinez",
+      "nome": "Lenny Martinez",
+      "nomePcs": "MARTINEZ Lenny",
+      "iniciais": "LM",
+      "pais": "FR",
+      "paisNome": "France",
+      "idade": 23,
+      "equipe": "Bahrain Victorious",
+      "cores": [
+        "#C8102E",
+        "#13294B"
+      ],
+      "notas": {
+        "sprint": 32,
+        "explosao": 72,
+        "montanha": 76,
+        "contrarrelogio": 66,
+        "pave": 31,
+        "voltas": 74
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "5D",
+      "slug": "filippo-ganna",
+      "nome": "Filippo Ganna",
+      "nomePcs": "GANNA Filippo",
+      "iniciais": "FG",
+      "pais": "IT",
+      "paisNome": "Italy",
+      "idade": 30,
+      "equipe": "Netcompany INEOS",
+      "cores": [
+        "#0A1E3C",
+        "#C8102E"
+      ],
+      "notas": {
+        "sprint": 56,
+        "explosao": 42,
+        "montanha": 36,
+        "contrarrelogio": 94,
+        "pave": 75,
+        "voltas": 46
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "6A",
+      "slug": "giulio-ciccone",
+      "nome": "Giulio Ciccone",
+      "nomePcs": "CICCONE Giulio",
+      "iniciais": "GC",
+      "pais": "IT",
+      "paisNome": "Italy",
+      "idade": 31,
+      "equipe": "Lidl - Trek",
+      "cores": [
+        "#0050AA",
+        "#FFF000"
+      ],
+      "notas": {
+        "sprint": 37,
+        "explosao": 74,
+        "montanha": 76,
+        "contrarrelogio": 51,
+        "pave": 37,
+        "voltas": 72
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "6B",
+      "slug": "enric-mas",
+      "nome": "Enric Mas",
+      "nomePcs": "MAS Enric",
+      "iniciais": "EM",
+      "pais": "ES",
+      "paisNome": "Spain",
+      "idade": 31,
+      "equipe": "Movistar Team",
+      "cores": [
+        "#0B1F4B",
+        "#A8D53A"
+      ],
+      "notas": {
+        "sprint": 22,
+        "explosao": 69,
+        "montanha": 75,
+        "contrarrelogio": 62,
+        "pave": 39,
+        "voltas": 78
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "6C",
+      "slug": "adam-yates",
+      "nome": "Adam Yates",
+      "nomePcs": "YATES Adam",
+      "iniciais": "AY",
+      "pais": "GB",
+      "paisNome": "Great Britain",
+      "idade": 34,
+      "equipe": "UAE Team Emirates - XRG",
+      "cores": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "notas": {
+        "sprint": 25,
+        "explosao": 63,
+        "montanha": 74,
+        "contrarrelogio": 63,
+        "pave": 39,
+        "voltas": 75
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "6D",
+      "slug": "jhonatan-narvaez",
+      "nome": "Jhonatan Narváez",
+      "nomePcs": "NARVÁEZ Jhonatan",
+      "iniciais": "JN",
+      "pais": "EC",
+      "paisNome": "Ecuador",
+      "idade": 29,
+      "equipe": "UAE Team Emirates - XRG",
+      "cores": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "notas": {
+        "sprint": 60,
+        "explosao": 64,
+        "montanha": 59,
+        "contrarrelogio": 33,
+        "pave": 51,
+        "voltas": 65
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "7A",
+      "slug": "ben-healy",
+      "nome": "Ben Healy",
+      "nomePcs": "HEALY Ben",
+      "iniciais": "BH",
+      "pais": "IE",
+      "paisNome": "Ireland",
+      "idade": 26,
+      "equipe": "EF Education - EasyPost",
+      "cores": [
+        "#EF4D8B",
+        "#1B2346"
+      ],
+      "notas": {
+        "sprint": 27,
+        "explosao": 67,
+        "montanha": 63,
+        "contrarrelogio": 60,
+        "pave": 40,
+        "voltas": 62
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "7B",
+      "slug": "sepp-kuss",
+      "nome": "Sepp Kuss",
+      "nomePcs": "KUSS Sepp",
+      "iniciais": "SK",
+      "pais": "US",
+      "paisNome": "United States",
+      "idade": 32,
+      "equipe": "Team Visma | Lease a Bike",
+      "cores": [
+        "#FFE500",
+        "#000000"
+      ],
+      "notas": {
+        "sprint": 17,
+        "explosao": 52,
+        "montanha": 76,
+        "contrarrelogio": 50,
+        "pave": 39,
+        "voltas": 77
+      },
+      "estimadas": [
+        "pave"
+      ],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "7C",
+      "slug": "jonathan-milan",
+      "nome": "Jonathan Milan",
+      "nomePcs": "MILAN Jonathan",
+      "iniciais": "JM",
+      "pais": "IT",
+      "paisNome": "Italy",
+      "idade": 26,
+      "equipe": "Lidl - Trek",
+      "cores": [
+        "#0050AA",
+        "#FFF000"
+      ],
+      "notas": {
+        "sprint": 93,
+        "explosao": 42,
+        "montanha": 30,
+        "contrarrelogio": 53,
+        "pave": 64,
+        "voltas": 23
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": true
+    },
+    {
+      "codigo": "7D",
+      "slug": "michael-matthews",
+      "nome": "Michael Matthews",
+      "nomePcs": "MATTHEWS Michael",
+      "iniciais": "MM",
+      "pais": "AU",
+      "paisNome": "Australia",
+      "idade": 36,
+      "equipe": "Team Jayco AlUla",
+      "cores": [
+        "#00205B",
+        "#58C4E0"
+      ],
+      "notas": {
+        "sprint": 60,
+        "explosao": 69,
+        "montanha": 19,
+        "contrarrelogio": 63,
+        "pave": 60,
+        "voltas": 29
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "8A",
+      "slug": "arnaud-de-lie",
+      "nome": "Arnaud De Lie",
+      "nomePcs": "DE LIE Arnaud",
+      "iniciais": "ADL",
+      "pais": "BE",
+      "paisNome": "Belgium",
+      "idade": 24,
+      "equipe": "Lotto Intermarché",
+      "cores": [
+        "#D7141A",
+        "#0E2340"
+      ],
+      "notas": {
+        "sprint": 86,
+        "explosao": 61,
+        "montanha": 20,
+        "contrarrelogio": 21,
+        "pave": 60,
+        "voltas": 45
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "8B",
+      "slug": "biniam-girmay",
+      "nome": "Biniam Girmay",
+      "nomePcs": "GIRMAY Biniam",
+      "iniciais": "BG",
+      "pais": "ER",
+      "paisNome": "Eritrea",
+      "idade": 26,
+      "equipe": "NSN Cycling Team",
+      "cores": [
+        "#004B87",
+        "#FFFFFF"
+      ],
+      "notas": {
+        "sprint": 91,
+        "explosao": 54,
+        "montanha": 44,
+        "contrarrelogio": 16,
+        "pave": 61,
+        "voltas": 23
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": false
+    },
+    {
+      "codigo": "8C",
+      "slug": "paul-magnier",
+      "nome": "Paul Magnier",
+      "nomePcs": "MAGNIER Paul",
+      "iniciais": "PM",
+      "pais": "FR",
+      "paisNome": "France",
+      "idade": 22,
+      "equipe": "Soudal Quick-Step",
+      "cores": [
+        "#003F87",
+        "#3FA9F5"
+      ],
+      "notas": {
+        "sprint": 86,
+        "explosao": 53,
+        "montanha": 19,
+        "contrarrelogio": 37,
+        "pave": 54,
+        "voltas": 31
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": true
+    },
+    {
+      "codigo": "8D",
+      "slug": "tim-merlier",
+      "nome": "Tim Merlier",
+      "nomePcs": "MERLIER Tim",
+      "iniciais": "TM",
+      "pais": "BE",
+      "paisNome": "Belgium",
+      "idade": 34,
+      "equipe": "Soudal Quick-Step",
+      "cores": [
+        "#003F87",
+        "#3FA9F5"
+      ],
+      "notas": {
+        "sprint": 93,
+        "explosao": 41,
+        "montanha": 17,
+        "contrarrelogio": 21,
+        "pave": 66,
+        "voltas": 15
+      },
+      "estimadas": [],
+      "superTrunfo": false,
+      "cartaA": true
+    }
+  ]
+}

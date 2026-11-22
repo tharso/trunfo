@@ -37,3 +37,60 @@ Como refazer: no navegador embutido, numa página do procyclingstats.com com `wi
 ```bash
 uv run --with openpyxl python scripts/montar_tabela.py
 ```
+
+## O Baralho do jogo (32 cartas)
+
+O jogo usa só 32 cartas (lista em `docs/spec.md`, parte 2). O arquivo que o jogo lê é
+`src/dados/baralho.json`, gerado por:
+
+```bash
+uv run python scripts/gerar_baralho.py
+uv run --with pytest pytest scripts/tests   # testes do baralho
+```
+
+O script é determinístico: rodar de novo com os mesmos dados dá o mesmo arquivo (há um teste para isso).
+
+Entradas:
+
+- `data/cartas.csv`: notas das 180 cartas (confronto direto).
+- `data/baralho_ciclistas.csv`: quais são as 32, o nome de exibição ("Tadej Pogačar"), as iniciais
+  e a marca (`super_trunfo` ou `carta_a`).
+- `data/equipes_cores.csv`: 2 cores (hex) por equipe, tiradas das camisas de 2026.
+- `data/raw/joao_almeida.json`: João Almeida, que não está entre os 180.
+- `data/raw/pcs_perfil.json`: código ISO-2 do país (para a bandeira).
+
+Cada carta tem: código (`1A`), nome de exibição, nome PCS, iniciais, país (ISO-2), idade, equipe,
+2 cores da equipe, as 6 notas, a lista `estimadas` (atributos estimados) e as marcas
+`superTrunfo` e `cartaA`.
+
+### Código da carta
+
+8 grupos × 4 letras (1A a 8D), como no Super Trunfo. O Super Trunfo (Valentin Paret-Peintre) fica
+com 1A. As outras 31 seguem por **força geral** (soma das 6 notas, já com o Pavê estimado), da mais
+forte à mais fraca; empate pelo nome.
+
+### Pavê estimado
+
+Pavê 10 quer dizer "nunca correu no pavê" (menos de 3 provas). Nas 32 cartas, essa nota vira uma
+estimativa, para ter menos empates:
+
+1. Nos ciclistas com Pavê **medido** (3 provas ou mais, 74 dos 180), ajusta-se uma reta
+   `Pavê = a + b × watts de 1 min`. O watt de 1 min vem de `data/watts_estimados.csv` e é
+   absoluto (peso × W/kg): junta peso e potência num número só. No pavê conta a força bruta,
+   e o peso não atrapalha como na subida. Resultado hoje: `Pavê ≈ -15,1 + 0,097 × W`.
+2. A nota estimada fica entre 15 (a nota do pior medido) e a mediana dos medidos (53):
+   quem nunca correu no pavê não passa do ciclista típico que corre.
+3. A carta marca `"estimadas": ["pave"]`.
+
+Os outros pesos e potências testados (só peso, FTP, W/kg) explicam menos os Pavês medidos.
+
+### João Almeida
+
+Ele não está entre os 180. As notas vêm da mesma coleta de confronto direto (2023–2026), registrada
+em `data/raw/joao_almeida.json` (campo `fonte`). O gerador lê as 6 notas do campo `notas`.
+
+- Enquanto `notas` for `null`, a carta usa uma **estimativa provisória**: a média das notas de
+  Ayuso, Lipowitz, Skjelmose e Enric Mas (perfil parecido: volta, bom crono, sem pavê). A carta sai
+  com `"provisoria": true` e o script avisa.
+- Ele não tem curva no modelo de potência. Para o Pavê estimado, o watt de 1 min dele é o peso
+  (63 kg) × a média de W/kg de 1 min desses mesmos 4 ciclistas.
