@@ -1,0 +1,52 @@
+# Estimativa de minutos/mês (franquia da conta: 2.000 min/mês nos repos privados).
+# - Gatilho: só pull_request (+ workflow_dispatch manual). Nada de push: seria o
+#   mesmo commit testado duas vezes.
+# - Eventos/mês: ~60 (cerca de 20 PRs, cada um com ~3 rodadas entre abrir e
+#   atualizar), mais umas poucas rodadas manuais.
+# - Jobs por evento: 1, só ubuntu-latest (multiplicador 1).
+# - Duração: ~3 min (npm ci com cache, Chromium, typecheck, unidade, build e
+#   Playwright). Cobrança arredonda pra cima por job: 3 min.
+# - Total: 60 × 1 × 1 × 3 min ≈ 180 min/mês, uns 9% dos 2.000. Folga grande.
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Testes de unidade
+        run: npm test
+
+      - name: Instalar o Chromium do Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Playwright
+        run: npm run test:e2e
+
+      - name: Relatório do Playwright (se falhar)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: test-results/
+          retention-days: 7
