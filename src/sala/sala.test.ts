@@ -305,4 +305,38 @@ describe("a partida", () => {
     expect(saiu.conexao).toBeNull();
     expect(saiu.estado!.pessoas.map((p) => p.apelido)).toEqual(["Ana"]);
   });
+
+  it("com 4 pessoas, quem fica sem cartas sai, continua vendo as rodadas e a partida vai até o fim", () => {
+    // Com esta semente e estas escolhas (índices de ATRIBUTOS), Caio sai na 8ª rodada,
+    // Bia na 12ª, Duda na 16ª e Ana fica com todas as cartas na 17ª (e2e/partida-sala.spec.ts).
+    const escolhas = "50200042440402244";
+    const atributos = ["sprint", "explosao", "montanha", "contrarrelogio", "pave", "voltas"];
+    let estado = comecar(comPessoas("Ana", "Bia", "Caio", "Duda")).estado!;
+    let ultimo: Resultado | null = null;
+    for (const indice of escolhas) {
+      ultimo = escolher(estado, quemEscolhe(estado), atributos[Number(indice)]);
+      estado = ultimo.estado!;
+      if (estado.partida!.estado.rodada === 9) {
+        // Caio, sem cartas, ainda recebe a rodada, sem carta própria, e todo mundo vê que ele está fora.
+        expect(todasPara(ultimo, "id-Caio")[0]).toMatchObject({ tipo: "rodada", depois: { suaCarta: null } });
+        expect(todasPara(ultimo, "id-Ana")[0]).toMatchObject({
+          depois: { pessoas: [{ fora: null }, { fora: null }, { apelido: "Caio", cartas: 0, fora: "semCartas" }, { fora: null }] },
+        });
+      }
+    }
+    for (const id of ["id-Ana", "id-Bia", "id-Caio", "id-Duda"]) {
+      expect(todasPara(ultimo!, id)[0]).toMatchObject({
+        tipo: "rodada",
+        depois: {
+          pessoas: [
+            { apelido: "Ana", cartas: 32, fora: null },
+            { apelido: "Bia", cartas: 0, fora: "semCartas" },
+            { apelido: "Caio", cartas: 0, fora: "semCartas" },
+            { apelido: "Duda", cartas: 0, fora: "semCartas" },
+          ],
+          fim: { vencedor: 0, motivo: "todasAsCartas", rodadasJogadas: 17 },
+        },
+      });
+    }
+  });
 });

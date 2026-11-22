@@ -3,6 +3,8 @@
 // - Sua vez: 2 toques na linha.
 // - A outra pessoa escolheu: a linha marcada, "Ana escolheu Montanha." e "Mostrar cartas!".
 // - A outra pessoa está escolhendo (só na sala): "Ana está escolhendo…".
+// Na sala, quem ficou sem cartas (com 3 ou 4 pessoas) continua vendo as rodadas:
+// no lugar da carta, "Você ficou sem cartas.".
 import { useState } from "preact/hooks";
 import type { Carta as CartaDasRegras, ChaveAtributo } from "../regras";
 import { Carta } from "./Carta";
@@ -36,8 +38,15 @@ export function VezDeVoce({ carta, aoTocar, aoEscolher }: VezDeVoceProps) {
   );
 }
 
+/** A sua carta de cima, ou o aviso de quem ficou sem cartas e só olha. */
+function SuaCarta({ carta, marcado }: { carta: CartaDasRegras | null; marcado: ChaveAtributo | null }) {
+  if (carta === null) return <p class="rodada__aviso">Você ficou sem cartas.</p>;
+  return <Carta carta={carta} marcado={marcado} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />;
+}
+
 interface EscolhaDoOutroProps {
-  carta: CartaDasRegras;
+  /** `null`: você ficou sem cartas. */
+  carta: CartaDasRegras | null;
   atributo: ChaveAtributo;
   /** Quem escolheu, no começo da frase: "O computador", "Ana". */
   sujeito: string;
@@ -50,7 +59,7 @@ export function EscolhaDoOutro({ carta, atributo, sujeito, aoMostrar }: EscolhaD
       <p class="rodada__aviso">
         {sujeito} escolheu {NOME_DO_ATRIBUTO[atributo]}.
       </p>
-      <Carta carta={carta} marcado={atributo} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />
+      <SuaCarta carta={carta} marcado={atributo} />
       <button type="button" class="botao" onClick={aoMostrar}>
         Mostrar cartas!
       </button>
@@ -58,13 +67,13 @@ export function EscolhaDoOutro({ carta, atributo, sujeito, aoMostrar }: EscolhaD
   );
 }
 
-export function OutroEscolhendo({ carta, sujeito }: { carta: CartaDasRegras; sujeito: string }) {
+export function OutroEscolhendo({ carta, sujeito }: { carta: CartaDasRegras | null; sujeito: string }) {
   return (
     <main class="rodada">
       <p class="rodada__aviso" aria-live="polite">
         {sujeito} está escolhendo…
       </p>
-      <Carta carta={carta} marcado={null} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />
+      <SuaCarta carta={carta} marcado={null} />
     </main>
   );
 }

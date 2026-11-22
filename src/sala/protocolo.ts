@@ -1,7 +1,15 @@
 // As mensagens do WebSocket entre o celular e a Sala (Durable Object). JSON em
 // texto. O celular manda MensagemDoCliente; a Sala responde com MensagemDaSala.
 // Este arquivo é usado dos dois lados (tela e Worker): só tipos e leitura.
-import { ATRIBUTOS, type ChaveAtributo, type EventoDaRodada, type Fim, type MotivoDaRodada, type MotivoDoFim } from "../regras";
+import {
+  ATRIBUTOS,
+  type ChaveAtributo,
+  type EventoDaRodada,
+  type Fim,
+  type MotivoDaRodada,
+  type MotivoDeSaida,
+  type MotivoDoFim,
+} from "../regras";
 
 export const TAMANHO_MAXIMO_DO_APELIDO = 20;
 
@@ -29,8 +37,8 @@ export type MotivoDaRecusa = "cheia" | "emPartida" | "acabou";
  * carta de cima; das outras pessoas, só quantas cartas têm.
  */
 export interface PartidaVista {
-  /** Na Ordem da mesa da partida. */
-  pessoas: { apelido: string; cartas: number }[];
+  /** Na Ordem da mesa da partida. `fora`: por que a pessoa saiu da partida (`null` enquanto joga). */
+  pessoas: { apelido: string; cartas: number; fora: MotivoDeSaida | null }[];
   /** Índice de quem recebe em `pessoas`. */
   voce: number;
   monteDeEmpate: number;
@@ -136,6 +144,7 @@ function contagem(valor: unknown): valor is number {
 }
 
 const MOTIVOS_DO_FIM: readonly MotivoDoFim[] = ["todasAsCartas", "ultimaNaPartida", "limiteDeRodadas", "semCartas", "saida"];
+const MOTIVOS_DE_SAIDA: readonly MotivoDeSaida[] = ["semCartas", "saiu"];
 const MOTIVOS_DA_RODADA: readonly MotivoDaRodada[] = ["nota", "superTrunfo", "cartaA", "empate"];
 
 function lerFim(valor: unknown, pessoas: number): Fim | null | undefined {
@@ -156,7 +165,8 @@ function lerVista(valor: unknown): PartidaVista | null {
   const vista = objeto(valor);
   if (!vista || !Array.isArray(vista.pessoas)) return null;
   const pessoas = vista.pessoas.map(objeto);
-  if (pessoas.some((p) => !p || typeof p.apelido !== "string" || !contagem(p.cartas))) return null;
+  const foraValido = (v: unknown) => v === null || MOTIVOS_DE_SAIDA.includes(v as MotivoDeSaida);
+  if (pessoas.some((p) => !p || typeof p.apelido !== "string" || !contagem(p.cartas) || !foraValido(p.fora))) return null;
   const indice = (v: unknown): v is number => contagem(v) && v < pessoas.length;
   const fim = lerFim(vista.fim, pessoas.length);
   const { voce, monteDeEmpate, rodada, limiteDeRodadas, quemEscolhe, suaCarta } = vista;
@@ -172,7 +182,11 @@ function lerVista(valor: unknown): PartidaVista | null {
     return null;
   }
   return {
-    pessoas: pessoas.map((p) => ({ apelido: p!.apelido as string, cartas: p!.cartas as number })),
+    pessoas: pessoas.map((p) => ({
+      apelido: p!.apelido as string,
+      cartas: p!.cartas as number,
+      fora: p!.fora as MotivoDeSaida | null,
+    })),
     voce,
     monteDeEmpate,
     rodada,

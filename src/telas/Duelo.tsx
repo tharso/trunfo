@@ -2,8 +2,8 @@
 // Tempo (~3 s): a sua barra cresce (1,2 s) com o número contando, depois as das
 // outras pessoas, juntas (1,2 s); pausa (0,35 s); aparecem o resultado e os botões.
 // Serve ao modo solo (contra o Computador) e à sala (contra os Apelidos): quem é
-// quem vem de `voce` e `nomes`. Com 3 ou 4 pessoas (ticket #39) já sai uma faixa
-// por pessoa da mesa; a spec (parte 9, item 12) pede o apelido em cada faixa.
+// quem vem de `voce` e `nomes`. Com 3 ou 4 pessoas (spec, parte 9, item 12), uma
+// faixa por pessoa da mesa, com o Apelido, mais baixas para caber no celular.
 // "Pular ⏩" ou um toque em qualquer lugar vai direto ao resultado.
 // A rodada já foi decidida pelo módulo de regras: o duelo só mostra o evento.
 import { useEffect, useRef, useState } from "preact/hooks";
@@ -95,6 +95,9 @@ export function Duelo({ evento, voce, nomes, aoProximaRodada, aoMomento }: Props
   const rotulo = (pessoa: number, carta: CartaDasRegras) =>
     `${pessoa === voce ? "Sua carta" : `Carta ${nomes[pessoa].de}`}: ${carta.nome}`;
 
+  // Com 3 ou 4 cartas na mesa, as faixas ficam mais baixas e o botão não diz "duas".
+  const mesaCheia = mesa.length > 2;
+
   if (verCartas) {
     return (
       <div class="duelo" role="dialog" aria-modal="true" aria-label="Duelo">
@@ -121,7 +124,13 @@ export function Duelo({ evento, voce, nomes, aoProximaRodada, aoMomento }: Props
       : `${evento.vencedor === voce ? "Você leva" : `${nomes[evento.vencedor].sujeito} leva`} ${evento.cartasLevadas} cartas.`;
 
   return (
-    <div class={`duelo${pronto ? " duelo--pronto" : ""}`} role="dialog" aria-modal="true" aria-label="Duelo" onClick={pular}>
+    <div
+      class={`duelo${pronto ? " duelo--pronto" : ""}${mesaCheia ? " duelo--mesa-cheia" : ""}`}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Duelo"
+      onClick={pular}
+    >
       <div class="duelo__conteudo">
         {!pronto && (
           <button type="button" class="duelo__pular" onClick={pular}>
@@ -160,8 +169,7 @@ export function Duelo({ evento, voce, nomes, aoProximaRodada, aoMomento }: Props
             Próxima rodada
           </button>
           <button type="button" class="botao botao--secundario" onClick={() => setVerCartas(true)}>
-            {/* Com 3 ou 4 pessoas (#39), o texto do botão é decisão de produto em aberto. */}
-            Ver as duas cartas
+            {mesaCheia ? "Ver as cartas" : "Ver as duas cartas"}
           </button>
         </div>
       </div>
@@ -195,7 +203,7 @@ function Faixa({ carta, quem, pessoa, nota, evento, crescimento, pronto }: Faixa
         <span class="duelo__avatar" aria-hidden="true">
           {iniciais}
         </span>
-        <span>
+        <span class="duelo__nomes">
           {carta.nome}
           <span class="duelo__pessoa">{quem}</span>
         </span>

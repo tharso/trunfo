@@ -99,7 +99,11 @@ function mudou(estado: EstadoDaSala, conexao: string | null): Resultado {
 function vista(partida: PartidaNaSala, voce: number): PartidaVista {
   const { estado } = partida;
   return {
-    pessoas: partida.pessoas.map(({ apelido }, i) => ({ apelido, cartas: estado.pessoas[i].monte.length })),
+    pessoas: partida.pessoas.map(({ apelido }, i) => ({
+      apelido,
+      cartas: estado.pessoas[i].monte.length,
+      fora: estado.pessoas[i].fora,
+    })),
     voce,
     monteDeEmpate: estado.monteDeEmpate.length,
     rodada: estado.rodada,

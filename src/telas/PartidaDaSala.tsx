@@ -1,8 +1,9 @@
 // A partida na sala (docs/spec.md, parte 9, itens 9 a 11 e 20 a 21). A sala
 // (Durable Object) roda as regras e manda a cada celular só a sua carta; esta
 // tela desenha a fila (src/multiplayer/fila.ts) com as mesmas peças do modo
-// solo: Placar em cabo de guerra, Carta, Duelo, Fim, som e vibração. No lugar
-// de "computador", o Apelido da outra pessoa.
+// solo: Placar, Carta, Duelo, Fim, som e vibração. No lugar de "computador", o
+// Apelido das outras pessoas. Com 3 ou 4 pessoas, quem fica sem cartas continua
+// vendo as rodadas, sem carta própria (a tela "De fora" completa é o ticket #40).
 import { useEffect, useState } from "preact/hooks";
 import type { FilaDaPartida } from "../multiplayer/fila";
 import { resultadoDoFim, type ChaveAtributo } from "../regras";
@@ -11,7 +12,7 @@ import { BotaoSom } from "./BotaoSom";
 import { cartaPeloCodigo } from "./doBaralho";
 import { Duelo } from "./Duelo";
 import { motivoDoFim, tituloDoFim } from "./Fim";
-import { nomeDoApelido } from "./mesa";
+import { nomeDoApelido, ordemDoFim } from "./mesa";
 import type { AoMomento } from "./momentos";
 import { Placar } from "./Placar";
 import { EscolhaDoOutro, OutroEscolhendo, VezDeVoce } from "./Vez";
@@ -65,7 +66,7 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, aoMo
   } else if (duelo) {
     conteudo = (
       <EscolhaDoOutro
-        carta={suaCarta!}
+        carta={suaCarta}
         atributo={duelo.evento.atributo}
         sujeito={nomes[duelo.evento.quemEscolheu].sujeito}
         aoMostrar={() => setMostrada(duelo.evento.rodada)}
@@ -81,7 +82,7 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, aoMo
       />
     );
   } else {
-    conteudo = <OutroEscolhendo carta={suaCarta!} sujeito={nomes[vista.quemEscolhe].sujeito} />;
+    conteudo = <OutroEscolhendo carta={suaCarta} sujeito={nomes[vista.quemEscolhe].sujeito} />;
   }
 
   return (
@@ -110,8 +111,8 @@ interface FimDaSalaProps {
 
 /**
  * O fim na sala (spec, itens 20 e 21): quem ganhou e todas as pessoas, em ordem
- * de cartas no monte. "Jogar de novo" (só o Anfitrião) é o ticket #41; quem
- * saiu no meio ("saiu" no fim da lista) é o #40.
+ * de cartas no monte; quem saiu da partida no fim, com "saiu". "Jogar de novo"
+ * (só o Anfitrião) é o ticket #41.
  */
 function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
   const fim = vista.fim!;
@@ -119,7 +120,7 @@ function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
   useEffect(() => {
     aoMomento?.({ tipo: "fim", resultado: resultadoDoFim(fim, vista.voce) });
   }, []);
-  const ordem = vista.pessoas.map((p, i) => ({ ...p, i })).sort((a, b) => b.cartas - a.cartas);
+  const ordem = ordemDoFim(vista.pessoas).map((i) => ({ ...vista.pessoas[i], i }));
   return (
     <div class="tela">
       <main class="fim">
@@ -131,7 +132,7 @@ function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
             <li key={p.i} class="sala__pessoa">
               <span class="sala__apelido">{p.apelido}</span>
               {p.i === vista.voce && <span class="sala__marca">você</span>}
-              <span class="sala__cartas">{p.cartas} cartas</span>
+              <span class="sala__cartas">{p.fora === "saiu" ? "saiu" : `${p.cartas} cartas`}</span>
             </li>
           ))}
         </ol>

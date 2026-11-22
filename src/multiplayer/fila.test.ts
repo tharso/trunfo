@@ -8,8 +8,8 @@ import { avancar, filaVazia, receberNaFila, type FilaDaPartida } from "./fila";
 function vista(rodada: number, quemEscolhe = 0, fim: PartidaVista["fim"] = null): PartidaVista {
   return {
     pessoas: [
-      { apelido: "Ana", cartas: 16 },
-      { apelido: "Bia", cartas: 16 },
+      { apelido: "Ana", cartas: 16, fora: null },
+      { apelido: "Bia", cartas: 16, fora: null },
     ],
     voce: 1,
     monteDeEmpate: 0,
