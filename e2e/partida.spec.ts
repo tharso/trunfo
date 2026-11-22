@@ -14,7 +14,7 @@ test("joga uma partida inteira contra o Computador até o Fim, sem internet", as
   });
   await context.setOffline(true);
   await page.reload();
-  await page.getByRole("button", { name: "Jogar" }).click();
+  await page.getByRole("button", { name: "Jogar", exact: true }).click();
 
   const fim = page.getByRole("button", { name: "Jogar de novo" });
   const proxima = page.getByRole("button", { name: "Próxima rodada" });

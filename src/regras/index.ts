@@ -6,7 +6,7 @@
 //   criarPartida({ baralho, pessoas, nivel, semente }) → Estado
 //   aplicar(estado, acao) → { estado, eventos }
 //   cartaDeCima(estado, pessoa), atributoDoComputador(estado): leituras para a tela
-//   escolhaDoComputador(carta, nivel, sorteio): a escolha do Computador, que só vê a própria carta
+//   escolhaDoComputador(carta, nivel, sorteio, baralho): a escolha do Computador, que só vê a própria carta (e o baralho fixo)
 //
 // O Estado é dado simples: vira JSON e volta igual (é o que se guarda no celular).
 // Testes de unidade ao lado, em `*.test.ts` (rodam com `npm test`).

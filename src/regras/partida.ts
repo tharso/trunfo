@@ -65,7 +65,7 @@ export function cartaDeCima(estado: Estado, pessoa: number): Carta | null {
 export function atributoDoComputador(estado: Estado): ChaveAtributo | null {
   if (estado.fim || estado.pessoas[estado.quemEscolhe].tipo !== "computador") return null;
   const carta = cartaDeCima(estado, estado.quemEscolhe)!;
-  return escolhaDoComputador(carta, estado.nivel, estado.sorteio).atributo;
+  return escolhaDoComputador(carta, estado.nivel, estado.sorteio, estado.baralho).atributo;
 }
 
 /** Aplica uma ação. Devolve o estado novo e o que aconteceu. Ação inválida lança erro. */
@@ -82,7 +82,7 @@ export function aplicar(estado: Estado, acao: Acao): { estado: Estado; eventos: 
     case "computadorEscolhe": {
       if (novo.pessoas[novo.quemEscolhe].tipo !== "computador") throw new Error("Não é a vez do Computador.");
       const carta = cartaDeCima(novo, novo.quemEscolhe)!;
-      const escolha = escolhaDoComputador(carta, novo.nivel, novo.sorteio);
+      const escolha = escolhaDoComputador(carta, novo.nivel, novo.sorteio, novo.baralho);
       novo.sorteio = escolha.sorteio;
       return { estado: novo, eventos: disputarRodada(novo, escolha.atributo) };
     }

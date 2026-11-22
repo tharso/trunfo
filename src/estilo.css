@@ -144,4 +144,80 @@ body {
 .selo--carta-a {
   background: var(--texto);
   color: var(--fundo);
+/* Início: escolha do Nível (ticket 26). */
+.niveis {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.niveis__titulo {
+  padding: 0 0 0.5rem;
+  color: var(--texto-suave);
+}
+
+.nivel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border: 2px solid var(--texto-suave);
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.nivel--marcado {
+  border-color: var(--destaque);
+}
+
+.nivel:has(input:focus-visible) {
+  outline: 3px solid var(--texto);
+  outline-offset: 3px;
+}
+
+.nivel input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nivel__nome {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.nivel__explicacao {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+/* Como jogar (ticket 26). */
+.como-jogar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  line-height: 1.5;
+}
+
+.como-jogar__titulo {
+  margin: 0 0 0.5rem;
+}
+
+.como-jogar h2 {
+  margin: 1rem 0 0;
+  font-size: 1.1rem;
+  color: var(--destaque);
+}
+
+.como-jogar p {
+  margin: 0;
+}
+
+.como-jogar .botao {
+  margin-top: 1.5rem;
 }
