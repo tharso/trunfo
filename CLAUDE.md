@@ -13,3 +13,7 @@ Rótulos padrão: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-hu
 ### Domain docs
 
 Single-context: um `GLOSSARY.md` e `docs/adr/` na raiz. See `docs/agents/domain.md`.
+
+### Coding standards
+
+Regras de julgamento para revisão de código: `CODING_STANDARDS.md`.

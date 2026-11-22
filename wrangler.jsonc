@@ -11,6 +11,9 @@
   // das salas. Só /sala/* passa pelo Worker; o resto são os arquivos estáticos,
   // em modo SPA, como na primeira versão.
   "main": "src/worker/index.ts",
+  // Builds de branch (PR) na Cloudflare rodam `wrangler preview`, que exige
+  // este bloco, mesmo vazio. O main usa `wrangler deploy` e ignora o bloco.
+  "previews": {},
   "assets": {
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
