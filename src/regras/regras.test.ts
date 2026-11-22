@@ -181,6 +181,59 @@ describe("Super Trunfo e Carta A", () => {
   });
 });
 
+describe("empate e monte de empate", () => {
+  it("empates seguidos acumulam no monte de empate, e quem ganha a próxima leva tudo", () => {
+    const estado = partidaArrumada(
+      [
+        [carta("A", 50), carta("B", 40), carta("C", 90), carta("a")],
+        [carta("D", 50), carta("E", 40), carta("F", 10), carta("d")],
+      ],
+      0,
+    );
+    const primeiro = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "sprint" }).estado;
+    const segundo = aplicar(primeiro, { tipo: "escolher", pessoa: 0, atributo: "sprint" }).estado;
+    expect(segundo.monteDeEmpate).toEqual(["A", "D", "B", "E"]);
+    expect(segundo.quemEscolhe).toBe(0);
+
+    const { estado: depois, eventos } = aplicar(segundo, { tipo: "escolher", pessoa: 0, atributo: "sprint" });
+    expect(eventos[0]).toMatchObject({ vencedor: 0, motivo: "nota", cartasLevadas: 6 });
+    expect(depois.pessoas[0].monte).toEqual(["a", "C", "F", "A", "D", "B", "E"]);
+    expect(depois.monteDeEmpate).toEqual([]);
+  });
+
+  it("se a última carta de quem escolhia foi para o monte de empate, essa pessoa sai e a próxima da Ordem da mesa escolhe", () => {
+    const estado = partidaArrumada(
+      [[carta("a", 10), carta("b")], [carta("X", 60)], [carta("c", 60), carta("d")]],
+      1,
+    );
+    const { estado: depois, eventos } = aplicar(estado, { tipo: "computadorEscolhe" });
+    expect(eventos[0]).toMatchObject({ vencedor: null, motivo: "empate" });
+    expect(eventos).toContainEqual({ tipo: "saiu", pessoa: 1, motivo: "semCartas" });
+    expect(depois.pessoas[1].fora).toBe("semCartas");
+    expect(depois.quemEscolhe).toBe(2);
+    expect(depois.fim).toBeNull();
+  });
+
+  it("a Ordem da mesa dá a volta: depois da última pessoa, escolhe a primeira", () => {
+    const estado = partidaArrumada([[carta("a", 60), carta("b")], [carta("c", 10), carta("d")], [carta("X", 60)]], 2);
+    const { estado: depois } = aplicar(estado, { tipo: "computadorEscolhe" });
+    expect(depois.pessoas[2].fora).toBe("semCartas");
+    expect(depois.quemEscolhe).toBe(0);
+  });
+
+  it("com 2 pessoas, se quem escolhia sai no empate, a outra ganha a partida", () => {
+    const estado = partidaArrumada([[carta("X", 60)], [carta("c", 60), carta("d")]], 0);
+    const { estado: depois } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "sprint" });
+    expect(depois.fim).toMatchObject({ vencedor: 1, motivo: "todasAsCartas" });
+  });
+
+  it("se todo mundo fica sem cartas num empate, a partida termina empatada", () => {
+    const estado = partidaArrumada([[carta("X", 60)], [carta("Y", 60)]], 0);
+    const { estado: depois } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "sprint" });
+    expect(depois.fim).toEqual({ vencedor: null, motivo: "semCartas", rodadasJogadas: 1 });
+  });
+});
+
 describe("fim da partida", () => {
   it("acaba quando uma pessoa tem todas as cartas", () => {
     const estado = partidaArrumada([[carta("A", 90), carta("B", 10)], [carta("C", 20)]]);
@@ -202,6 +255,29 @@ describe("fim da partida", () => {
     );
     const { estado: depois } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "pave" });
     expect(depois.fim).toEqual({ vencedor: 1, motivo: "limiteDeRodadas", rodadasJogadas: 100 });
+  });
+
+  it("na rodada 100, com o mesmo número de cartas, a partida termina empatada", () => {
+    const estado = partidaArrumada([[carta("A", 10), carta("B"), carta("G")], [carta("C", 90)]], 0, 100);
+    const { estado: depois, eventos } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "pave" });
+    expect(depois.fim).toEqual({ vencedor: null, motivo: "limiteDeRodadas", rodadasJogadas: 100 });
+    expect(eventos.at(-1)).toEqual({ tipo: "fim", vencedor: null, motivo: "limiteDeRodadas", rodadasJogadas: 100 });
+  });
+
+  it("no fim, as cartas do monte de empate não contam para ninguém", () => {
+    // Na rodada 100 há empate: 2 cartas vão para o meio. Contando o meio, ninguém
+    // empataria; sem ele, as duas pessoas ficam com 1 carta: empate.
+    const estado = partidaArrumada([[carta("A", 50), carta("B")], [carta("C", 50), carta("D")]], 0, 100);
+    const { estado: depois } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "pave" });
+    expect(depois.monteDeEmpate).toEqual(["A", "C"]);
+    expect(depois.fim).toEqual({ vencedor: null, motivo: "limiteDeRodadas", rodadasJogadas: 100 });
+
+    const outro = partidaArrumada(
+      [[carta("A", 50), carta("B")], [carta("C", 50), carta("D"), carta("E")]],
+      0,
+      100,
+    );
+    expect(aplicar(outro, { tipo: "escolher", pessoa: 0, atributo: "pave" }).estado.fim).toMatchObject({ vencedor: 1 });
   });
 
   it("antes da rodada 100 a partida continua", () => {

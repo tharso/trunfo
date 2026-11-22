@@ -36,7 +36,13 @@ export interface Pessoa {
   fora: MotivoDeSaida | null;
 }
 
-export type MotivoDoFim = "todasAsCartas" | "limiteDeRodadas" | "saida";
+/**
+ * - `todasAsCartas`: só uma pessoa ficou na partida;
+ * - `limiteDeRodadas`: chegou à rodada 100 (ganha quem tem mais cartas; empate se igual);
+ * - `semCartas`: todo mundo ficou sem cartas num empate (a partida termina empatada);
+ * - `saida`: alguém saiu no meio e sobrou uma pessoa.
+ */
+export type MotivoDoFim = "todasAsCartas" | "limiteDeRodadas" | "semCartas" | "saida";
 
 export interface Fim {
   /** Índice da pessoa que ganhou, ou `null` se a partida terminou empatada. */

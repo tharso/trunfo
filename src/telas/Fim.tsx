@@ -7,8 +7,16 @@ const COMPUTADOR = 1;
 const MOTIVO: Record<MotivoDoFim, string> = {
   todasAsCartas: "Ficou com todas as cartas.",
   limiteDeRodadas: "Chegou ao limite de rodadas. Ganha quem tem mais cartas.",
+  semCartas: "Todo mundo ficou sem cartas no mesmo empate.",
   saida: "Alguém saiu da partida.",
 };
+
+/** O motivo, com o caso do empate no limite de rodadas. */
+function motivo(fim: NonNullable<Estado["fim"]>): string {
+  if (fim.motivo === "limiteDeRodadas" && fim.vencedor === null)
+    return "Chegou ao limite de rodadas com o mesmo número de cartas.";
+  return MOTIVO[fim.motivo];
+}
 
 interface Props {
   estado: Estado;
@@ -23,7 +31,10 @@ export function Fim({ estado, aoJogarDeNovo, aoVoltar }: Props) {
     <div class="tela">
       <main class="fim">
         <h1 class="fim__titulo">{titulo}</h1>
-        <p>{MOTIVO[fim.motivo]}</p>
+        <p>{motivo(fim)}</p>
+        {fim.vencedor === null && estado.monteDeEmpate.length > 0 && (
+          <p>As {estado.monteDeEmpate.length} cartas do monte de empate não contam.</p>
+        )}
         <p>
           Você {estado.pessoas[VOCE].monte.length} × {estado.pessoas[COMPUTADOR].monte.length} Computador
         </p>

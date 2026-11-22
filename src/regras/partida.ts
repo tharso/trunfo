@@ -185,8 +185,11 @@ function disputarRodada(estado: Estado, atributo: ChaveAtributo): Evento[] {
   estado.quemEscolhe = vencedor ?? proximaNaPartida(estado, quemEscolheu);
 
   const restantes = naPartida(estado);
-  if (restantes.length <= 1) {
-    terminar(estado, eventos, restantes[0] ?? null, "todasAsCartas", estado.rodada);
+  if (restantes.length === 1) {
+    terminar(estado, eventos, restantes[0], "todasAsCartas", estado.rodada);
+  } else if (restantes.length === 0) {
+    // Todo mundo ficou sem cartas no mesmo empate.
+    terminar(estado, eventos, null, "semCartas", estado.rodada);
   } else if (estado.rodada >= estado.limiteDeRodadas) {
     terminar(estado, eventos, quemTemMaisCartas(estado), "limiteDeRodadas", estado.rodada);
   } else {
