@@ -24,10 +24,8 @@ function somEVibracao(momento: Momento): { som: Som; duracaoMs?: number; vibraca
     case "barra":
       return { som: "tiqueTaque", duracaoMs: momento.duracaoMs };
     case "resultado":
-      return { som: momento.resultado, vibracao: VIBRACAO[momento.resultado] };
     case "fim":
-      // A spec só fala de vitória e derrota; o empate da partida usa o som e a vibração do empate.
-      if (momento.resultado === "empate") return { som: "empate", vibracao: VIBRACAO.empate };
+      // A spec só fala de vitória e derrota no fim; o empate da partida usa o som e a vibração do empate.
       return { som: momento.resultado, vibracao: VIBRACAO[momento.resultado] };
   }
 }

@@ -51,7 +51,7 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
   // O relógio do duelo. Para sozinho no fim ou quando alguém pula.
   useEffect(() => {
     momento.current?.({ tipo: "largada" });
-    momento.current?.({ tipo: "barra", quem: "voce", duracaoMs: BARRA_MS });
+    momento.current?.({ tipo: "barra", duracaoMs: BARRA_MS });
     const inicio = performance.now();
     let quadro = 0;
     const passo = () => {
@@ -64,12 +64,12 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
   }, []);
 
   useEffect(() => {
-    if (computadorCorrendo && !pronto) momento.current?.({ tipo: "barra", quem: "computador", duracaoMs: BARRA_MS });
+    if (computadorCorrendo && !pronto) momento.current?.({ tipo: "barra", duracaoMs: BARRA_MS });
   }, [computadorCorrendo]);
 
   useEffect(() => {
     if (!pronto) return;
-    momento.current?.({ tipo: "resultado", resultado: rodadaParaVoce(evento.vencedor), pulou: pulou.current });
+    momento.current?.({ tipo: "resultado", resultado: rodadaParaVoce(evento.vencedor) });
     proxima.current?.focus();
   }, [pronto]);
 
