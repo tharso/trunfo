@@ -81,6 +81,11 @@
   letter-spacing: 1px;
 }
 
+/* A foto preenche o círculo (as iniciais ficam para carta sem foto). */
+.carta__iniciais {
+  overflow: hidden;
+}
+
 /* 4 letras (MVDP) não cabem no círculo no tamanho normal. */
 .carta__iniciais--longas {
   font-size: 1.75rem;

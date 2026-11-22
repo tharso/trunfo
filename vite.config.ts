@@ -35,8 +35,9 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Tudo o que o jogo precisa fica no precache (o baralho vem dentro do JS).
-        globPatterns: ["**/*.{js,css,html,svg,png,ico,json,woff2}"],
+        // Tudo o que o jogo precisa fica no precache (o baralho vem dentro do JS; as
+        // fotos das cartas, ~300 KB, em public/fotos/).
+        globPatterns: ["**/*.{js,css,html,svg,png,webp,ico,json,woff2}"],
         // wrangler.json vai para o dist/ mas não é servido (.assetsignore do plugin
         // da Cloudflare); se entrasse no precache, a instalação do SW falharia.
         globIgnores: ["wrangler.json"],

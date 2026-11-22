@@ -1,5 +1,8 @@
 // "Como jogar", aberta pelo Início: as regras em texto curto (docs/spec.md, partes 3 e 6).
-// Só texto; quem aplica as regras é o módulo de regras.
+// Só texto; quem aplica as regras é o módulo de regras. No fim, os créditos das fotos das cartas.
+import { CREDITOS_DAS_FOTOS, enderecoDaLicenca } from "./doBaralho";
+
+
 export function ComoJogar({ aoVoltar }: { aoVoltar: () => void }) {
   return (
     <div class="tela">
@@ -30,6 +33,29 @@ export function ComoJogar({ aoVoltar }: { aoVoltar: () => void }) {
           Ganha quem ficar com todas as cartas. Na rodada 100, ganha quem tiver mais cartas; com o mesmo número, a
           partida termina empatada.
         </p>
+
+        <h2>Fotos</h2>
+        <p>Fotos do Wikimedia Commons, recortadas para a carta.</p>
+        <ul class="como-jogar__creditos">
+          {CREDITOS_DAS_FOTOS.map((credito) => {
+            const licenca = enderecoDaLicenca(credito.licenca);
+            return (
+              <li key={credito.nome}>
+                <a href={credito.pagina} target="_blank" rel="noopener noreferrer">
+                  {credito.nome}
+                </a>
+                : {credito.autor},{" "}
+                {licenca ? (
+                  <a href={licenca} target="_blank" rel="noopener noreferrer">
+                    {credito.licenca}
+                  </a>
+                ) : (
+                  credito.licenca
+                )}
+              </li>
+            );
+          })}
+        </ul>
 
         <button type="button" class="botao" onClick={aoVoltar}>
           Voltar

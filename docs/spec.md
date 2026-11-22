@@ -70,8 +70,8 @@ Detalhe: [Computador adversário](https://github.com/tharso/trunfo/issues/5).
 Detalhe: [Visual da carta](https://github.com/tharso/trunfo/issues/8). Protótipo: branch [`prototype/visual-da-carta`](https://github.com/tharso/trunfo/tree/prototype/visual-da-carta/prototypes/visual-da-carta).
 
 - **Carta clássica em pé**. Ocupa a tela do celular.
-- **Topo**: faixa com as cores da equipe, iniciais do ciclista num círculo, bandeira do país e o código da carta (ex.: `1A`). Super Trunfo e Carta A têm selo próprio.
-- **Sem foto**. Ver [ADR 0002](adr/0002-carta-sem-foto.md).
+- **Topo**: faixa com as cores da equipe, foto do ciclista num círculo, bandeira do país e o código da carta (ex.: `1A`). Super Trunfo e Carta A têm selo próprio.
+- **Foto**: do Wikimedia Commons, recortada no rosto. Carta sem foto mostra as iniciais no círculo. O duelo também mostra a foto. Os créditos ficam em "Como jogar". Ver [ADR 0004](adr/0004-carta-com-foto.md).
 - **Abaixo do topo**: nome, país, idade e equipe (equipe só em texto, sem logo).
 - **6 linhas**, uma por atributo: ícone, nome, barra e a nota grande à direita. A linha inteira é a área de toque.
 - **Cor da barra: escala semáforo**. Paradas: 1 `#d84315`, 40 `#f9a825`, 70 `#7cb342`, 99 `#1b8a3a`. As cores entre as paradas são interpoladas.
@@ -225,7 +225,7 @@ Detalhe: [Tecnologia na Cloudflare](https://github.com/tharso/trunfo/issues/6) e
 - Modo solo com 2 ou 3 computadores.
 - Retrospecto do multiplayer.
 - Nível "Difícil" do computador.
-- Foto dos ciclistas e logo das equipes.
+- Logo das equipes.
 
 ## 12. Fatias da primeira versão
 
