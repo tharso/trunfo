@@ -11,10 +11,11 @@ export const TEXTO_DE_FORA = "De fora, só olhando. Você entra na próxima part
 /** O que a tela da partida precisa da sala (além da fila de rodadas). */
 export interface ControlesDaSala {
   /** Quem caiu e está sendo esperado: a partida está parada. */
-  semRede: { indice: number; apelido: string }[];
+  semRede: { numero: number; apelido: string }[];
   souAnfitriao: boolean;
   podeCutucar: boolean;
-  aoTirar: (indice: number) => void;
+  /** Tira da partida a pessoa deste número (o número público dela na sala). */
+  aoTirar: (numero: number) => void;
   aoCutucar: () => void;
   /** Menu ☰ no meio da partida: sai dela e fica De fora. */
   aoSairDaPartida: () => void;
@@ -27,15 +28,15 @@ export function AvisoDeQueda({ semRede, souAnfitriao, aoTirar }: ControlesDaSala
   if (semRede.length === 0) return null;
   return (
     <div class="queda" role="status">
-      {semRede.map(({ indice, apelido }) => (
-        <p key={indice} class="queda__pessoa">
+      {semRede.map(({ numero, apelido }) => (
+        <p key={numero} class="queda__pessoa">
           <span>{`${apelido} está sem rede. A partida espera até ${TEMPOS_DA_SALA.queda / 1000} s.`}</span>
           {souAnfitriao && (
             <button
               type="button"
               class="botao botao--secundario queda__tirar"
               aria-label={`Tirar ${apelido}`}
-              onClick={() => aoTirar(indice)}
+              onClick={() => aoTirar(numero)}
             >
               Tirar
             </button>

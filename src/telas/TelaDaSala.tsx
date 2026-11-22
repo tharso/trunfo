@@ -90,10 +90,10 @@ export function TelaDaSala({ entrada, aoSair, aoCriarSala }: Props) {
         aoSair={sair}
         jogarDeNovo={souAnfitriao ? { pode: podeComecar, aoJogar: () => enviar({ tipo: "comecar" }) } : null}
         controles={{
-          semRede: sala.semRede.map((indice) => ({ indice, apelido: sala.pessoas[indice].apelido })),
+          semRede: sala.semRede.map((indice) => sala.pessoas[indice]),
           souAnfitriao,
           podeCutucar: sala.podeCutucar,
-          aoTirar: (pessoa) => enviar({ tipo: "tirar", pessoa }),
+          aoTirar: (numero) => enviar({ tipo: "tirar", numero }),
           aoCutucar: () => enviar({ tipo: "cutucar" }),
           aoSairDaPartida: () => enviar({ tipo: "sair" }),
           aoSairDaSala: sair,

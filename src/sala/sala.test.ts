@@ -56,7 +56,7 @@ describe("entrar na sala", () => {
     expect(paraQuem(resultado, "id-ana")).toEqual({
       tipo: "sala",
       codigo: "ABC",
-      pessoas: [{ apelido: "Ana", conectada: true }],
+      pessoas: [{ numero: 1, apelido: "Ana", conectada: true }],
       voce: 0,
       anfitriao: 0,
       emPartida: false,
@@ -108,10 +108,30 @@ describe("entrar na sala", () => {
     expect(antes.pessoas[0].conectada).toBe(false);
     const resultado = entrar(antes, "id-Ana", "Outro nome");
     expect(resultado.estado!.pessoas).toEqual([
-      { id: "id-Ana", apelido: "Ana", conectada: true, caiuEm: null },
-      { id: "id-Bia", apelido: "Bia", conectada: true, caiuEm: null },
+      { id: "id-Ana", numero: 1, apelido: "Ana", conectada: true, caiuEm: null },
+      { id: "id-Bia", numero: 2, apelido: "Bia", conectada: true, caiuEm: null },
     ]);
     expect(paraQuem(resultado, "id-Ana")).toMatchObject({ voce: 0 });
+  });
+
+  it("a conexão que já entrou não troca de identificador: o outro entrar é ignorado", () => {
+    const estado = comPessoas("Ana");
+    const resultado = receber(estado, "id-Ana", JSON.stringify({ tipo: "entrar", id: "id-Bia", apelido: "Bia" }), AGORA);
+    expect(resultado.estado).toBe(estado);
+    expect(resultado.conexao).toBe("id-Ana");
+  });
+
+  it("cada pessoa tem um número na sala, que não se repete nem muda quando a lista muda", () => {
+    const tres = comPessoas("Ana", "Bia", "Caio");
+    const numeros = tres.pessoas.map((p) => p.numero);
+    expect(new Set(numeros).size).toBe(3);
+    const biaFoi = receber(tres, "id-Bia", '{"tipo":"sair"}', AGORA).estado!;
+    const davi = entrar(biaFoi, "id-Davi", "Davi");
+    expect(davi.estado!.pessoas.map((p) => p.numero).slice(0, 2)).toEqual([numeros[0], numeros[2]]);
+    expect(numeros).not.toContain(davi.estado!.pessoas[2].numero);
+    expect(paraQuem(davi, "id-Ana")).toMatchObject({
+      pessoas: davi.estado!.pessoas.map(({ apelido, numero }) => ({ apelido, numero })),
+    });
   });
 
   it("a quinta pessoa não entra: a sala está cheia", () => {

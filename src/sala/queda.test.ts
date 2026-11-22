@@ -46,6 +46,11 @@ function vistaPara(resultado: Resultado, id: string) {
   return mensagem.vista;
 }
 
+/** O número público da pessoa na sala (o que o "Tirar" manda). */
+function numeroDe(estado: EstadoDaSala, id: string): number {
+  return estado.pessoas.find((p) => p.id === id)!.numero;
+}
+
 function quemEscolhe(estado: EstadoDaSala): string {
   return estado.partida!.pessoas[estado.partida!.estado.quemEscolhe].id;
 }
@@ -117,12 +122,24 @@ describe("queda de rede", () => {
 
   it("o Anfitrião tira quem caiu antes dos 60 s; mais ninguém tira", () => {
     const caiu = desconectar(emPartida("Ana", "Bia", "Caio"), "id-Bia", AGORA).estado!;
-    expect(mandar(caiu, "id-Caio", { tipo: "tirar", pessoa: 1 }).estado).toBe(caiu);
-    expect(mandar(caiu, "id-Ana", { tipo: "tirar", pessoa: 2 }).estado).toBe(caiu);
-    const tirou = mandar(caiu, "id-Ana", { tipo: "tirar", pessoa: 1 }, AGORA + 5 * SEGUNDO);
+    expect(mandar(caiu, "id-Caio", { tipo: "tirar", numero: numeroDe(caiu, "id-Bia") }).estado).toBe(caiu);
+    expect(mandar(caiu, "id-Ana", { tipo: "tirar", numero: numeroDe(caiu, "id-Caio") }).estado).toBe(caiu);
+    const tirou = mandar(caiu, "id-Ana", { tipo: "tirar", numero: numeroDe(caiu, "id-Bia") }, AGORA + 5 * SEGUNDO);
     expect(tirou.estado!.partida!.estado.pessoas[1].fora).toBe("saiu");
     expect(salaPara(tirou, "id-Caio")).toMatchObject({ semRede: [] });
     expect(proximoAlarme(tirou.estado!)).not.toBe(AGORA + 60 * SEGUNDO);
+  });
+
+  it("Tirar aponta a pessoa pelo número dela: se a lista muda no caminho, não tira outra pessoa", () => {
+    const deFora = mandar(emPartida("Ana", "Bia", "Caio", "Davi"), "id-Bia", { tipo: "sair" }).estado!;
+    const caidos = desconectar(desconectar(deFora, "id-Caio", AGORA).estado!, "id-Davi", AGORA).estado!;
+    // Ana vê Caio em 3º na lista; antes do "Tirar" chegar, Bia vai embora e Davi passa a ser o 3º.
+    const caio = salaPara(desconectar(deFora, "id-Caio", AGORA), "id-Ana").pessoas[2];
+    const biaFoi = mandar(caidos, "id-Bia", { tipo: "sair" }).estado!;
+    const tirou = mandar(biaFoi, "id-Ana", { tipo: "tirar", numero: caio.numero });
+    const naPartida = tirou.estado!.partida!.estado.pessoas;
+    expect(naPartida[2].fora).toBe("saiu");
+    expect(naPartida[3].fora).toBeNull();
   });
 
   it("os tempos vêm de fora (o build do teste encurta)", () => {

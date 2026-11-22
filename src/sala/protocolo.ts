@@ -23,8 +23,8 @@ export type MensagemDoCliente =
    * sala. Antes da partida, no fim dela ou já De fora: ir embora da sala.
    */
   | { tipo: "sair" }
-  /** Só o Anfitrião: tira da partida quem caiu (`pessoa`: índice em `pessoas` da sala). */
-  | { tipo: "tirar"; pessoa: number }
+  /** Só o Anfitrião: tira da partida quem caiu (`numero`: o número público da pessoa na sala). */
+  | { tipo: "tirar"; numero: number }
   /** Faz o celular de quem escolhe vibrar (só quando a sala deixa: `podeCutucar`). */
   | { tipo: "cutucar" }
   /** Quem escolhe diz o atributo da rodada. */
@@ -32,6 +32,8 @@ export type MensagemDoCliente =
 
 /** Uma pessoa como as outras a veem: sem o identificador secreto. */
 export interface PessoaVisivel {
+  /** O número da pessoa na sala: não muda quando a lista muda (o "Tirar" aponta por ele). */
+  numero: number;
   apelido: string;
   conectada: boolean;
 }
@@ -109,7 +111,7 @@ export function lerMensagemDoCliente(texto: string): MensagemDoCliente | null {
     case "cutucar":
       return { tipo: dado.tipo };
     case "tirar":
-      return contagem(dado.pessoa) ? { tipo: "tirar", pessoa: dado.pessoa } : null;
+      return contagem(dado.numero) ? { tipo: "tirar", numero: dado.numero } : null;
     case "escolher":
       return ATRIBUTOS.includes(dado.atributo as ChaveAtributo)
         ? { tipo: "escolher", atributo: dado.atributo as ChaveAtributo }
@@ -141,7 +143,7 @@ export function lerMensagemDaSala(texto: string): MensagemDaSala | null {
   const { codigo, pessoas, voce, anfitriao, emPartida, podeComecar, semRede, podeCutucar } = dado;
   const pessoasValidas =
     Array.isArray(pessoas) &&
-    pessoas.every((p) => p && typeof p.apelido === "string" && typeof p.conectada === "boolean");
+    pessoas.every((p) => p && contagem(p.numero) && typeof p.apelido === "string" && typeof p.conectada === "boolean");
   const indice = (valor: unknown) =>
     Number.isInteger(valor) && (valor as number) >= 0 && pessoasValidas && (valor as number) < pessoas.length;
   if (
@@ -160,7 +162,7 @@ export function lerMensagemDaSala(texto: string): MensagemDaSala | null {
   return {
     tipo: "sala",
     codigo,
-    pessoas: pessoas.map((p: PessoaVisivel) => ({ apelido: p.apelido, conectada: p.conectada })),
+    pessoas: pessoas.map((p: PessoaVisivel) => ({ numero: p.numero, apelido: p.apelido, conectada: p.conectada })),
     voce: voce as number,
     anfitriao: anfitriao as number,
     emPartida,

@@ -26,6 +26,11 @@ export const TEMPOS_DA_SALA: TemposDaSala = { queda: 60_000, cutucar: 30_000, va
 export interface PessoaNaSala {
   /** O identificador secreto do celular. Nunca sai da sala. */
   id: string;
+  /**
+   * O número público da pessoa na sala (vai para os celulares; o "Tirar" aponta
+   * por ele). Não se repete na mesma sala e não muda quando a lista muda.
+   */
+  numero: number;
   apelido: string;
   conectada: boolean;
   /** Quando a última conexão da pessoa fechou (ms); `null` conectada ou depois que o tempo de queda foi tratado. */
@@ -56,6 +61,8 @@ export interface EstadoDaSala {
   partida: PartidaNaSala | null;
   /** Quando a sala mudou pela última vez (ms). */
   atualizadaEm: number;
+  /** Quantas pessoas novas já entraram: a próxima recebe o número seguinte. */
+  entradas: number;
 }
 
 export interface Resultado {
@@ -93,7 +100,7 @@ export function reservar(
   tempos: TemposDaSala = TEMPOS_DA_SALA,
 ): EstadoDaSala | null {
   if (emUso(estado, agora, tempos)) return null;
-  return { codigo, pessoas: [], anfitriao: null, partida: null, atualizadaEm: agora };
+  return { codigo, pessoas: [], anfitriao: null, partida: null, atualizadaEm: agora, entradas: 0 };
 }
 
 /** Espaços em volta e repetidos saem; no máximo 20 letras. */
@@ -178,7 +185,7 @@ function podeComecar(estado: EstadoDaSala): boolean {
 
 /** A sala como cada pessoa conectada a vê. */
 function avisarTodos(estado: EstadoDaSala): Resultado["paraPessoas"] {
-  const pessoas = estado.pessoas.map(({ apelido, conectada }) => ({ apelido, conectada }));
+  const pessoas = estado.pessoas.map(({ numero, apelido, conectada }) => ({ numero, apelido, conectada }));
   const anfitriao = estado.pessoas.findIndex((p) => p.id === estado.anfitriao);
   const caidas = semRede(estado).map((p) => estado.pessoas.indexOf(p));
   const comecar = podeComecar(estado);
@@ -282,6 +289,8 @@ export function receber(
   if (mensagem === null) return semMudanca(estado, conexao);
 
   if (mensagem.tipo === "entrar") {
+    // Um socket é de uma pessoa só: outro identificador na mesma conexão não vale.
+    if (conexao !== null && conexao !== mensagem.id) return semMudanca(estado, conexao);
     if (!emUso(estado, agora, tempos)) return recusar(estado, conexao, "acabou");
     const apelido = limparApelido(mensagem.apelido);
     if (apelido === "") return semMudanca(estado, conexao);
@@ -299,9 +308,16 @@ export function receber(
     // Entre partidas, gente nova entra no fim da Ordem da mesa (spec, item 25).
     const sala = semQuemFoiEmbora(estado);
     if (sala.pessoas.length >= MAXIMO_DE_PESSOAS) return recusar(estado, conexao, "cheia");
-    const nova = { id: mensagem.id, apelido: apelidoUnico(apelido, sala.pessoas), conectada: true, caiuEm: null };
+    const numero = sala.entradas + 1;
+    const nova = { id: mensagem.id, numero, apelido: apelidoUnico(apelido, sala.pessoas), conectada: true, caiuEm: null };
     return resultadoComSala(
-      { ...sala, pessoas: [...sala.pessoas, nova], anfitriao: sala.anfitriao ?? nova.id, atualizadaEm: agora },
+      {
+        ...sala,
+        pessoas: [...sala.pessoas, nova],
+        anfitriao: sala.anfitriao ?? nova.id,
+        atualizadaEm: agora,
+        entradas: numero,
+      },
       nova.id,
     );
   }
@@ -356,7 +372,7 @@ export function receber(
   }
 
   if (mensagem.tipo === "tirar") {
-    const caida = estado.pessoas[mensagem.pessoa];
+    const caida = estado.pessoas.find((p) => p.numero === mensagem.numero);
     if (conexao !== estado.anfitriao || !caida || !semRede(estado).includes(caida)) return semMudanca(estado, conexao);
     const pessoas = estado.pessoas.map((p) => (p === caida ? { ...p, caiuEm: null } : p));
     return resultadoComPartida(tirarDaPartida({ ...estado, pessoas }, indiceNaPartida(estado, caida.id), agora), conexao);
