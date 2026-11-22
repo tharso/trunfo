@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const porta = 4173;
+// PORTA no ambiente permite rodar vários worktrees ao mesmo tempo.
+const porta = Number(process.env.PORTA ?? 4173);
 
 export default defineConfig({
   testDir: "e2e",
