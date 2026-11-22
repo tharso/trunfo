@@ -6,7 +6,7 @@ import { expect, test } from "@playwright/test";
 // em 20 rodadas. A semente só fixa o sorteio; quem decide as regras é o módulo.
 test("joga uma partida inteira contra o Computador até o Fim", async ({ page }) => {
   await page.goto("/?semente=231");
-  await page.getByRole("button", { name: "Jogar" }).click();
+  await page.getByRole("button", { name: "Jogar", exact: true }).click();
 
   const fim = page.getByRole("button", { name: "Jogar de novo" });
   const proxima = page.getByRole("button", { name: "Próxima rodada" });
