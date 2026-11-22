@@ -1,7 +1,7 @@
 // Fim da partida (docs/spec.md, parte 6): quem ganhou, o motivo, o placar e as rodadas jogadas.
 // Os textos do fim (título e motivo) servem também ao fim da sala (FimDaSala, em PartidaDaSala.tsx).
 import { useEffect } from "preact/hooks";
-import { resultadoDaPartida, resultadoDoFim, type Estado, type Fim as FimDaPartida, type MotivoDoFim } from "../regras";
+import { quemFicouSemCartas, resultadoDaPartida, resultadoDoFim, type Estado, type Fim as FimDaPartida, type MotivoDoFim } from "../regras";
 import type { NomeNaTela } from "./mesa";
 import type { AoMomento } from "./momentos";
 import { COMPUTADOR, NOMES_DO_SOLO, VOCE } from "./solo";
@@ -26,9 +26,8 @@ export function tituloDoFim(fim: FimDaPartida, voce: number, nomes: NomeNaTela[]
 export function motivoDoFim(fim: FimDaPartida, voce: number, nomes: NomeNaTela[]): string {
   if (fim.motivo === "limiteDeRodadas" && fim.vencedor === null)
     return "Chegou ao limite de rodadas com o mesmo número de cartas.";
-  // Com 2 pessoas, quem ficou sem cartas é quem não ganhou.
-  if (fim.motivo === "ultimaNaPartida" && nomes.length === 2) {
-    const semCartas = fim.vencedor === 0 ? 1 : 0;
+  const semCartas = quemFicouSemCartas(fim, nomes.length);
+  if (semCartas !== null) {
     return semCartas === voce ? "Você ficou sem cartas." : `${nomes[semCartas].sujeito} ficou sem cartas.`;
   }
   return MOTIVO[fim.motivo];

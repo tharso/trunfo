@@ -15,6 +15,9 @@ const VIBRACAO = {
   derrota: [300],
 } as const satisfies Record<string, number[]>;
 
+/** O som e a vibração da rodada: "ganhar", "perder" ou "empate" (os do fim são "vitoria" e "derrota"). */
+const DA_RODADA = { vitoria: "ganhar", derrota: "perder", empate: "empate" } as const;
+
 function somEVibracao(momento: Momento): { som: Som; duracaoMs?: number; vibracao?: readonly number[] } {
   switch (momento.tipo) {
     case "escolha":
@@ -24,6 +27,7 @@ function somEVibracao(momento: Momento): { som: Som; duracaoMs?: number; vibraca
     case "barra":
       return { som: "tiqueTaque", duracaoMs: momento.duracaoMs };
     case "resultado":
+      return { som: DA_RODADA[momento.resultado], vibracao: VIBRACAO[DA_RODADA[momento.resultado]] };
     case "fim":
       // A spec só fala de vitória e derrota no fim; o empate da partida usa o som e a vibração do empate.
       return { som: momento.resultado, vibracao: VIBRACAO[momento.resultado] };

@@ -6,14 +6,14 @@
 // cartas) continua vendo as rodadas, sem carta própria (itens 14 a 19).
 import { useEffect, useState } from "preact/hooks";
 import type { FilaDaPartida } from "../multiplayer/fila";
-import { resultadoDoFim, type ChaveAtributo } from "../regras";
+import { ordemDoFim, resultadoDoFim, type ChaveAtributo } from "../regras";
 import type { PartidaVista } from "../sala/protocolo";
 import { COMECA_COM } from "./amigos";
 import { BotaoSom } from "./BotaoSom";
 import { cartaPeloCodigo } from "./doBaralho";
 import { Duelo } from "./Duelo";
 import { motivoDoFim, tituloDoFim } from "./Fim";
-import { nomeDoApelido, ordemDoFim } from "./mesa";
+import { nomeDoApelido } from "./mesa";
 import type { AoMomento } from "./momentos";
 import { Placar } from "./Placar";
 import { AvisoDeQueda, BotaoCutucar, MenuDaSala, TEXTO_DE_FORA, type ControlesDaSala } from "./QuedaNaSala";

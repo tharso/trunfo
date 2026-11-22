@@ -7,11 +7,11 @@
 // "Pular ⏩" ou um toque em qualquer lugar vai direto ao resultado.
 // A rodada já foi decidida pelo módulo de regras: o duelo só mostra o evento.
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { Carta as CartaDasRegras, EventoDaRodada } from "../regras";
+import { resultadoDoVencedor, type Carta as CartaDasRegras, type EventoDaRodada } from "../regras";
 import { Carta, TEXTO_DA_ETAPA } from "./Carta";
 import { corDaNota } from "./cores";
 import { aparencia, cartaPeloCodigo, NOME_DO_ATRIBUTO } from "./doBaralho";
-import { rodadaPara, type NomeNaTela } from "./mesa";
+import type { NomeNaTela } from "./mesa";
 import type { AoMomento } from "./momentos";
 import { selo, textoDoMotivo } from "./Selos";
 
@@ -21,8 +21,8 @@ const TOTAL_MS = 2 * BARRA_MS + PAUSA_MS;
 
 /** O título do resultado. Quem perdeu vê quem ganhou: "O computador ganhou.", "Ana ganhou.". */
 function titulo(evento: EventoDaRodada, voce: number, nomes: NomeNaTela[]): string {
-  const resultado = rodadaPara(evento.vencedor, voce);
-  if (resultado === "ganhar") return "Você ganhou a rodada!";
+  const resultado = resultadoDoVencedor(evento.vencedor, voce);
+  if (resultado === "vitoria") return "Você ganhou a rodada!";
   if (resultado === "empate") return "Empate!";
   return `${nomes[evento.vencedor!].sujeito} ganhou.`;
 }
@@ -76,7 +76,7 @@ export function Duelo({ evento, voce, nomes, aoProximaRodada, aoMomento }: Props
 
   useEffect(() => {
     if (!pronto) return;
-    momento.current?.({ tipo: "resultado", resultado: rodadaPara(evento.vencedor, voce) });
+    momento.current?.({ tipo: "resultado", resultado: resultadoDoVencedor(evento.vencedor, voce) });
     proxima.current?.focus();
   }, [pronto]);
 
