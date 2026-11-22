@@ -6,6 +6,12 @@ import type { Nivel } from "../regras";
 export const VOCE = 0;
 export const COMPUTADOR = 1;
 
+/** Como uma rodada terminou para você, pelo vencedor do evento (`null` é empate). */
+export function rodadaParaVoce(vencedor: number | null): "ganhar" | "perder" | "empate" {
+  if (vencedor === null) return "empate";
+  return vencedor === VOCE ? "ganhar" : "perder";
+}
+
 export const NOME_DO_NIVEL: Record<Nivel, string> = {
   facil: "Fácil",
   normal: "Normal",

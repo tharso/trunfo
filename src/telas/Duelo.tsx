@@ -10,11 +10,17 @@ import { corDaNota } from "./cores";
 import { aparencia, NOME_DO_ATRIBUTO } from "./doBaralho";
 import type { AoMomento } from "./momentos";
 import { selo, textoDoMotivo } from "./Selos";
-import { COMPUTADOR, VOCE } from "./solo";
+import { COMPUTADOR, rodadaParaVoce, VOCE } from "./solo";
 
 const BARRA_MS = 1200;
 const PAUSA_MS = 350;
 const TOTAL_MS = 2 * BARRA_MS + PAUSA_MS;
+
+const TITULO = {
+  ganhar: "Você ganhou a rodada!",
+  perder: "O computador ganhou.",
+  empate: "Empate!",
+};
 
 interface Props {
   evento: EventoDaRodada;
@@ -63,8 +69,7 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
 
   useEffect(() => {
     if (!pronto) return;
-    const resultado = evento.vencedor === VOCE ? "ganhar" : evento.vencedor === COMPUTADOR ? "perder" : "empate";
-    momento.current?.({ tipo: "resultado", resultado, pulou: pulou.current });
+    momento.current?.({ tipo: "resultado", resultado: rodadaParaVoce(evento.vencedor), pulou: pulou.current });
     proxima.current?.focus();
   }, [pronto]);
 
@@ -99,8 +104,7 @@ export function Duelo({ evento, cartas, aoProximaRodada, aoMomento }: Props) {
     );
   }
 
-  const titulo =
-    evento.vencedor === VOCE ? "Você ganhou a rodada!" : evento.vencedor === COMPUTADOR ? "O computador ganhou." : "Empate!";
+  const titulo = TITULO[rodadaParaVoce(evento.vencedor)];
   // O motivo (Super Trunfo, Carta A, monte de empate) vem do evento `rodada` (ticket 23).
   const motivo = textoDoMotivo(evento);
   const leva =

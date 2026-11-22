@@ -1,6 +1,6 @@
 // Fim da partida (docs/spec.md, parte 6): quem ganhou, o motivo, o placar e as rodadas jogadas.
 import { useEffect } from "preact/hooks";
-import type { Estado, MotivoDoFim } from "../regras";
+import { resultadoDaPartida, type Estado, type MotivoDoFim } from "../regras";
 import type { AoMomento } from "./momentos";
 import { COMPUTADOR, VOCE } from "./solo";
 
@@ -9,6 +9,12 @@ const MOTIVO: Record<MotivoDoFim, string> = {
   limiteDeRodadas: "Chegou ao limite de rodadas. Ganha quem tem mais cartas.",
   semCartas: "Todo mundo ficou sem cartas no mesmo empate.",
   saida: "Alguém saiu da partida.",
+};
+
+const TITULO = {
+  vitoria: "Você ganhou!",
+  derrota: "O computador ganhou.",
+  empate: "Empate.",
 };
 
 /** O motivo, com o caso do empate no limite de rodadas. */
@@ -28,11 +34,13 @@ interface Props {
 
 export function Fim({ estado, aoJogarDeNovo, aoVoltar, aoMomento }: Props) {
   const fim = estado.fim!;
+  const daPartida = resultadoDaPartida(estado, VOCE)!;
+  // Sair no meio conta como derrota.
+  const resultado = daPartida === "saida" ? "derrota" : daPartida;
   useEffect(() => {
-    const resultado = fim.vencedor === VOCE ? "vitoria" : fim.vencedor === COMPUTADOR ? "derrota" : "empate";
     aoMomento?.({ tipo: "fim", resultado });
   }, []);
-  const titulo = fim.vencedor === VOCE ? "Você ganhou!" : fim.vencedor === COMPUTADOR ? "O computador ganhou." : "Empate.";
+  const titulo = TITULO[resultado];
   return (
     <div class="tela">
       <main class="fim">
