@@ -394,7 +394,11 @@ export function desconectar(estado: EstadoDaSala | null, id: string, agora: numb
     return semMudanca(estado);
   }
   const pessoas = estado.pessoas.map((p) => (p.id === id ? { ...p, conectada: false, caiuEm: agora } : p));
-  return resultadoComSala({ ...estado, pessoas, atualizadaEm: agora }, null);
+  const caiu = { ...estado, pessoas, atualizadaEm: agora };
+  // O Anfitrião que cai passa o papel na hora (spec, item 17), para alguém
+  // conectado poder Tirar; sem ninguém conectado, o papel fica.
+  const anfitriao = semNinguem(caiu) ? caiu.anfitriao : passarAnfitriao(caiu, id);
+  return resultadoComSala({ ...caiu, anfitriao }, null);
 }
 
 /** Ninguém conectado: a sala conta o tempo para fechar desde a última mudança. */

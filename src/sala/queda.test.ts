@@ -153,6 +153,24 @@ describe("queda de rede", () => {
 });
 
 describe("Anfitrião cai ou sai", () => {
+  it("o Anfitrião que cai passa o papel na hora para a próxima pessoa conectada, que já pode Tirar", () => {
+    const caiu = desconectar(emPartida("Ana", "Bia", "Caio"), "id-Ana", AGORA);
+    expect(caiu.estado!.anfitriao).toBe("id-Bia");
+    expect(salaPara(caiu, "id-Bia")).toMatchObject({ voce: 1, anfitriao: 1 });
+    const tirou = mandar(caiu.estado!, "id-Bia", { tipo: "tirar", numero: numeroDe(caiu.estado!, "id-Ana") });
+    expect(tirou.estado!.partida!.estado.pessoas[0].fora).toBe("saiu");
+  });
+
+  it("o papel pula quem também está sem rede", () => {
+    const biaCaiu = desconectar(emPartida("Ana", "Bia", "Caio"), "id-Bia", AGORA).estado!;
+    expect(desconectar(biaCaiu, "id-Ana", AGORA).estado!.anfitriao).toBe("id-Caio");
+  });
+
+  it("sem mais ninguém conectado, o papel fica com quem caiu", () => {
+    const biaCaiu = desconectar(emPartida("Ana", "Bia"), "id-Bia", AGORA).estado!;
+    expect(desconectar(biaCaiu, "id-Ana", AGORA).estado!.anfitriao).toBe("id-Ana");
+  });
+
   it("o Anfitrião que não volta em 60 s passa o papel para a próxima pessoa da Ordem da mesa", () => {
     const caiu = desconectar(emPartida("Ana", "Bia", "Caio"), "id-Ana", AGORA).estado!;
     const tocou = depoisDaQueda(caiu);
