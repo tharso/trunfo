@@ -1,7 +1,15 @@
 // As mensagens do WebSocket entre o celular e a Sala (Durable Object). JSON em
 // texto. O celular manda MensagemDoCliente; a Sala responde com MensagemDaSala.
 // Este arquivo é usado dos dois lados (tela e Worker): só tipos e leitura.
-import { ATRIBUTOS, type ChaveAtributo, type EventoDaRodada, type Fim, type MotivoDaRodada, type MotivoDoFim } from "../regras";
+import {
+  ATRIBUTOS,
+  type ChaveAtributo,
+  type EventoDaRodada,
+  type Fim,
+  type MotivoDaRodada,
+  type MotivoDeSaida,
+  type MotivoDoFim,
+} from "../regras";
 
 export const TAMANHO_MAXIMO_DO_APELIDO = 20;
 
@@ -10,8 +18,15 @@ export type MensagemDoCliente =
   | { tipo: "entrar"; id: string; apelido: string }
   /** Só o Anfitrião, com 2 a 4 pessoas. */
   | { tipo: "comecar" }
-  /** Ir embora da sala (antes da partida ou no fim dela). */
+  /**
+   * No meio da partida: sair dela (as cartas saem do jogo) e ficar De fora na
+   * sala. Antes da partida, no fim dela ou já De fora: ir embora da sala.
+   */
   | { tipo: "sair" }
+  /** Só o Anfitrião: tira da partida quem caiu (`pessoa`: índice em `pessoas` da sala). */
+  | { tipo: "tirar"; pessoa: number }
+  /** Faz o celular de quem escolhe vibrar (só quando a sala deixa: `podeCutucar`). */
+  | { tipo: "cutucar" }
   /** Quem escolhe diz o atributo da rodada. */
   | { tipo: "escolher"; atributo: ChaveAtributo };
 
@@ -29,8 +44,8 @@ export type MotivoDaRecusa = "cheia" | "emPartida" | "acabou";
  * carta de cima; das outras pessoas, só quantas cartas têm.
  */
 export interface PartidaVista {
-  /** Na Ordem da mesa da partida. */
-  pessoas: { apelido: string; cartas: number }[];
+  /** Na Ordem da mesa da partida. `fora`: `null` enquanto a pessoa está na partida. */
+  pessoas: { apelido: string; cartas: number; fora: MotivoDeSaida | null }[];
   /** Índice de quem recebe em `pessoas`. */
   voce: number;
   monteDeEmpate: number;
@@ -54,7 +69,17 @@ export type MensagemDaSala =
       /** Índice do Anfitrião em `pessoas`. */
       anfitriao: number;
       emPartida: boolean;
+      /**
+       * Quem caiu no meio da partida (índices em `pessoas`). Enquanto não está
+       * vazio, a partida para: espera a pessoa voltar, o tempo de queda acabar
+       * ou o Anfitrião tirar.
+       */
+      esperando: number[];
+      /** Quem escolhe demora: você já pode cutucar. */
+      podeCutucar: boolean;
     }
+  /** Alguém cutucou você, que está escolhendo: o celular vibra. */
+  | { tipo: "cutucada" }
   | { tipo: "recusada"; motivo: MotivoDaRecusa }
   /** A partida agora (ao começar e ao voltar para a sala no meio dela). */
   | { tipo: "partida"; vista: PartidaVista }
@@ -80,7 +105,10 @@ export function lerMensagemDoCliente(texto: string): MensagemDoCliente | null {
         : null;
     case "comecar":
     case "sair":
+    case "cutucar":
       return { tipo: dado.tipo };
+    case "tirar":
+      return contagem(dado.pessoa) ? { tipo: "tirar", pessoa: dado.pessoa } : null;
     case "escolher":
       return ATRIBUTOS.includes(dado.atributo as ChaveAtributo)
         ? { tipo: "escolher", atributo: dado.atributo as ChaveAtributo }
@@ -107,14 +135,24 @@ export function lerMensagemDaSala(texto: string): MensagemDaSala | null {
     const evento = lerEventoDaRodada(dado.evento);
     return depois && evento ? { tipo: "rodada", evento, depois } : null;
   }
+  if (dado?.tipo === "cutucada") return { tipo: "cutucada" };
   if (dado?.tipo !== "sala") return null;
-  const { codigo, pessoas, voce, anfitriao, emPartida } = dado;
+  const { codigo, pessoas, voce, anfitriao, emPartida, esperando, podeCutucar } = dado;
   const pessoasValidas =
     Array.isArray(pessoas) &&
     pessoas.every((p) => p && typeof p.apelido === "string" && typeof p.conectada === "boolean");
   const indice = (valor: unknown) =>
     Number.isInteger(valor) && (valor as number) >= 0 && pessoasValidas && (valor as number) < pessoas.length;
-  if (typeof codigo !== "string" || !pessoasValidas || !indice(voce) || !indice(anfitriao) || typeof emPartida !== "boolean") {
+  if (
+    typeof codigo !== "string" ||
+    !pessoasValidas ||
+    !indice(voce) ||
+    !indice(anfitriao) ||
+    typeof emPartida !== "boolean" ||
+    !Array.isArray(esperando) ||
+    !esperando.every(indice) ||
+    typeof podeCutucar !== "boolean"
+  ) {
     return null;
   }
   return {
@@ -124,6 +162,8 @@ export function lerMensagemDaSala(texto: string): MensagemDaSala | null {
     voce: voce as number,
     anfitriao: anfitriao as number,
     emPartida,
+    esperando: esperando as number[],
+    podeCutucar,
   };
 }
 
@@ -136,6 +176,7 @@ function contagem(valor: unknown): valor is number {
 }
 
 const MOTIVOS_DO_FIM: readonly MotivoDoFim[] = ["todasAsCartas", "ultimaNaPartida", "limiteDeRodadas", "semCartas", "saida"];
+const MOTIVOS_DE_SAIDA: readonly MotivoDeSaida[] = ["semCartas", "saiu"];
 const MOTIVOS_DA_RODADA: readonly MotivoDaRodada[] = ["nota", "superTrunfo", "cartaA", "empate"];
 
 function lerFim(valor: unknown, pessoas: number): Fim | null | undefined {
@@ -156,7 +197,17 @@ function lerVista(valor: unknown): PartidaVista | null {
   const vista = objeto(valor);
   if (!vista || !Array.isArray(vista.pessoas)) return null;
   const pessoas = vista.pessoas.map(objeto);
-  if (pessoas.some((p) => !p || typeof p.apelido !== "string" || !contagem(p.cartas))) return null;
+  if (
+    pessoas.some(
+      (p) =>
+        !p ||
+        typeof p.apelido !== "string" ||
+        !contagem(p.cartas) ||
+        !(p.fora === null || MOTIVOS_DE_SAIDA.includes(p.fora as MotivoDeSaida)),
+    )
+  ) {
+    return null;
+  }
   const indice = (v: unknown): v is number => contagem(v) && v < pessoas.length;
   const fim = lerFim(vista.fim, pessoas.length);
   const { voce, monteDeEmpate, rodada, limiteDeRodadas, quemEscolhe, suaCarta } = vista;
@@ -172,7 +223,11 @@ function lerVista(valor: unknown): PartidaVista | null {
     return null;
   }
   return {
-    pessoas: pessoas.map((p) => ({ apelido: p!.apelido as string, cartas: p!.cartas as number })),
+    pessoas: pessoas.map((p) => ({
+      apelido: p!.apelido as string,
+      cartas: p!.cartas as number,
+      fora: p!.fora as MotivoDeSaida | null,
+    })),
     voce,
     monteDeEmpate,
     rodada,

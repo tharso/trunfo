@@ -1,5 +1,15 @@
 import { DurableObject } from "cloudflare:workers";
-import { desconectar, receber, reservar, type EstadoDaSala, type Resultado } from "../sala/sala";
+import {
+  alarme,
+  desconectar,
+  proximoAlarme,
+  receber,
+  reservar,
+  TEMPOS_DA_SALA,
+  type EstadoDaSala,
+  type Resultado,
+  type TemposDaSala,
+} from "../sala/sala";
 
 // Um Durable Object por sala (spec, parte 10), com a WebSocket Hibernation API:
 // o DO aceita o socket com ctx.acceptWebSocket e pode sair da memória enquanto
@@ -29,6 +39,19 @@ function sementeDaPartida(): number {
   const deTeste = import.meta.env.VITE_SEMENTE_DA_SALA;
   if (deTeste !== undefined && /^-?\d+$/.test(deTeste)) return Number(deTeste) | 0;
   return crypto.getRandomValues(new Int32Array(1))[0];
+}
+
+/**
+ * Os tempos de queda (60 s) e de cutucar (30 s). O build do teste Playwright
+ * encurta (VITE_TEMPO_DE_QUEDA_DA_SALA e VITE_TEMPO_DE_CUTUCAR_DA_SALA, em ms,
+ * em playwright.config.ts) para o teste não esperar 60 s de verdade.
+ */
+function temposDaSala(): TemposDaSala {
+  const ms = (texto: string | undefined, padrao: number) => (texto && /^\d+$/.test(texto) ? Number(texto) : padrao);
+  return {
+    queda: ms(import.meta.env.VITE_TEMPO_DE_QUEDA_DA_SALA, TEMPOS_DA_SALA.queda),
+    cutucar: ms(import.meta.env.VITE_TEMPO_DE_CUTUCAR_DA_SALA, TEMPOS_DA_SALA.cutucar),
+  };
 }
 
 function idDoSocket(socket: WebSocket): string | null {
@@ -72,6 +95,14 @@ export class Sala extends DurableObject<Env> {
     await this.fechou(socket);
   }
 
+  /**
+   * O alarme do storage tocou (funciona com hibernação: a Cloudflare recria o
+   * objeto se preciso). O que venceu (queda, cutucar) quem decide é `alarme`.
+   */
+  async alarm(): Promise<void> {
+    await this.aplicar(alarme(await this.ler(), Date.now(), temposDaSala()));
+  }
+
   /** Um socket fechou. Se era a última conexão da pessoa, ela caiu. */
   private async fechou(socket: WebSocket): Promise<void> {
     const id = idDoSocket(socket);
@@ -85,9 +116,17 @@ export class Sala extends DurableObject<Env> {
     return (await this.ctx.storage.get<EstadoDaSala>(CHAVE)) ?? null;
   }
 
-  /** Guarda o estado novo e entrega as mensagens de cada pessoa, em ordem, em todos os sockets dela. */
+  /**
+   * Guarda o estado novo, agenda o próximo alarme e entrega as mensagens de
+   * cada pessoa, em ordem, em todos os sockets dela.
+   */
   private async aplicar(resultado: Resultado): Promise<void> {
-    if (resultado.estado !== null) await this.ctx.storage.put(CHAVE, resultado.estado);
+    if (resultado.estado !== null) {
+      await this.ctx.storage.put(CHAVE, resultado.estado);
+      const quando = proximoAlarme(resultado.estado, temposDaSala());
+      if (quando === null) await this.ctx.storage.deleteAlarm();
+      else await this.ctx.storage.setAlarm(quando);
+    }
     if (resultado.paraPessoas.length === 0) return;
     const porPessoa = new Map<string, string[]>();
     for (const { id, mensagem } of resultado.paraPessoas) {

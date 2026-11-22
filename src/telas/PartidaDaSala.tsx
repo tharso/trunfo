@@ -14,6 +14,7 @@ import { motivoDoFim, tituloDoFim } from "./Fim";
 import { nomeDoApelido } from "./mesa";
 import type { AoMomento } from "./momentos";
 import { Placar } from "./Placar";
+import { AvisoDeQueda, BotaoCutucar, MenuDaSala, TEXTO_DE_FORA, type ControlesDaSala } from "./QuedaNaSala";
 import { EscolhaDoOutro, OutroEscolhendo, VezDeVoce } from "./Vez";
 
 interface Props {
@@ -25,10 +26,12 @@ interface Props {
   aoAvancar: () => void;
   /** "Sair" na tela de fim. */
   aoSair: () => void;
+  /** Queda de rede, Tirar, Cutucar e o menu ☰ (src/telas/QuedaNaSala.tsx). */
+  controles: ControlesDaSala;
   aoMomento?: AoMomento;
 }
 
-export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, aoMomento }: Props) {
+export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, controles, aoMomento }: Props) {
   // Quem não escolheu toca em "Mostrar cartas!" para ver o duelo da rodada.
   const [mostrada, setMostrada] = useState<number | null>(null);
   const { vista, duelo } = fila;
@@ -49,6 +52,9 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, aoMo
   const { voce } = vista;
   // A vista é a partida de antes do duelo: o placar só anda depois de "Próxima rodada".
   const suaCarta = vista.suaCarta === null ? null : cartaPeloCodigo(vista.suaCarta);
+  // Saiu da partida (ou ficou sem cartas) e continua na sala: só olhando.
+  const deFora = vista.pessoas[voce].fora !== null;
+  const parada = controles.esperando.length > 0;
 
   let conteudo;
   if (duelo && (duelo.evento.quemEscolheu === voce || mostrada === duelo.evento.rodada)) {
@@ -65,7 +71,7 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, aoMo
   } else if (duelo) {
     conteudo = (
       <EscolhaDoOutro
-        carta={suaCarta!}
+        carta={suaCarta}
         atributo={duelo.evento.atributo}
         sujeito={nomes[duelo.evento.quemEscolheu].sujeito}
         aoMostrar={() => setMostrada(duelo.evento.rodada)}
@@ -74,22 +80,27 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, aoMo
   } else if (vista.quemEscolhe === voce) {
     conteudo = (
       <VezDeVoce
-        key={vista.rodada}
+        // Parar e voltar a partida recomeça a escolha (um toque mandado na parada não vale).
+        key={`${vista.rodada}-${parada}`}
+        bloqueada={parada}
         carta={suaCarta!}
         aoTocar={() => aoMomento?.({ tipo: "escolha" })}
         aoEscolher={aoEscolher}
       />
     );
   } else {
-    conteudo = <OutroEscolhendo carta={suaCarta!} sujeito={nomes[vista.quemEscolhe].sujeito} />;
+    conteudo = <OutroEscolhendo carta={suaCarta} sujeito={nomes[vista.quemEscolhe].sujeito} />;
   }
 
   return (
     <div class="tela partida">
       <div class="partida__topo">
         <BotaoSom />
+        {!vista.fim && <MenuDaSala {...controles} deFora={deFora} />}
       </div>
       {aviso && <p class="amigos__aviso">{aviso}</p>}
+      <AvisoDeQueda {...controles} />
+      {deFora && <p class="de-fora">{TEXTO_DE_FORA}</p>}
       <Placar
         voce={vista.pessoas[voce].cartas}
         empate={vista.monteDeEmpate}
@@ -98,6 +109,7 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, aoMo
         limite={vista.limiteDeRodadas}
       />
       {conteudo}
+      {controles.podeCutucar && !duelo && vista.quemEscolhe !== voce && <BotaoCutucar {...controles} />}
     </div>
   );
 }
@@ -110,8 +122,8 @@ interface FimDaSalaProps {
 
 /**
  * O fim na sala (spec, itens 20 e 21): quem ganhou e todas as pessoas, em ordem
- * de cartas no monte. "Jogar de novo" (só o Anfitrião) é o ticket #41; quem
- * saiu no meio ("saiu" no fim da lista) é o #40.
+ * de cartas no monte, e quem saiu no meio no fim, com "saiu". "Jogar de novo"
+ * (só o Anfitrião) é o ticket #41.
  */
 function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
   const fim = vista.fim!;
@@ -119,7 +131,10 @@ function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
   useEffect(() => {
     aoMomento?.({ tipo: "fim", resultado: resultadoDoFim(fim, vista.voce) });
   }, []);
-  const ordem = vista.pessoas.map((p, i) => ({ ...p, i })).sort((a, b) => b.cartas - a.cartas);
+  // Em ordem de cartas; quem saiu no meio fica no fim, com "saiu" (spec, item 20).
+  const ordem = vista.pessoas
+    .map((p, i) => ({ ...p, i }))
+    .sort((a, b) => Number(a.fora === "saiu") - Number(b.fora === "saiu") || b.cartas - a.cartas);
   return (
     <div class="tela">
       <main class="fim">
@@ -131,7 +146,7 @@ function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
             <li key={p.i} class="sala__pessoa">
               <span class="sala__apelido">{p.apelido}</span>
               {p.i === vista.voce && <span class="sala__marca">você</span>}
-              <span class="sala__cartas">{p.cartas} cartas</span>
+              {p.fora === "saiu" ? <span class="sala__cartas">saiu</span> : <span class="sala__cartas">{p.cartas} cartas</span>}
             </li>
           ))}
         </ol>

@@ -2,13 +2,17 @@
 // link", a lista na Ordem da mesa e "Começar" (só o Anfitrião). Com a partida
 // começada, a tela é a da partida (PartidaDaSala). A sala decide tudo
 // (src/sala/sala.ts); esta tela mostra o que ela manda.
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { useSala } from "../multiplayer/conexao";
 import { MAXIMO_DE_PESSOAS, MINIMO_PARA_COMECAR } from "../sala/sala";
 import { caminhoDaSala, MOTIVO_DA_RECUSA, PRECISA_DE_INTERNET, useInternet } from "./amigos";
 import { PartidaDaSala } from "./PartidaDaSala";
 import "./Sala.css";
 import { sentir } from "./sensacao";
+import { vibrar } from "./vibracao";
+
+/** A vibração da cutucada: três toques curtos. */
+const PADRAO_DA_CUTUCADA = [150, 80, 150, 80, 150];
 
 interface Props {
   codigo: string;
@@ -40,8 +44,13 @@ async function mandarLink(codigo: string): Promise<string | null> {
 
 export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) {
   const online = useInternet();
-  const { situacao, enviar, fila, avancarFila } = useSala(codigo, apelido, id);
+  const { situacao, enviar, fila, avancarFila, cutucadas } = useSala(codigo, apelido, id);
   const [avisoDoLink, setAvisoDoLink] = useState<string | null>(null);
+
+  // Alguém cutucou você (spec, item 16): o celular vibra (só no Android).
+  useEffect(() => {
+    if (cutucadas > 0) vibrar(PADRAO_DA_CUTUCADA);
+  }, [cutucadas]);
 
   if (situacao.tipo === "recusada") {
     return (
@@ -79,6 +88,15 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
         aoEscolher={(atributo) => enviar({ tipo: "escolher", atributo })}
         aoAvancar={avancarFila}
         aoSair={sair}
+        controles={{
+          esperando: sala.esperando.map((indice) => ({ indice, apelido: sala.pessoas[indice].apelido })),
+          souAnfitriao,
+          podeCutucar: sala.podeCutucar,
+          aoTirar: (pessoa) => enviar({ tipo: "tirar", pessoa }),
+          aoCutucar: () => enviar({ tipo: "cutucar" }),
+          aoSairDaPartida: () => enviar({ tipo: "sair" }),
+          aoSairDaSala: sair,
+        }}
         aoMomento={sentir}
       />
     );

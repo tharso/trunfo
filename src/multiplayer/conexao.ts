@@ -39,6 +39,8 @@ export type SituacaoDaSala =
 export function useSala(codigo: string, apelido: string, id: string) {
   const [situacao, setSituacao] = useState<SituacaoDaSala>({ tipo: "conectando" });
   const [fila, setFila] = useState<FilaDaPartida>(filaVazia);
+  /** Quantas vezes alguém cutucou você (a tela vibra a cada uma). */
+  const [cutucadas, setCutucadas] = useState(0);
   const socket = useRef<PartySocket | null>(null);
 
   useEffect(() => {
@@ -58,6 +60,8 @@ export function useSala(codigo: string, apelido: string, id: string) {
         setSituacao({ tipo: "recusada", motivo: mensagem.motivo });
       } else if (mensagem.tipo === "sala") {
         setSituacao({ tipo: "naSala", sala: mensagem, conectado: true });
+      } else if (mensagem.tipo === "cutucada") {
+        setCutucadas((n) => n + 1);
       } else {
         setFila((antes) => receberNaFila(antes, mensagem));
       }
@@ -69,5 +73,5 @@ export function useSala(codigo: string, apelido: string, id: string) {
     socket.current?.send(JSON.stringify(mensagem));
   }
 
-  return { situacao, enviar, fila, avancarFila: () => setFila(avancar) };
+  return { situacao, enviar, fila, avancarFila: () => setFila(avancar), cutucadas };
 }

@@ -13,15 +13,17 @@ interface VezDeVoceProps {
   carta: CartaDasRegras;
   aoTocar: () => void;
   aoEscolher: (a: ChaveAtributo) => void;
+  /** Na sala, com a partida parada (alguém caiu): a carta não aceita toque. */
+  bloqueada?: boolean;
 }
 
-export function VezDeVoce({ carta, aoTocar, aoEscolher }: VezDeVoceProps) {
+export function VezDeVoce({ carta, aoTocar, aoEscolher, bloqueada = false }: VezDeVoceProps) {
   const [marcado, setMarcado] = useState<ChaveAtributo | null>(null);
   // Na sala, o duelo chega pela rede: depois de escolher, a carta não aceita outro toque.
   const [escolhido, setEscolhido] = useState(false);
   // 2 toques na mesma linha: o 1º marca, o 2º envia. Tocar em outra linha troca a marcação.
   function tocar(atributo: ChaveAtributo) {
-    if (escolhido) return;
+    if (escolhido || bloqueada) return;
     aoTocar();
     if (marcado === atributo) {
       setEscolhido(true);
@@ -37,7 +39,8 @@ export function VezDeVoce({ carta, aoTocar, aoEscolher }: VezDeVoceProps) {
 }
 
 interface EscolhaDoOutroProps {
-  carta: CartaDasRegras;
+  /** Sua carta; `null` De fora (spec, parte 9, item 19: sem carta própria). */
+  carta: CartaDasRegras | null;
   atributo: ChaveAtributo;
   /** Quem escolheu, no começo da frase: "O computador", "Ana". */
   sujeito: string;
@@ -50,7 +53,7 @@ export function EscolhaDoOutro({ carta, atributo, sujeito, aoMostrar }: EscolhaD
       <p class="rodada__aviso">
         {sujeito} escolheu {NOME_DO_ATRIBUTO[atributo]}.
       </p>
-      <Carta carta={carta} marcado={atributo} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />
+      {carta && <Carta carta={carta} marcado={atributo} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />}
       <button type="button" class="botao" onClick={aoMostrar}>
         Mostrar cartas!
       </button>
@@ -58,13 +61,14 @@ export function EscolhaDoOutro({ carta, atributo, sujeito, aoMostrar }: EscolhaD
   );
 }
 
-export function OutroEscolhendo({ carta, sujeito }: { carta: CartaDasRegras; sujeito: string }) {
+/** `carta`: a sua; `null` De fora. */
+export function OutroEscolhendo({ carta, sujeito }: { carta: CartaDasRegras | null; sujeito: string }) {
   return (
     <main class="rodada">
       <p class="rodada__aviso" aria-live="polite">
         {sujeito} está escolhendo…
       </p>
-      <Carta carta={carta} marcado={null} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />
+      {carta && <Carta carta={carta} marcado={null} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />}
     </main>
   );
 }

@@ -60,6 +60,8 @@ describe("entrar na sala", () => {
       voce: 0,
       anfitriao: 0,
       emPartida: false,
+      esperando: [],
+      podeCutucar: false,
     });
   });
 
@@ -105,8 +107,8 @@ describe("entrar na sala", () => {
     expect(antes.pessoas[0].conectada).toBe(false);
     const resultado = entrar(antes, "id-Ana", "Outro nome");
     expect(resultado.estado!.pessoas).toEqual([
-      { id: "id-Ana", apelido: "Ana", conectada: true },
-      { id: "id-Bia", apelido: "Bia", conectada: true },
+      { id: "id-Ana", apelido: "Ana", conectada: true, caiuEm: null },
+      { id: "id-Bia", apelido: "Bia", conectada: true, caiuEm: null },
     ]);
     expect(paraQuem(resultado, "id-Ana")).toMatchObject({ voce: 0 });
   });
@@ -299,7 +301,6 @@ describe("a partida", () => {
 
   it("no fim, quem toca em Sair sai da sala", () => {
     let estado = comecar(comPessoas("Ana", "Bia")).estado!;
-    expect(receber(estado, "id-Bia", '{"tipo":"sair"}', AGORA).estado).toBe(estado);
     while (!estado.partida!.estado.fim) estado = escolher(estado, quemEscolhe(estado)).estado!;
     const saiu = receber(estado, "id-Bia", '{"tipo":"sair"}', AGORA);
     expect(saiu.conexao).toBeNull();

@@ -141,3 +141,33 @@
   font-weight: 400;
   color: var(--texto-suave);
 }
+
+/* Queda de rede, Cutucar e De fora na partida da sala (ticket #40). */
+.queda {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.queda__pessoa {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-weight: 700;
+  color: var(--destaque);
+}
+
+.queda__tirar {
+  flex: none;
+  width: auto;
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+}
+
+.de-fora {
+  margin: 0;
+  text-align: center;
+  color: var(--texto-suave);
+  font-weight: 700;
+}

@@ -31,19 +31,24 @@ function ultimaConhecida(fila: FilaDaPartida): PartidaVista | null {
   return (fila.esperando.at(-1) ?? fila.duelo)?.depois ?? fila.vista;
 }
 
-/** Duas vistas são o mesmo momento da partida (a rodada só anda para frente). */
-function mesmoMomento(a: PartidaVista, b: PartidaVista): boolean {
-  return a.rodada === b.rodada && (a.fim === null) === (b.fim === null);
+/** Troca a partida depois de tudo o que já chegou, sem mexer no que ainda vai ser mostrado. */
+function trocarUltima(fila: FilaDaPartida, vista: PartidaVista): FilaDaPartida {
+  const ultima = fila.esperando.at(-1);
+  if (ultima) return { ...fila, esperando: [...fila.esperando.slice(0, -1), { ...ultima, depois: vista }] };
+  if (fila.duelo) return { ...fila, duelo: { ...fila.duelo, depois: vista } };
+  return { ...fila, vista };
 }
 
 type MensagemDaPartida = Extract<MensagemDaSala, { tipo: "partida" | "rodada" }>;
 
 export function receberNaFila(fila: FilaDaPartida, mensagem: MensagemDaPartida): FilaDaPartida {
   if (mensagem.tipo === "partida") {
-    // Ao (re)conectar, a sala manda a partida como está. Se é o que o celular
-    // já sabe, a fila segue; se não (perdeu rodadas sem rede), recomeça dali.
+    // A sala manda a partida como está ao (re)conectar e quando alguém sai no
+    // meio (spec, itens 14 e 15). Na mesma rodada do que o celular já sabe, a
+    // fila segue e só o fim dela muda (o placar anda depois dos duelos que
+    // faltam); noutra rodada (perdeu rodadas sem rede), recomeça dali.
     const sabida = ultimaConhecida(fila);
-    if (sabida && mesmoMomento(sabida, mensagem.vista)) return fila;
+    if (sabida && sabida.rodada === mensagem.vista.rodada) return trocarUltima(fila, mensagem.vista);
     return { vista: mensagem.vista, duelo: null, esperando: [] };
   }
   const rodada = { evento: mensagem.evento, depois: mensagem.depois };

@@ -8,8 +8,8 @@ import { avancar, filaVazia, receberNaFila, type FilaDaPartida } from "./fila";
 function vista(rodada: number, quemEscolhe = 0, fim: PartidaVista["fim"] = null): PartidaVista {
   return {
     pessoas: [
-      { apelido: "Ana", cartas: 16 },
-      { apelido: "Bia", cartas: 16 },
+      { apelido: "Ana", cartas: 16, fora: null },
+      { apelido: "Bia", cartas: 16, fora: null },
     ],
     voce: 1,
     monteDeEmpate: 0,
@@ -74,7 +74,29 @@ describe("a fila da partida", () => {
 
   it("a mesma partida de novo (ao reconectar) não corta o duelo", () => {
     const fila = receberTodas({ tipo: "partida", vista: vista(1) }, rodada(1), rodada(2));
-    expect(receberNaFila(fila, { tipo: "partida", vista: vista(3) })).toBe(fila);
+    expect(receberNaFila(fila, { tipo: "partida", vista: vista(3) })).toEqual(fila);
+  });
+
+  it("alguém sai da partida no meio do duelo: o placar muda depois de Próxima rodada", () => {
+    const fila = receberTodas({ tipo: "partida", vista: vista(1) }, rodada(1));
+    const semAna: PartidaVista = {
+      ...vista(2),
+      pessoas: [
+        { apelido: "Ana", cartas: 0, fora: "saiu" },
+        { apelido: "Bia", cartas: 16, fora: null },
+      ],
+      fim: { vencedor: 1, motivo: "saida", rodadasJogadas: 1 },
+    };
+    const saiu = receberNaFila(fila, { tipo: "partida", vista: semAna });
+    expect(saiu.duelo?.evento.rodada).toBe(1);
+    expect(saiu.vista).toEqual(vista(1));
+    expect(avancar(saiu).vista).toEqual(semAna);
+  });
+
+  it("alguém sai fora do duelo: o placar muda na hora", () => {
+    const semAna: PartidaVista = { ...vista(1), pessoas: [{ apelido: "Ana", cartas: 0, fora: "saiu" }, vista(1).pessoas[1]] };
+    const fila = receberTodas({ tipo: "partida", vista: vista(1) }, { tipo: "partida", vista: semAna });
+    expect(fila.vista).toEqual(semAna);
   });
 
   it("uma partida diferente do que o celular sabe (perdeu rodadas sem rede) toma o lugar da fila", () => {
