@@ -139,7 +139,7 @@ describe("entrar na sala", () => {
 describe("começar", () => {
   it("o Anfitrião começa com 2 pessoas e todos ficam sabendo", () => {
     const resultado = receber(comPessoas("Ana", "Bia"), "id-Ana", '{"tipo":"comecar"}', AGORA);
-    expect(resultado.estado!.emPartida).toBe(true);
+    expect(resultado.estado!.partida!.estado.rodada).toBe(1);
     expect(paraQuem(resultado, "id-Bia")).toMatchObject({ tipo: "sala", emPartida: true });
   });
 

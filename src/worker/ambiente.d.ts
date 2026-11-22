@@ -6,6 +6,8 @@ interface ImportMetaEnv {
   readonly VITE_TEMPO_DE_QUEDA_DA_SALA?: string;
   /** Só no build do teste Playwright: o tempo para cutucar, em ms (30 s no site). */
   readonly VITE_TEMPO_DE_CUTUCAR_DA_SALA?: string;
+  /** Só no build do teste Playwright: depois de quanto tempo sem ninguém a sala fecha, em ms (10 min no site). */
+  readonly VITE_TEMPO_DA_SALA_VAZIA?: string;
 }
 
 interface ImportMeta {

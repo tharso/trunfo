@@ -42,15 +42,17 @@ function sementeDaPartida(): number {
 }
 
 /**
- * Os tempos de queda (60 s) e de cutucar (30 s). O build do teste Playwright
- * encurta (VITE_TEMPO_DE_QUEDA_DA_SALA e VITE_TEMPO_DE_CUTUCAR_DA_SALA, em ms,
- * em playwright.config.ts) para o teste não esperar 60 s de verdade.
+ * Os tempos de queda (60 s), de cutucar (30 s) e da sala vazia (10 min). O
+ * build do teste Playwright encurta (VITE_TEMPO_DE_QUEDA_DA_SALA,
+ * VITE_TEMPO_DE_CUTUCAR_DA_SALA e VITE_TEMPO_DA_SALA_VAZIA, em ms, em
+ * playwright.config.ts) para o teste não esperar de verdade.
  */
 function temposDaSala(): TemposDaSala {
   const ms = (texto: string | undefined, padrao: number) => (texto && /^\d+$/.test(texto) ? Number(texto) : padrao);
   return {
     queda: ms(import.meta.env.VITE_TEMPO_DE_QUEDA_DA_SALA, TEMPOS_DA_SALA.queda),
     cutucar: ms(import.meta.env.VITE_TEMPO_DE_CUTUCAR_DA_SALA, TEMPOS_DA_SALA.cutucar),
+    vazia: ms(import.meta.env.VITE_TEMPO_DA_SALA_VAZIA, TEMPOS_DA_SALA.vazia),
   };
 }
 
@@ -63,7 +65,8 @@ export class Sala extends DurableObject<Env> {
   async reservar(codigo: string): Promise<boolean> {
     const estado = reservar(await this.ler(), codigo, Date.now());
     if (estado === null) return false;
-    await this.ctx.storage.put(CHAVE, estado);
+    // Sala criada e ninguém entra: fecha como a sala vazia.
+    await this.aplicar({ estado, conexao: null, paraPessoas: [] });
     return true;
   }
 
@@ -97,10 +100,19 @@ export class Sala extends DurableObject<Env> {
 
   /**
    * O alarme do storage tocou (funciona com hibernação: a Cloudflare recria o
-   * objeto se preciso). O que venceu (queda, cutucar) quem decide é `alarme`.
+   * objeto se preciso). O que venceu (queda, cutucar, sala vazia) quem decide
+   * é `alarme`. A sala que fecha (estado `null`) some do storage: o código fica
+   * livre e um link velho recebe "acabou".
    */
   async alarm(): Promise<void> {
-    await this.aplicar(alarme(await this.ler(), Date.now(), temposDaSala()));
+    const antes = await this.ler();
+    const resultado = alarme(antes, Date.now(), temposDaSala());
+    if (antes !== null && resultado.estado === null) {
+      await this.ctx.storage.deleteAlarm();
+      await this.ctx.storage.deleteAll();
+      return;
+    }
+    await this.aplicar(resultado);
   }
 
   /** Um socket fechou. Se era a última conexão da pessoa, ela caiu. */

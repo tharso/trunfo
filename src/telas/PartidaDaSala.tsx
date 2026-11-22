@@ -8,6 +8,7 @@ import { useEffect, useState } from "preact/hooks";
 import type { FilaDaPartida } from "../multiplayer/fila";
 import { resultadoDoFim, type ChaveAtributo } from "../regras";
 import type { PartidaVista } from "../sala/protocolo";
+import { COMECA_COM } from "./amigos";
 import { BotaoSom } from "./BotaoSom";
 import { cartaPeloCodigo } from "./doBaralho";
 import { Duelo } from "./Duelo";
@@ -27,12 +28,20 @@ interface Props {
   aoAvancar: () => void;
   /** "Sair" na tela de fim. */
   aoSair: () => void;
+  /** "Jogar de novo" na tela de fim: só para o Anfitrião (`null` para as outras pessoas). */
+  jogarDeNovo: JogarDeNovo | null;
   /** Queda de rede, Tirar, Cutucar e o menu ☰ (src/telas/QuedaNaSala.tsx). */
   controles: ControlesDaSala;
   aoMomento?: AoMomento;
 }
 
-export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, controles, aoMomento }: Props) {
+interface JogarDeNovo {
+  /** A sala tem de 2 a 4 pessoas. */
+  pode: boolean;
+  aoJogar: () => void;
+}
+
+export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, jogarDeNovo, controles, aoMomento }: Props) {
   // Quem não escolheu toca em "Mostrar cartas!" para ver o duelo da rodada.
   const [mostrada, setMostrada] = useState<number | null>(null);
   const { vista, duelo } = fila;
@@ -47,7 +56,9 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, cont
     );
   }
 
-  if (duelo === null && vista.fim) return <FimDaSala vista={vista} aoSair={aoSair} aoMomento={aoMomento} />;
+  if (duelo === null && vista.fim) {
+    return <FimDaSala vista={vista} aoSair={aoSair} jogarDeNovo={jogarDeNovo} aoMomento={aoMomento} />;
+  }
 
   const nomes = vista.pessoas.map((p) => nomeDoApelido(p.apelido));
   const { voce } = vista;
@@ -118,15 +129,16 @@ export function PartidaDaSala({ fila, aviso, aoEscolher, aoAvancar, aoSair, cont
 interface FimDaSalaProps {
   vista: PartidaVista;
   aoSair: () => void;
+  jogarDeNovo: JogarDeNovo | null;
   aoMomento?: AoMomento;
 }
 
 /**
- * O fim na sala (spec, itens 20 e 21): quem ganhou e todas as pessoas, em ordem
- * de cartas no monte; quem saiu da partida no fim, com "saiu". "Jogar de novo"
- * (só o Anfitrião) é o ticket #41.
+ * O fim na sala (spec, itens 20, 21 e 23): quem ganhou e todas as pessoas, em
+ * ordem de cartas no monte; quem saiu da partida no fim, com "saiu". O
+ * Anfitrião vê "Jogar de novo"; todo mundo vê "Sair".
  */
-function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
+function FimDaSala({ vista, aoSair, jogarDeNovo, aoMomento }: FimDaSalaProps) {
   const fim = vista.fim!;
   const nomes = vista.pessoas.map((p) => nomeDoApelido(p.apelido));
   useEffect(() => {
@@ -149,6 +161,14 @@ function FimDaSala({ vista, aoSair, aoMomento }: FimDaSalaProps) {
           ))}
         </ol>
         <p>Rodadas jogadas: {fim.rodadasJogadas}</p>
+        {jogarDeNovo && (
+          <>
+            <button type="button" class="botao" disabled={!jogarDeNovo.pode} onClick={jogarDeNovo.aoJogar}>
+              Jogar de novo
+            </button>
+            {!jogarDeNovo.pode && <p class="sala__aviso">{COMECA_COM}</p>}
+          </>
+        )}
         <button type="button" class="botao botao--secundario" onClick={aoSair}>
           Sair
         </button>

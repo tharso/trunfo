@@ -128,7 +128,7 @@ describe("queda de rede", () => {
   it("os tempos vêm de fora (o build do teste encurta)", () => {
     const caiu = desconectar(emPartida("Ana", "Bia"), "id-Bia", AGORA).estado!;
     // Cutucar mais tarde que a queda, para o primeiro alarme ser o da queda.
-    const tempos = { queda: 5 * SEGUNDO, cutucar: TEMPOS_DA_SALA.cutucar };
+    const tempos = { ...TEMPOS_DA_SALA, queda: 5 * SEGUNDO };
     expect(proximoAlarme(caiu, tempos)).toBe(AGORA + 5 * SEGUNDO);
     expect(alarme(caiu, AGORA + 5 * SEGUNDO, tempos).estado!.partida!.estado.fim).not.toBeNull();
     expect(alarme(caiu, AGORA + 4 * SEGUNDO, tempos).estado).toBe(caiu);

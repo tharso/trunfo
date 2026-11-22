@@ -5,6 +5,9 @@ import type { MotivoDaRecusa } from "../sala/protocolo";
 
 export const PRECISA_DE_INTERNET = "Precisa de internet";
 
+/** Embaixo de "Começar" e "Jogar de novo" desligados. */
+export const COMECA_COM = "Começa com 2 a 4 pessoas.";
+
 export const MOTIVO_DA_RECUSA: Record<MotivoDaRecusa, string> = {
   cheia: "Esta sala está cheia: já tem 4 pessoas.",
   emPartida: "Esta sala está no meio de uma partida. Durante a partida, ninguém entra.",

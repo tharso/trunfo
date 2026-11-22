@@ -19,9 +19,11 @@ export interface TemposDaSala {
   queda: number;
   /** Depois deste tempo sem escolha, os outros podem cutucar (spec, item 16). */
   cutucar: number;
+  /** A sala sem ninguém conectado fecha depois deste tempo (spec, item 22). */
+  vazia: number;
 }
 
-export const TEMPOS_DA_SALA: TemposDaSala = { queda: 60_000, cutucar: 30_000 };
+export const TEMPOS_DA_SALA: TemposDaSala = { queda: 60_000, cutucar: 30_000, vazia: TEMPO_DA_SALA_VAZIA };
 
 export interface PessoaNaSala {
   /** O identificador secreto do celular. Nunca sai da sala. */
@@ -52,8 +54,7 @@ export interface EstadoDaSala {
   pessoas: PessoaNaSala[];
   /** O `id` do Anfitrião; `null` enquanto ninguém entrou. */
   anfitriao: string | null;
-  emPartida: boolean;
-  /** `null` antes da primeira partida. */
+  /** A última partida (em jogo ou que acabou); `null` antes da primeira. Entre partidas a sala aceita gente nova. */
   partida: PartidaNaSala | null;
   /** Quando a sala mudou pela última vez (ms). */
   atualizadaEm: number;
@@ -79,7 +80,7 @@ export function emUso(estado: EstadoDaSala | null, agora: number): estado is Est
 /** Reserva o código para uma sala nova. `null` se o código está em uso. */
 export function reservar(estado: EstadoDaSala | null, codigo: string, agora: number): EstadoDaSala | null {
   if (emUso(estado, agora)) return null;
-  return { codigo, pessoas: [], anfitriao: null, emPartida: false, partida: null, atualizadaEm: agora };
+  return { codigo, pessoas: [], anfitriao: null, partida: null, atualizadaEm: agora };
 }
 
 /** Espaços em volta e repetidos saem; no máximo 20 letras. */
@@ -140,6 +141,21 @@ function passarAnfitriao(estado: EstadoDaSala, saindo: string): string | null {
   return escolhida?.id ?? null;
 }
 
+/** A pessoa `id` vai embora da sala: some da lista e, se era o Anfitrião, o papel passa adiante. */
+function irEmbora(estado: EstadoDaSala, id: string): EstadoDaSala {
+  const anfitriao = passarAnfitriao(estado, id);
+  return { ...estado, pessoas: estado.pessoas.filter((p) => p.id !== id), anfitriao };
+}
+
+/**
+ * Sem partida em jogo, quem caiu e não voltou no tempo de queda já foi embora
+ * (spec, item 18): sai da lista, para não ocupar vaga nem entrar na próxima partida.
+ */
+function semQuemFoiEmbora(estado: EstadoDaSala): EstadoDaSala {
+  if (partidaEmJogo(estado)) return estado;
+  return estado.pessoas.reduce((sala, p) => (!p.conectada && p.caiuEm === null ? irEmbora(sala, p.id) : sala), estado);
+}
+
 /** A sala como cada pessoa conectada a vê. */
 function avisarTodos(estado: EstadoDaSala): Resultado["paraPessoas"] {
   const pessoas = estado.pessoas.map(({ apelido, conectada }) => ({ apelido, conectada }));
@@ -158,7 +174,7 @@ function avisarTodos(estado: EstadoDaSala): Resultado["paraPessoas"] {
               pessoas,
               voce,
               anfitriao,
-              emPartida: estado.emPartida,
+              emPartida: partidaEmJogo(estado) !== null,
               esperando: caidas,
               podeCutucar: podeCutucar && pessoa.id !== daVez,
             } as const,
@@ -257,11 +273,13 @@ export function receber(
       if (partida && voce >= 0) voltou.paraPessoas.push({ id: ja.id, mensagem: { tipo: "partida", vista: vista(partida, voce) } });
       return voltou;
     }
-    if (estado.emPartida) return { ...nada, resposta: { tipo: "recusada", motivo: "emPartida" } };
-    if (estado.pessoas.length >= MAXIMO_DE_PESSOAS) return { ...nada, resposta: { tipo: "recusada", motivo: "cheia" } };
-    const nova = { id: mensagem.id, apelido: apelidoUnico(apelido, estado.pessoas), conectada: true, caiuEm: null };
+    if (partidaEmJogo(estado)) return { ...nada, resposta: { tipo: "recusada", motivo: "emPartida" } };
+    // Entre partidas, gente nova entra no fim da Ordem da mesa (spec, item 25).
+    const sala = semQuemFoiEmbora(estado);
+    if (sala.pessoas.length >= MAXIMO_DE_PESSOAS) return { ...nada, resposta: { tipo: "recusada", motivo: "cheia" } };
+    const nova = { id: mensagem.id, apelido: apelidoUnico(apelido, sala.pessoas), conectada: true, caiuEm: null };
     return mudou(
-      { ...estado, pessoas: [...estado.pessoas, nova], anfitriao: estado.anfitriao ?? nova.id, atualizadaEm: agora },
+      { ...sala, pessoas: [...sala.pessoas, nova], anfitriao: sala.anfitriao ?? nova.id, atualizadaEm: agora },
       nova.id,
     );
   }
@@ -269,26 +287,24 @@ export function receber(
   // As outras mensagens só valem de quem já entrou.
   if (estado === null || conexao === null || !estado.pessoas.some((p) => p.id === conexao)) return nada;
 
+  // "Começar" e, no fim, "Jogar de novo" (spec, item 23): com quem está na sala, inclusive quem estava De fora.
   if (mensagem.tipo === "comecar") {
-    const pode =
-      conexao === estado.anfitriao &&
-      !estado.emPartida &&
-      estado.pessoas.length >= MINIMO_PARA_COMECAR &&
-      estado.pessoas.length <= MAXIMO_DE_PESSOAS;
-    if (!pode) return nada;
+    if (conexao !== estado.anfitriao || partidaEmJogo(estado)) return nada;
+    const sala = semQuemFoiEmbora(estado);
+    if (sala.pessoas.length < MINIMO_PARA_COMECAR || sala.pessoas.length > MAXIMO_DE_PESSOAS) return nada;
     const partida: PartidaNaSala = {
       estado: criarPartida({
         baralho: baralho.cartas,
-        pessoas: estado.pessoas.map(() => "humano"),
+        pessoas: sala.pessoas.map(() => "humano"),
         // O Nível é do Computador; numa partida só de pessoas, não vale nada.
         nivel: "normal",
         semente: novaPartida.semente,
       }),
-      pessoas: estado.pessoas.map(({ id, apelido }) => ({ id, apelido })),
+      pessoas: sala.pessoas.map(({ id, apelido }) => ({ id, apelido })),
       vezDesde: agora,
       podeCutucar: false,
     };
-    const comecada = { ...estado, emPartida: true, partida, atualizadaEm: agora };
+    const comecada = { ...sala, partida, atualizadaEm: agora };
     const resultado = mudou(comecada, conexao);
     resultado.paraPessoas.push(
       ...paraQuemJoga(comecada, partida, (voce) => ({ tipo: "partida", vista: vista(partida, voce) })),
@@ -332,9 +348,7 @@ export function receber(
     return mudouComPartida({ ...saiu, anfitriao: passarAnfitriao(saiu, conexao) }, conexao);
   }
   // sair, antes da partida, no fim dela ou já De fora: a pessoa some da lista.
-  const anfitriao = passarAnfitriao(estado, conexao);
-  const pessoas = estado.pessoas.filter((p) => p.id !== conexao);
-  return mudou({ ...estado, pessoas, anfitriao, atualizadaEm: agora }, null);
+  return mudou({ ...irEmbora(estado, conexao), atualizadaEm: agora }, null);
 }
 
 /** A última conexão da pessoa `id` fechou (rede caiu, aba fechou). */
@@ -346,26 +360,36 @@ export function desconectar(estado: EstadoDaSala | null, id: string, agora: numb
   return mudou({ ...estado, pessoas, atualizadaEm: agora }, null);
 }
 
+/** Ninguém conectado: a sala conta o tempo para fechar desde a última mudança. */
+function semNinguem(estado: EstadoDaSala): boolean {
+  return !estado.pessoas.some((p) => p.conectada);
+}
+
 /**
  * Quando o Durable Object deve chamar `alarme` (ms), ou `null` se não há o que
- * esperar: o fim do tempo de queda de quem caiu e o tempo de cutucar quem escolhe.
- * O DO agenda este instante com `ctx.storage.setAlarm` depois de cada mudança.
+ * esperar: o fim do tempo de queda de quem caiu, o tempo de cutucar quem
+ * escolhe e o fechamento da sala sem ninguém. O DO agenda este instante com
+ * `ctx.storage.setAlarm` depois de cada mudança.
  */
 export function proximoAlarme(estado: EstadoDaSala | null, tempos: TemposDaSala = TEMPOS_DA_SALA): number | null {
   if (estado === null) return null;
   const instantes = estado.pessoas.flatMap((p) => (!p.conectada && p.caiuEm !== null ? [p.caiuEm + tempos.queda] : []));
+  if (semNinguem(estado)) instantes.push(estado.atualizadaEm + tempos.vazia);
   const partida = partidaEmJogo(estado);
   if (partida && !partida.podeCutucar) instantes.push(partida.vezDesde + tempos.cutucar);
   return instantes.length > 0 ? Math.min(...instantes) : null;
 }
 
 /**
- * O alarme tocou (ou o tempo passou): quem caiu há `tempos.queda` sai da
- * partida (e deixa de ser Anfitrião), e quem escolhe há `tempos.cutucar` pode
- * ser cutucado. Sem nada vencido, devolve o mesmo estado.
+ * O alarme tocou (ou o tempo passou): a sala sem ninguém há `tempos.vazia`
+ * fecha (`estado: null`: o DO apaga o storage e o código fica livre); quem
+ * caiu há `tempos.queda` sai da partida (e deixa de ser Anfitrião); e quem
+ * escolhe há `tempos.cutucar` pode ser cutucado. Sem nada vencido, devolve o
+ * mesmo estado.
  */
 export function alarme(estado: EstadoDaSala | null, agora: number, tempos: TemposDaSala = TEMPOS_DA_SALA): Resultado {
   if (estado === null) return { estado, conexao: null, paraPessoas: [] };
+  if (semNinguem(estado) && agora - estado.atualizadaEm >= tempos.vazia) return { estado: null, conexao: null, paraPessoas: [] };
   let sala = estado;
   let mudouASala = false;
   let mudouAPartida = false;
@@ -378,7 +402,8 @@ export function alarme(estado: EstadoDaSala | null, agora: number, tempos: Tempo
       sala = tirarDaPartida(sala, indice, agora);
       mudouAPartida = true;
     }
-    sala = { ...sala, anfitriao: passarAnfitriao(sala, caida.id) };
+    // Sem partida em jogo, quem não voltou vai embora da sala; com partida, fica De fora.
+    sala = partidaEmJogo(sala) ? { ...sala, anfitriao: passarAnfitriao(sala, caida.id) } : irEmbora(sala, caida.id);
   }
   const partida = partidaEmJogo(sala);
   if (partida && !partida.podeCutucar && agora - partida.vezDesde >= tempos.cutucar) {

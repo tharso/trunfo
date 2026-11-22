@@ -1,11 +1,11 @@
 // Tela da sala (docs/spec.md, parte 9, itens 5 a 8): o código grande, "Mandar
 // link", a lista na Ordem da mesa e "Começar" (só o Anfitrião). Com a partida
-// começada, a tela é a da partida (PartidaDaSala). A sala decide tudo
+// começada, a tela é a da partida (PartidaDaSala), até a próxima. A sala decide tudo
 // (src/sala/sala.ts); esta tela mostra o que ela manda.
 import { useEffect, useState } from "preact/hooks";
 import { useSala } from "../multiplayer/conexao";
 import { MAXIMO_DE_PESSOAS, MINIMO_PARA_COMECAR } from "../sala/sala";
-import { caminhoDaSala, MOTIVO_DA_RECUSA, PRECISA_DE_INTERNET, useInternet } from "./amigos";
+import { caminhoDaSala, COMECA_COM, MOTIVO_DA_RECUSA, PRECISA_DE_INTERNET, useInternet } from "./amigos";
 import { PartidaDaSala } from "./PartidaDaSala";
 import "./Sala.css";
 import { sentir } from "./sensacao";
@@ -80,7 +80,9 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
     aoSair();
   };
 
-  if (sala?.emPartida) {
+  // Quem jogou (ou olhou) a última partida fica nela, e no fim dela, até o
+  // Anfitrião tocar em "Jogar de novo". Quem entrou entre partidas vê a sala.
+  if (sala && (sala.emPartida || fila.vista !== null)) {
     return (
       <PartidaDaSala
         fila={fila}
@@ -88,6 +90,7 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
         aoEscolher={(atributo) => enviar({ tipo: "escolher", atributo })}
         aoAvancar={avancarFila}
         aoSair={sair}
+        jogarDeNovo={souAnfitriao ? { pode: podeComecar, aoJogar: () => enviar({ tipo: "comecar" }) } : null}
         controles={{
           esperando: sala.esperando.map((indice) => ({ indice, apelido: sala.pessoas[indice].apelido })),
           souAnfitriao,
@@ -138,7 +141,7 @@ export function TelaDaSala({ codigo, apelido, id, aoSair, aoCriarSala }: Props) 
                 <button type="button" class="botao" disabled={!podeComecar} onClick={() => enviar({ tipo: "comecar" })}>
                   Começar
                 </button>
-                {!podeComecar && <p class="sala__aviso">Começa com 2 a 4 pessoas.</p>}
+                {!podeComecar && <p class="sala__aviso">{COMECA_COM}</p>}
               </>
             ) : (
               <p class="sala__aviso">Esperando o Anfitrião começar…</p>

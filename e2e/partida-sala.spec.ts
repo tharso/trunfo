@@ -76,8 +76,9 @@ test("duas pessoas jogam uma partida inteira pela sala até o Fim", async ({ bro
     ]);
     await expect(pagina.getByText("Rodadas jogadas: 20")).toBeVisible();
   }
-  // O "Jogar de novo" da sala é outro ticket (#41): no fim, todo mundo vê "Sair".
-  await expect(ana.getByRole("button", { name: "Jogar de novo" })).toHaveCount(0);
+  // No fim, só o Anfitrião vê "Jogar de novo"; todo mundo vê "Sair" (e2e/vida-sala.spec.ts joga de novo).
+  await expect(ana.getByRole("button", { name: "Jogar de novo" })).toBeVisible();
+  await expect(bia.getByRole("button", { name: "Jogar de novo" })).toHaveCount(0);
 
   // Partidas do multiplayer não entram no Retrospecto.
   await bia.getByRole("button", { name: "Sair" }).click();

@@ -105,6 +105,13 @@ describe("a fila da partida", () => {
     expect(nova).toEqual({ vista: vista(5, 1), duelo: null, esperando: [] });
   });
 
+  it("Jogar de novo: a partida nova toma o lugar da que acabou, mesmo na mesma rodada", () => {
+    // Bia saiu na 1ª rodada: a partida acabou ali. A nova também começa na rodada 1.
+    const acabou = receberTodas({ tipo: "partida", vista: vista(1, 0, { vencedor: 0, motivo: "saida", rodadasJogadas: 0 }) });
+    const nova = receberNaFila(acabou, { tipo: "partida", vista: vista(1, 1) });
+    expect(nova).toEqual({ vista: vista(1, 1), duelo: null, esperando: [] });
+  });
+
   it("Próxima rodada sem duelo não muda nada", () => {
     const fila = receberTodas({ tipo: "partida", vista: vista(1) });
     expect(avancar(fila)).toBe(fila);
