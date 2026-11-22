@@ -126,7 +126,6 @@ function decidirRodada(mesa: CartaNaMesa[]): { vencedor: number | null; motivo: 
     mesa.filter((m) => m !== superTrunfo),
     "cartaA",
   );
-  return compararNotas(mesa, "nota");
 }
 
 function compararNotas(
