@@ -111,7 +111,7 @@ Fluxo: **Início → Sorteio → Rodadas → Fim**.
 - Só a **sua carta** na tela.
 - **Placar em cabo de guerra** no topo: uma barra com as suas cartas (verde), o monte de empate (amarelo) e as do computador (vermelho). Ao lado: "Rodada N/100".
 - **Quando você escolhe**: 2 toques na linha. O texto da etapa aparece embaixo da carta.
-- **Quando o computador escolhe**: a sua carta aparece com a linha já marcada, o texto "O computador escolheu …" e o botão **"Correr!"**.
+- **Quando o computador escolhe**: a sua carta aparece com a linha já marcada, o texto "O computador escolheu …" e o botão **"Mostrar cartas!"**.
 - **Tela do duelo** (fundo escuro):
   - nome da etapa grande;
   - duas faixas (você e o computador) com barras que crescem até a nota;

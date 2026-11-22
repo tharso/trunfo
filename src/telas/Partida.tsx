@@ -92,7 +92,7 @@ export function Partida({ inicial, aoTerminar, aoMomento, aoMudar, aoSair }: Pro
         <VezDoComputador
           carta={cartaDeCima(estado, VOCE)!}
           atributo={atributoDoComputador(estado)!}
-          aoCorrer={() => mandar({ tipo: "computadorEscolhe" })}
+          aoMostrar={() => mandar({ tipo: "computadorEscolhe" })}
         />
       )}
     </div>
@@ -121,13 +121,13 @@ function VezDeVoce({ carta, aoTocar, aoEscolher }: VezDeVoceProps) {
   );
 }
 
-function VezDoComputador({ carta, atributo, aoCorrer }: { carta: CartaDasRegras; atributo: ChaveAtributo; aoCorrer: () => void }) {
+function VezDoComputador({ carta, atributo, aoMostrar }: { carta: CartaDasRegras; atributo: ChaveAtributo; aoMostrar: () => void }) {
   return (
     <main class="rodada">
       <p class="rodada__aviso">O computador escolheu {NOME_DO_ATRIBUTO[atributo]}.</p>
       <Carta carta={carta} marcado={atributo} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />
-      <button type="button" class="botao" onClick={aoCorrer}>
-        Correr!
+      <button type="button" class="botao" onClick={aoMostrar}>
+        Mostrar cartas!
       </button>
     </main>
   );
