@@ -1,0 +1,75 @@
+/* Visual mínimo, mobile-first. As telas de verdade vêm em outros tickets. */
+:root {
+  --fundo: #0f172a;
+  --texto: #f8fafc;
+  --texto-suave: #94a3b8;
+  --destaque: #facc15;
+  --texto-no-destaque: #0f172a;
+  --largura-coluna: 28rem;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+/* Uma coluna estreita, centralizada no desktop. */
+.tela {
+  min-height: 100dvh;
+  max-width: var(--largura-coluna);
+  margin: 0 auto;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+}
+
+.inicio {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  text-align: center;
+}
+
+.inicio__titulo {
+  margin: 0;
+  font-size: 2.25rem;
+  line-height: 1.1;
+}
+
+.botao {
+  width: 100%;
+  min-height: 3.5rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--destaque);
+  color: var(--texto-no-destaque);
+  font: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.botao:focus-visible {
+  outline: 3px solid var(--texto);
+  outline-offset: 3px;
+}
+
+.rodape {
+  padding-top: 1rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--texto-suave);
+  text-align: center;
+}

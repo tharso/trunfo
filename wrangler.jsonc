@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "super-trunfo-ciclismo",
+  "compatibility_date": "2026-11-01",
+  // Primeira versão sem servidor (ADR 0001): só arquivos estáticos, em modo SPA.
+  "assets": {
+    "not_found_handling": "single-page-application"
+  }
+}
