@@ -1,0 +1,3711 @@
+{
+ "riders": [
+  {
+   "slug": "tadej-pogacar",
+   "coverage": "boa",
+   "note": "Pogačar não publica seus arquivos de potência; a maior parte é estimativa (estudo de Berg, Velo, ProCyclingCoaching), exceto os dados da Velon na Milan-Sanremo 2026.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 70,
+     "value": 620,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Milan-Sanremo 2026, aceleração no Poggio que soltou Van der Poel (dados divulgados pela Velon)",
+     "year": 2026,
+     "source_url": "https://www.idlprocycling.com/cycling/the-staggering-watts-pogacar-needed-to-finally-drop-van-der-poel-on-the-poggio-at-milan-sanremo"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 890,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Milan-Sanremo 2026, pico de potência (dados da Velon)",
+     "year": 2026,
+     "source_url": "https://www.idlprocycling.com/cycling/the-staggering-watts-pogacar-needed-to-finally-drop-van-der-poel-on-the-poggio-at-milan-sanremo"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1380,
+     "value": 464,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Contrarrelógio em subida Loudenvielle-Peyragudes, etapa 13 do Tour de France 2025 (23 min), modelado pela ProCyclingCoaching",
+     "year": 2025,
+     "source_url": "https://www.procyclingcoaching.com/post/tour-de-france-2025-pogacar-464w-itt"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1380,
+     "value": 7.1,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Contrarrelógio de Peyragudes, Tour 2025, assumindo 65 kg (ProCyclingCoaching)",
+     "year": 2025,
+     "source_url": "https://www.procyclingcoaching.com/post/tour-de-france-2025-pogacar-464w-itt"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2400,
+     "value": 442,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Média de ~40 min em 6 subidas decisivas dos Tours 2024-2025 (±15 W), estudo de Ole Kristian Berg no Journal of Science and Cycling",
+     "year": 2025,
+     "source_url": "https://www.bikeradar.com/news/tadej-pogacar-v02-max-study"
+    },
+    {
+     "metric": "vo2max",
+     "duration_s": null,
+     "value": 90,
+     "unit": "ml/kg/min",
+     "kind": "estimado_por_fonte",
+     "context": "VO2max de pico estimado pelo estudo de Berg (Molde University) a partir das subidas do Tour 2024-2025",
+     "year": 2025,
+     "source_url": "https://www.bikeradar.com/news/tadej-pogacar-v02-max-study"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1720,
+     "value": 420,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Mont Ventoux, Saint-Estève até Chalet Reynard, etapa 16 do Tour 2025 (~6,6 W/kg), estimativa da Velo",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/tour-de-france/power-analysis-vingegaard-pushes-pogacar-limit-tour-de-france-new-record-mont-ventoux?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3270,
+     "value": 410,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Subida completa do Mont Ventoux em 54:30, Tour 2025 (~6,4 W/kg), estimativa da Velo",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/tour-de-france/power-analysis-vingegaard-pushes-pogacar-limit-tour-de-france-new-record-mont-ventoux?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2400,
+     "value": 6.98,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Plateau de Beille, etapa 15 do Tour 2024, cerca de 40 min (BikeRadar)",
+     "year": 2024,
+     "source_url": "https://www.bikeradar.com/features/tadej-pogacar-in-numbers"
+    },
+    {
+     "metric": "ftp",
+     "duration_s": null,
+     "value": 415,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "FTP estimado a partir de dados de treino divulgados no fim de 2024 (BikeRadar)",
+     "year": 2024,
+     "source_url": "https://www.bikeradar.com/features/tadej-pogacar-in-numbers"
+    }
+   ]
+  },
+  {
+   "slug": "mathieu-van-der-poel",
+   "coverage": "boa",
+   "note": "Arquivos do próprio atleta (Strava, Instagram/TrainingPeaks): o mais recente é 446 W por 90 min no E3 2026. Os dados de sprint são de 2019-2021.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 5400,
+     "value": 446,
+     "unit": "W",
+     "kind": "medido",
+     "context": "E3 Saxo Classic 2026, últimos 90 min solo; recorde pessoal, captura do TrainingPeaks postada pelo atleta no Instagram",
+     "year": 2026,
+     "source_url": "https://www.cyclingnews.com/pro-cycling/does-van-der-poels-insane-e3-power-record-show-that-he-is-in-tour-of-flanders-winning-form"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1362,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Strade Bianche 2021, pico de potência (Strava do atleta)",
+     "year": 2021,
+     "source_url": "https://www.bikeradar.com/features/mathieu-van-der-poel-in-numbers"
+    },
+    {
+     "metric": "power",
+     "duration_s": 20,
+     "value": 1004,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Strade Bianche 2021, subida da Via Santa Caterina em Siena (dados divulgados pela equipe)",
+     "year": 2021,
+     "source_url": "https://www.bikeradar.com/features/mathieu-van-der-poel-in-numbers"
+    },
+    {
+     "metric": "power",
+     "duration_s": 696,
+     "value": 434,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Amstel Gold Race 2019, trecho final de 11:36 (Strava do atleta)",
+     "year": 2019,
+     "source_url": "https://www.cyclingnews.com/pro-cycling/does-van-der-poels-insane-e3-power-record-show-that-he-is-in-tour-of-flanders-winning-form"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1400,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Amstel Gold Race 2019, sprint da vitória (a fonte não detalha a origem)",
+     "year": 2019,
+     "source_url": "https://www.cyclingnews.com/pro-cycling/does-van-der-poels-insane-e3-power-record-show-that-he-is-in-tour-of-flanders-winning-form"
+    }
+   ]
+  },
+  {
+   "slug": "tobias-halland-johannessen",
+   "coverage": "parcial",
+   "note": "Dados do Hautacam no Tour 2025 compartilhados pelo próprio atleta com a Domestique; na maioria dos trechos só há W/kg.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 2318,
+     "value": 6,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Hautacam, etapa 12 do Tour de France 2025 (38:38), 4º lugar; dados do atleta, 62 kg",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/johannessens-brutal-effort-the-numbers-behind-4th-on-hautacam/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2040,
+     "value": 6,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Col du Soulor, etapa 12 do Tour 2025 (34 min)",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/johannessens-brutal-effort-the-numbers-behind-4th-on-hautacam/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 540,
+     "value": 6,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Col des Bordères, etapa 12 do Tour 2025 (9 min)",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/johannessens-brutal-effort-the-numbers-behind-4th-on-hautacam/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 14,
+     "value": 765,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Sprint final no Hautacam, Tour 2025 (últimos 14 s)",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/johannessens-brutal-effort-the-numbers-behind-4th-on-hautacam/"
+    }
+   ]
+  },
+  {
+   "slug": "matthew-brennan",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado público de potência encontrado; só resultados e peso de 68 kg (PCS).",
+   "datapoints": []
+  },
+  {
+   "slug": "guillermo-thomas-silva-coussan",
+   "coverage": "nao_pesquisado",
+   "note": "Não houve busca: a cota de buscas do turno acabou. Sem dados.",
+   "datapoints": []
+  },
+  {
+   "slug": "filippo-ganna",
+   "coverage": "parcial",
+   "note": "Ganna não divulgou arquivos; só há números relatados ou boatos (460 W relatados, 490 W por 55 min no Mundial 2023).",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 3300,
+     "value": 490,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Contrarrelógio do Mundial 2023 (Stirling): boato relatado por Luke Rowe e contestado por Geraint Thomas",
+     "year": 2023,
+     "source_url": "https://cyclingweekly.com/news/proper-packing-geraint-thomas-take-on-josh-tarlings-455-watt-hour-power-target"
+    },
+    {
+     "metric": "other",
+     "duration_s": null,
+     "value": 460,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Média que Ganna 'teria relatado' em esforço anterior; a Cycling Weekly não diz qual prova nem a duração (provavelmente esforço de ~1 h)",
+     "year": null,
+     "source_url": "https://cyclingweekly.com/news/proper-packing-geraint-thomas-take-on-josh-tarlings-455-watt-hour-power-target"
+    }
+   ]
+  },
+  {
+   "slug": "dorian-godon",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência encontrado; só velocidades de contrarrelógio e resultados de sprint.",
+   "datapoints": []
+  },
+  {
+   "slug": "soren-waerenskjold",
+   "coverage": "nao_pesquisado",
+   "note": "Nenhum dado de potência encontrado na primeira busca; a segunda não rodou porque a cota acabou. Perfil: 92 kg, 195 cm.",
+   "datapoints": []
+  },
+  {
+   "slug": "harold-tejada",
+   "coverage": "nenhuma",
+   "note": "A busca só trouxe homônimos e nenhum dado do ciclista.",
+   "datapoints": []
+  },
+  {
+   "slug": "bryan-coquard",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência encontrado; perfil de 59 kg e 171 cm.",
+   "datapoints": []
+  },
+  {
+   "slug": "mike-teunissen",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado público de potência encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "louis-barre",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência encontrado; só ratings da CyclingOracle.",
+   "datapoints": []
+  },
+  {
+   "slug": "thibaud-gruel",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "luca-mozzato",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência encontrado; só ratings e confrontos de sprint.",
+   "datapoints": []
+  },
+  {
+   "slug": "aime-de-gendt",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de Aimé; os resultados eram de Thomas De Gendt (homônimo, descartado).",
+   "datapoints": []
+  },
+  {
+   "slug": "michael-valgren-andersen",
+   "coverage": "parcial",
+   "note": "Só há dados antigos: arquivo SRM do Tour 2016 (Tinkoff) analisado pela TrainingPeaks. Nada recente.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 5,
+     "value": 403,
+     "unit": "W",
+     "kind": "medido",
+     "context": "ERRO DE DURAÇÃO: usar 300 s. Pico de 5 min no Col des Aravis, etapa 20 do Tour 2016 (5,57 W/kg)",
+     "year": 2016,
+     "source_url": "https://www.trainingpeaks.com/blog/power-analysis-2016-tour-de-france-week-3/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 600,
+     "value": 418,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Pico de 10 min no contrarrelógio Sallanches-Megève, etapa 18 do Tour 2016 (5,77 W/kg)",
+     "year": 2016,
+     "source_url": "https://www.trainingpeaks.com/blog/power-analysis-2016-tour-de-france-week-3/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1200,
+     "value": 373,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Pico de 20 min no Col de la Ramaz, etapa 20 do Tour 2016 (5,15 W/kg)",
+     "year": 2016,
+     "source_url": "https://www.trainingpeaks.com/blog/power-analysis-2016-tour-de-france-week-3/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3600,
+     "value": 321,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Pico de 60 min na Montée de Bisanne, etapa 19 do Tour 2016 (4,43 W/kg)",
+     "year": 2016,
+     "source_url": "https://www.trainingpeaks.com/blog/power-analysis-2016-tour-de-france-week-3/"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": 2,
+     "value": 956,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Pico de 2 s no sprint dos Champs-Élysées, Tour 2016 (13,2 W/kg)",
+     "year": 2016,
+     "source_url": "https://www.trainingpeaks.com/blog/power-analysis-2016-tour-de-france-week-3/"
+    }
+   ]
+  },
+  {
+   "slug": "jonas-abrahamsen",
+   "coverage": "boa",
+   "note": "Arquivos de potência da vitória na etapa 11 do Tour 2025, Strava do E3 2026 e um treino de dez/2024.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 7920,
+     "value": 350,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Fuga da etapa 11 do Tour 2025 (Toulouse), 2h12 de média; arquivo analisado pela Domestique, 78 kg",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/jonas-abrahamsens-brutal-numbers-the-power-behind-his-remarkable-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 195,
+     "value": 537,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Côte de Vielle-Toulouse, etapa 11 do Tour 2025 (3:15)",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/jonas-abrahamsens-brutal-numbers-the-power-behind-his-remarkable-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 147,
+     "value": 592,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Côte de Pech David, etapa 11 do Tour 2025 (2:27)",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/jonas-abrahamsens-brutal-numbers-the-power-behind-his-remarkable-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 74,
+     "value": 662,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Trecho final da Côte de Vielle-Toulouse que abriu vantagem com Mauro Schmid, Tour 2025 (1:14)",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/jonas-abrahamsens-brutal-numbers-the-power-behind-his-remarkable-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 15,
+     "value": 1135,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Sprint final da vitória na etapa 11 do Tour 2025 (15 s)",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/jonas-abrahamsens-brutal-numbers-the-power-behind-his-remarkable-stage-win/"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1409,
+     "unit": "W",
+     "kind": "medido",
+     "context": "E3 Saxo Classic 2026, pico de potência no upload público do Strava (análise da Velora)",
+     "year": 2026,
+     "source_url": "https://veloracycling.com/training/abrahamsen-e3-saxo-strava-analysis"
+    },
+    {
+     "metric": "power",
+     "duration_s": 8940,
+     "value": 325,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Treino de inverno, dez/2024, 2h29 (4,2 W/kg; NP de 348 W)",
+     "year": 2024,
+     "source_url": "https://cyclinguptodate.com/cycling/revealed-the-crazy-numbers-that-turned-jonas-abrahamsen-into-the-most-exciting-rider-of-the-2024-tour-de-france"
+    }
+   ]
+  },
+  {
+   "slug": "andrea-raccagni-noviero",
+   "coverage": "nao_pesquisado",
+   "note": "Não houve busca: a cota de buscas do turno acabou. Sem dados.",
+   "datapoints": []
+  },
+  {
+   "slug": "dusan-rajovic",
+   "coverage": "nao_pesquisado",
+   "note": "Não houve busca: a cota de buscas do turno acabou. Sem dados.",
+   "datapoints": []
+  },
+  {
+   "slug": "alessandro-pinarello",
+   "coverage": "nenhuma",
+   "note": "A busca não encontrou o ciclista, só resultados genéricos sobre VO2max.",
+   "datapoints": []
+  },
+  {
+   "slug": "remco-evenepoel",
+   "coverage": "boa",
+   "note": "Dados do próprio atleta (vídeo de treino 2026, Strava 2022) e W/kg revelado pela equipe em 2022; sem VO2max confiável publicado.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 2220,
+     "value": 354,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Treino de limiar no Teide (Tenerife), 1º bloco de 37 min, mostrado no vídeo do YouTube do atleta",
+     "year": 2026,
+     "source_url": "https://www.bikeradar.com/news/remco-evenepoel-reveals-his-threshold-power"
+    },
+    {
+     "metric": "ftp",
+     "duration_s": null,
+     "value": 425,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Valor citado no vídeo pelo treinador Dan Lorang como 'em torno do limiar' (420 W num intervalo 'logo abaixo do limiar')",
+     "year": 2026,
+     "source_url": "https://www.bikeradar.com/news/remco-evenepoel-reveals-his-threshold-power"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 400,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Contrarrelógio vencedor, etapa 5 do Tour de France 2025 (estimativa da BikeRadar, duração não informada)",
+     "year": 2025,
+     "source_url": "https://www.bikeradar.com/news/remco-evenepoel-reveals-his-threshold-power"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2280,
+     "value": 392,
+     "unit": "W",
+     "kind": "medido",
+     "context": "CRI etapa 4 da Volta ao Algarve, 38 min, potência visível no upload do Strava",
+     "year": 2022,
+     "source_url": "https://www.bikeradar.com/features/remco-evenepoel-in-numbers"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1800,
+     "value": 6.5,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Subida de Gaustatoppen, etapa 3 do Tour of Norway, ~meia hora; revelado pelo chefe da equipe Patrick Lefevere",
+     "year": 2022,
+     "source_url": "https://www.stickybottle.com/latest-news/lefevere-reveals-evenepoels-new-watts-per-kg-claims-now-better-than-pogacar-137192"
+    }
+   ]
+  },
+  {
+   "slug": "christian-scaroni",
+   "coverage": "nenhuma",
+   "note": "Nenhum número de potência publicado encontrado, nem para a vitória em San Valentino (Giro 2025).",
+   "datapoints": []
+  },
+  {
+   "slug": "paul-magnier",
+   "coverage": "parcial",
+   "note": "Só dados de treino do inverno 2024-25 (5 s e 1 min) e declaração própria; sem W/kg nem dados de prova.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": 5,
+     "value": 1687,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Máximo de 5 s em treino de inverno 2024-25, divulgado via post no X/Strava",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/punch-and-sprint-sensation-magnier-goes-against-merliers-advice-after-sanremo-well-know-if-im-too-heavy"
+    },
+    {
+     "metric": "power",
+     "duration_s": 60,
+     "value": 839,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Melhor 1 min em treino de inverno 2024-25",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/punch-and-sprint-sensation-magnier-goes-against-merliers-advice-after-sanremo-well-know-if-im-too-heavy"
+    },
+    {
+     "metric": "power",
+     "duration_s": 60,
+     "value": 1000,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Declaração do atleta: 'acima de 1.000 W em 1 min quando estou descansado' (sem arquivo apresentado)",
+     "year": 2025,
+     "source_url": "https://cyclinguptodate.com/cycling/when-i-feel-fresh-i-get-over-1000-watts-in-1-minute-paul-magnier-ready-to-challenge-the-best-sprinters-in-the-world"
+    }
+   ]
+  },
+  {
+   "slug": "giulio-pellizzari",
+   "coverage": "parcial",
+   "note": "Estimativas de terceiros para San Valentino (Giro 2025); fontes divergem (6,23 vs 6,9 W/kg).",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 2662,
+     "value": 6.23,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "San Valentino, etapa 16 do Giro 2025, 44:22 (Lanterne Rouge, eW/kg)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/05/27/mega-performance-from-21-year-old-pellizzari-giro-ditalia-stage-16-2025/"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 6.9,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "San Valentino, etapa 16 do Giro 2025 (IDLProCycling; duração e método não informados)",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/did-69-wkg-pellizzari-sacrifice-a-stunning-giro-gc-ride-by-staying-with-roglic-i-had-super-legs"
+    }
+   ]
+  },
+  {
+   "slug": "tim-merlier",
+   "coverage": "parcial",
+   "note": "Só um sprint com potência publicada (UAE Tour 2025); sem W/kg nem outras durações.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1490,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Pico no sprint vencedor da etapa 6 do UAE Tour (dado de potência publicado, fonte do arquivo não nomeada)",
+     "year": 2025,
+     "source_url": "https://www.stickybottle.com/races-results/tim-merlier-demolishes-rivals-with-67kmph-kick-at-uae-tour-video-188588"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 1270,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Média do sprint da etapa 6 do UAE Tour (duração do sprint não informada)",
+     "year": 2025,
+     "source_url": "https://www.stickybottle.com/races-results/tim-merlier-demolishes-rivals-with-67kmph-kick-at-uae-tour-video-188588"
+    }
+   ]
+  },
+  {
+   "slug": "pello-bilbao",
+   "coverage": "parcial",
+   "note": "Só estimativas de subida do Tour 2023 (Chronoswatts/Portoleau); nada recente encontrado.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 2728,
+     "value": 6.03,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Grand Colombier, Tour de France 2023, 45:28",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/258/PelloBilbao"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1200,
+     "value": 6.35,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Platzerwasel, Tour de France 2023, 20:00",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/258/PelloBilbao"
+    },
+    {
+     "metric": "power",
+     "duration_s": 508,
+     "value": 6.61,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Côte des Amerands, Tour de France 2023, 8:28",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/258/PelloBilbao"
+    },
+    {
+     "metric": "power",
+     "duration_s": 932,
+     "value": 6.35,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Puy de Dôme (últimos 4 km), Tour de France 2023, 15:32",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/258/PelloBilbao"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2133,
+     "value": 5.6,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Col de la Loze (últimos 11 km), Tour de France 2023, 35:33",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/258/PelloBilbao"
+    }
+   ]
+  },
+  {
+   "slug": "antonio-tiberi",
+   "coverage": "parcial",
+   "note": "Uma estimativa de fórum (ranking de escaladores do Cyclingnews) para Jebel Mobrah 2026.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1441,
+     "value": 6.73,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Jebel Mobrah, UAE Tour 2026, 24:01 (estimativa em fórum Cyclingnews, 'melhor da carreira')",
+     "year": 2026,
+     "source_url": "https://forum.cyclingnews.com/threads/comprehensive-climbers-ranking.41317/page-7"
+    }
+   ]
+  },
+  {
+   "slug": "andreas-leknessund",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência publicado encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "florian-vermeersch",
+   "coverage": "parcial",
+   "note": "Só o arquivo Strava do 2º lugar em Paris-Roubaix 2021; nada recente.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1476,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Pico no sprint do velódromo, Paris-Roubaix 2021 (Strava)",
+     "year": 2021,
+     "source_url": "https://cyclingweekly.com/news/paris-roubaix-runner-up-florian-vermeersch-posts-incredible-ride-to-strava"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 18.11,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Pico relativo, Paris-Roubaix 2021 (Strava)",
+     "year": 2021,
+     "source_url": "https://cyclingweekly.com/news/paris-roubaix-runner-up-florian-vermeersch-posts-incredible-ride-to-strava"
+    },
+    {
+     "metric": "power",
+     "duration_s": 18,
+     "value": 993,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Última meia volta no velódromo, Paris-Roubaix 2021",
+     "year": 2021,
+     "source_url": "https://cyclingweekly.com/news/paris-roubaix-runner-up-florian-vermeersch-posts-incredible-ride-to-strava"
+    },
+    {
+     "metric": "power",
+     "duration_s": 60,
+     "value": 628,
+     "unit": "W",
+     "kind": "medido",
+     "context": "'Mais de 1 min' na entrada do setor de Troisvilles, Paris-Roubaix 2021",
+     "year": 2021,
+     "source_url": "https://cyclingweekly.com/news/paris-roubaix-runner-up-florian-vermeersch-posts-incredible-ride-to-strava"
+    },
+    {
+     "metric": "power",
+     "duration_s": 210,
+     "value": 492,
+     "unit": "W",
+     "kind": "medido",
+     "context": "'Mais de 3,5 min' na formação da fuga, Paris-Roubaix 2021",
+     "year": 2021,
+     "source_url": "https://cyclingweekly.com/news/paris-roubaix-runner-up-florian-vermeersch-posts-incredible-ride-to-strava"
+    },
+    {
+     "metric": "other",
+     "duration_s": null,
+     "value": 343,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Potência média da prova inteira, Paris-Roubaix 2021 (370 W ponderada)",
+     "year": 2021,
+     "source_url": "https://cyclingweekly.com/news/paris-roubaix-runner-up-florian-vermeersch-posts-incredible-ride-to-strava"
+    }
+   ]
+  },
+  {
+   "slug": "andrea-vendrame",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência publicado encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "finn-fisher-black",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência publicado encontrado (2 buscas).",
+   "datapoints": []
+  },
+  {
+   "slug": "alec-segaert",
+   "coverage": "nenhuma",
+   "note": "Nenhum número próprio; artigo da CyclingFlash sobre seu perfil de potência bloqueado (403).",
+   "datapoints": []
+  },
+  {
+   "slug": "adam-yates",
+   "coverage": "parcial",
+   "note": "Várias estimativas de subida (Lanterne Rouge, Chronoswatts) de 2023-2025; nenhum arquivo próprio.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1171,
+     "value": 7.19,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Blatten, etapa 6 do Tour de Suisse 2024, 19:31 (Lanterne Rouge)",
+     "year": 2024,
+     "source_url": "https://lanternerouge.com/2024/06/14/historically-high-%e1%b5%89w-kg-on-shortened-stage-tour-de-suisse-stage-6-2024/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1156,
+     "value": 6.62,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Peyragudes (após Estarvielle), Tour de France 2025, 19:16",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/205/AdamYates"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3515,
+     "value": 5.95,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Thyon 2000, Tour de Romandie 2023, 58:35 (recorde da subida)",
+     "year": 2023,
+     "source_url": "https://lanternerouge.com/2025/05/04/w-kg-showdown-on-thyon-2000-tour-de-romandie-2025-stage-4/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2701,
+     "value": 6.21,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Grand Colombier, Tour de France 2023, 45:01",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/205/AdamYates"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2065,
+     "value": 6.22,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Joux-Plane, Tour de France 2023, 34:25",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/205/AdamYates"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1035,
+     "value": 6.72,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Marie-Blanque (lado oeste), Tour de France 2023, 17:15",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/205/AdamYates"
+    }
+   ]
+  },
+  {
+   "slug": "emiel-verstrynge",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência publicado encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "daniel-felipe-martinez",
+   "coverage": "nenhuma",
+   "note": "Nada encontrado; o 'Martinez' de Thyon 2000 (Romandie 2025) é Lenny Martinez, não ele. Orçamento de buscas esgotado antes de nova tentativa.",
+   "datapoints": []
+  },
+  {
+   "slug": "aleksandr-vlasov",
+   "coverage": "parcial",
+   "note": "Estimativas de subida de 2022-2023 (Lanterne Rouge, Chronoswatts); nada mais recente.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 907,
+     "value": 6.7,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "La Frontera, Volta a la Comunitat Valenciana 2023, 15:07 (Lanterne Rouge)",
+     "year": 2023,
+     "source_url": "https://lanternerouge.com/2023/02/06/all-time-watts-in-volta-a-valenciana-or-power-meter-issues/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1281,
+     "value": 6.12,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Planche des Belles Filles, Tour de France 2022, 21:21",
+     "year": 2022,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/230/AleksandrVlasov"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2513,
+     "value": 5.78,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Alpe d'Huez, Tour de France 2022, 41:53",
+     "year": 2022,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/230/AleksandrVlasov"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2410,
+     "value": 5.71,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Hautacam, Tour de France 2022, 40:10",
+     "year": 2022,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/230/AleksandrVlasov"
+    }
+   ]
+  },
+  {
+   "slug": "pau-miquel-delgado",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência publicado encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "ivan-ramiro-sosa",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência publicado encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "max-walscheid",
+   "coverage": "parcial",
+   "note": "Só o arquivo Strava do CRI do Mundial 2021; nenhum dado de sprint.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 2979,
+     "value": 456,
+     "unit": "W",
+     "kind": "medido",
+     "context": "CRI do Mundial 2021 (Flandres), 49:39, 11º lugar, arquivo no Strava",
+     "year": 2021,
+     "source_url": "https://www.cyclingweekly.com/news/dan-bigham-johan-price-pejtersen-and-juliette-labous-share-their-strava-stats-from-world-championships-time-trials"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2979,
+     "value": 5,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Mesmo CRI do Mundial 2021, W/kg estimado pela Cycling Weekly",
+     "year": 2021,
+     "source_url": "https://www.cyclingweekly.com/news/dan-bigham-johan-price-pejtersen-and-juliette-labous-share-their-strava-stats-from-world-championships-time-trials"
+    }
+   ]
+  },
+  {
+   "slug": "lennart-jasch",
+   "coverage": "nenhuma",
+   "note": "Entrevistas citam testes e números de potência 'insanos' no Tour of the Alps 2026, mas sem valores publicados.",
+   "datapoints": []
+  },
+  {
+   "slug": "isaac-del-toro",
+   "coverage": "parcial",
+   "note": "Só estimativas de terceiros (Velo/Outside), do UAE Tour 2026 e do Finestre no Giro 2025. Não achei arquivo próprio nem VO2max publicado.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1552,
+     "value": 425,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "UAE Tour 2026, etapa 3, Jebel Mobrah, 25:52 (~6,6 W/kg)",
+     "year": 2026,
+     "source_url": "https://headless-velo.outsideonline.com/road/power-analysis-isaac-del-toro-strong-young-tadej-pogacar"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1552,
+     "value": 6.6,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "UAE Tour 2026, Jebel Mobrah, 25:52",
+     "year": 2026,
+     "source_url": "https://headless-velo.outsideonline.com/road/power-analysis-isaac-del-toro-strong-young-tadej-pogacar"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1351,
+     "value": 430,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "UAE Tour 2026, Jebel Hafeet, 22:31 (~6,6 W/kg)",
+     "year": 2026,
+     "source_url": "https://headless-velo.outsideonline.com/road/power-analysis-isaac-del-toro-strong-young-tadej-pogacar"
+    },
+    {
+     "metric": "power",
+     "duration_s": 69,
+     "value": 630,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "UAE Tour 2026, Jebel Hafeet, ataque final de 69 s (~9,6 W/kg)",
+     "year": 2026,
+     "source_url": "https://headless-velo.outsideonline.com/road/power-analysis-isaac-del-toro-strong-young-tadej-pogacar"
+    },
+    {
+     "metric": "power",
+     "duration_s": 69,
+     "value": 9.6,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "UAE Tour 2026, Jebel Hafeet, ataque final de 69 s",
+     "year": 2026,
+     "source_url": "https://headless-velo.outsideonline.com/road/power-analysis-isaac-del-toro-strong-young-tadej-pogacar"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 7.5,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Giro 2025, Colle delle Finestre, primeiros 5 min ('mais de 7,5 W/kg')",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3664,
+     "value": 5.95,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Giro 2025, Colle delle Finestre inteiro, 1:01:04 (junto com Carapaz)",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    }
+   ]
+  },
+  {
+   "slug": "richard-carapaz",
+   "coverage": "parcial",
+   "note": "Estimativas do Velo para o Finestre 2025 e do Chronoswatts para subidas do Tour 2021. O Chronoswatts não lista nada dele de 2022 a 2025.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 7.5,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Giro 2025, Colle delle Finestre, primeiros 5 min ('mais de 7,5 W/kg')",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3664,
+     "value": 5.95,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Giro 2025, Colle delle Finestre inteiro, 1:01:04",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2147,
+     "value": 6.1,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour 2021, Luz-Ardiden, 35:47",
+     "year": 2021,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/239/RichardCarapaz"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2947,
+     "value": 5.97,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour 2021, Col du Portet, 49:07",
+     "year": 2021,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/239/RichardCarapaz"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1183,
+     "value": 6,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour 2021, Beixalis, 19:43",
+     "year": 2021,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/239/RichardCarapaz"
+    }
+   ]
+  },
+  {
+   "slug": "romain-gregoire",
+   "coverage": "nenhuma",
+   "note": "Três buscas sem nenhum número de potência publicado. Só achei dados físicos (~64 kg, 1,76-1,77 m).",
+   "datapoints": []
+  },
+  {
+   "slug": "jordi-meeus",
+   "coverage": "nenhuma",
+   "note": "Não achei potência publicada nem da vitória nos Champs-Élysées 2023; as fontes trazem só números genéricos de sprint.",
+   "datapoints": []
+  },
+  {
+   "slug": "olav-kooij",
+   "coverage": "nenhuma",
+   "note": "Não achei números de potência dele. O artigo da Rouleur sobre o sprint dele deu erro 429 e não pôde ser verificado.",
+   "datapoints": []
+  },
+  {
+   "slug": "biniam-girmay",
+   "coverage": "nenhuma",
+   "note": "Não achei potência publicada de sprint dele (Gent-Wevelgem 2022, Tour 2024); só dados físicos (74 kg).",
+   "datapoints": []
+  },
+  {
+   "slug": "jarno-widar",
+   "coverage": "parcial",
+   "note": "Estimativas da Lanterne Rouge em provas sub-23 de 2025 (Giro Next Gen e Valle d'Aosta).",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1658,
+     "value": 6.26,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Giro Next Gen 2025, etapa 3, Passo del Maniva, 27:38 (6,58 W/kg ajustado pela altitude)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/06/17/strongest-u23-climbing-field-ever-giro-ditalia-next-gen-2025-stage-3/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2774,
+     "value": 5.81,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Giro della Valle d'Aosta 2025, etapa 3, Colle del Gran San Bernardo, 46:14 em altitude (6,27 W/kg ajustado ao nível do mar)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/07/20/jarno-widar-sweeps-mountain-stages-giro-ciclistico-della-valle-daosta-mont-blanc/"
+    }
+   ]
+  },
+  {
+   "slug": "max-kanter",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada esgotou antes de chegar nele.",
+   "datapoints": []
+  },
+  {
+   "slug": "lukas-kubis",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada esgotou antes de chegar nele.",
+   "datapoints": []
+  },
+  {
+   "slug": "filippo-zana",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum número de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "lennert-van-eetvelt",
+   "coverage": "parcial",
+   "note": "Duas estimativas da Lanterne Rouge de 2024 (Jebel Hafeet e Puig Major).",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1654,
+     "value": 6.28,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "UAE Tour 2024, etapa 7, Jebel Hafeet, 27:34 (vitória na etapa e na geral)",
+     "year": 2024,
+     "source_url": "https://lanternerouge.com/2024/02/25/van-eetvelt-wins-on-jebel-hafeet-uae-tour-2024-stage-7"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1961,
+     "value": 6.16,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Trofeo Serra de Tramuntana (Challenge Mallorca) 2024, Puig Major, 32:41 (a fonte grafa '6:16', provável erro de digitação de 6,16)",
+     "year": 2024,
+     "source_url": "https://lanternerouge.com/2024/02/25/van-eetvelt-wins-on-jebel-hafeet-uae-tour-2024-stage-7"
+    }
+   ]
+  },
+  {
+   "slug": "ramses-debruyne",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada esgotou antes de chegar nele.",
+   "datapoints": []
+  },
+  {
+   "slug": "arnaud-de-lie",
+   "coverage": "boa",
+   "note": "Perfil completo de 2022 (primeiro ano como profissional) tirado dos arquivos de potência dele no Strava, analisados pela Lanterne Rouge. Não achei nada mais recente.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": 5,
+     "value": 1603,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Melhor marca de 5 s; sprint final da Heistse Pijl depois de 3570 kJ",
+     "year": 2022,
+     "source_url": "https://lanternerouge.com/2022/12/06/the-young-bull-arnaud-de-lies-monster-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 10,
+     "value": 1473,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Sprint final da Heistse Pijl, depois de 4h23 de prova",
+     "year": 2022,
+     "source_url": "https://lanternerouge.com/2022/12/06/the-young-bull-arnaud-de-lies-monster-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 15,
+     "value": 1294,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Sprint final da Heistse Pijl",
+     "year": 2022,
+     "source_url": "https://lanternerouge.com/2022/12/06/the-young-bull-arnaud-de-lies-monster-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 30,
+     "value": 1155,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Treino em 9 de junho, depois de ~3000 kJ",
+     "year": 2022,
+     "source_url": "https://lanternerouge.com/2022/12/06/the-young-bull-arnaud-de-lies-monster-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 542,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Melhor marca de 5 min descansado",
+     "year": 2022,
+     "source_url": "https://lanternerouge.com/2022/12/06/the-young-bull-arnaud-de-lies-monster-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 523,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Teste máximo de 5 min em janeiro, camp da Lotto-Soudal, subida da Granadella (a fonte não diz de onde veio o arquivo)",
+     "year": 2022,
+     "source_url": "https://lanternerouge.com/2022/12/06/the-young-bull-arnaud-de-lies-monster-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 478,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Final da Scheldeprijs, já cansado, depois de mais de 4000 kJ",
+     "year": 2022,
+     "source_url": "https://lanternerouge.com/2022/12/06/the-young-bull-arnaud-de-lies-monster-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1200,
+     "value": 425,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour des Alpes-Maritimes et du Var, etapa 3, 20 de fevereiro (5,44 W/kg com 78 kg)",
+     "year": 2022,
+     "source_url": "https://lanternerouge.com/2022/12/06/the-young-bull-arnaud-de-lies-monster-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1200,
+     "value": 5.44,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Tour des Alpes-Maritimes et du Var, etapa 3, 20 min (peso de 78 kg)",
+     "year": 2022,
+     "source_url": "https://lanternerouge.com/2022/12/06/the-young-bull-arnaud-de-lies-monster-power/"
+    }
+   ]
+  },
+  {
+   "slug": "clement-berthet",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum número de potência publicado; só dados físicos (68 kg).",
+   "datapoints": []
+  },
+  {
+   "slug": "matteo-moschetti",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada esgotou antes de chegar nele.",
+   "datapoints": []
+  },
+  {
+   "slug": "yevgeniy-fedorov",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum número de potência publicado; só dados físicos (80 kg, 1,93 m).",
+   "datapoints": []
+  },
+  {
+   "slug": "gianni-vermeersch",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada esgotou antes de chegar nele.",
+   "datapoints": []
+  },
+  {
+   "slug": "paul-penhoet",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada esgotou antes de chegar nele.",
+   "datapoints": []
+  },
+  {
+   "slug": "georg-zimmermann",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum número de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "maxim-van-gils",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum número de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "paul-seixas",
+   "coverage": "boa",
+   "note": "Quase tudo é estimativa feita a partir do tempo de subida em 2026 (Ardèche, Lombardia, Tourmalet). O único dado medido vem da Velon: os primeiros 2:30 do Civiglio.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 988,
+     "value": 7.46,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Côte de Saint-Romain-de-Lerps, Faun-Ardèche Classic 2026 (16:28, ataque solo)",
+     "year": 2026,
+     "source_url": "https://cyclinguptodate.com/cycling/pogacar-esque-at-19-paul-seixas-matches-slovenian-superstars-european-championship-climb-in-ardeche-solo"
+    },
+    {
+     "metric": "power",
+     "duration_s": 150,
+     "value": 460,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Primeiros 2:30 do Civiglio, Il Lombardia 2026 (dados da Velon)",
+     "year": 2026,
+     "source_url": "https://velo.outsideonline.com/road/power-analysis-paul-seixas-lombardia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 150,
+     "value": 7.2,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Primeiros 2:30 do Civiglio, Il Lombardia 2026 (dados da Velon; o W/kg pressupõe ~64 kg)",
+     "year": 2026,
+     "source_url": "https://velo.outsideonline.com/road/power-analysis-paul-seixas-lombardia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 714,
+     "value": 7.1,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Civiglio inteiro, Il Lombardia 2026 (11:54)",
+     "year": 2026,
+     "source_url": "https://velo.outsideonline.com/road/power-analysis-paul-seixas-lombardia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 714,
+     "value": 450,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Média estimada pela VAM do Strava no Civiglio inteiro, Il Lombardia 2026 (11:54)",
+     "year": 2026,
+     "source_url": "https://velo.outsideonline.com/road/power-analysis-paul-seixas-lombardia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2679,
+     "value": 6.14,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Col du Tourmalet, etapa 6 do Tour de France 2026 (44:39)",
+     "year": 2026,
+     "source_url": "https://cyclinguptodate.com/cycling/tadej-pogacar-is-the-new-record-holder-on-the-col-du-tourmalet-but-many-more-have-broken-the-previous-top-time"
+    }
+   ]
+  },
+  {
+   "slug": "mauro-schmid",
+   "coverage": "boa",
+   "note": "A Domestique analisou o arquivo de potência da vitória na etapa 13 do Tour de France 2026. A legenda da foto diz 'Schmid powerfile', mas o texto não confirma a origem do arquivo.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1434,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Sprint final, etapa 13 do Tour de France 2026 (Dole–Belfort), vitória",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/features/the-brutal-numbers-behind-mauro-schmids-first-tour-de-france-stage-win/"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 20.5,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Sprint final, etapa 13 do Tour de France 2026",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/features/the-brutal-numbers-behind-mauro-schmids-first-tour-de-france-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 60,
+     "value": 575,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Melhor 1 min, etapa 13 do Tour de France 2026",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/features/the-brutal-numbers-behind-mauro-schmids-first-tour-de-france-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 60,
+     "value": 8.2,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Melhor 1 min, etapa 13 do Tour de France 2026",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/features/the-brutal-numbers-behind-mauro-schmids-first-tour-de-france-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 478,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Melhor 5 min, Ballon d'Alsace, etapa 13 do Tour de France 2026",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/features/the-brutal-numbers-behind-mauro-schmids-first-tour-de-france-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 6.8,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Melhor 5 min, Ballon d'Alsace, etapa 13 do Tour de France 2026",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/features/the-brutal-numbers-behind-mauro-schmids-first-tour-de-france-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 10800,
+     "value": 319,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Melhor 3 h, etapa 13 do Tour de France 2026",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/features/the-brutal-numbers-behind-mauro-schmids-first-tour-de-france-stage-win/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 10800,
+     "value": 4.6,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Melhor 3 h, etapa 13 do Tour de France 2026",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/features/the-brutal-numbers-behind-mauro-schmids-first-tour-de-france-stage-win/"
+    }
+   ]
+  },
+  {
+   "slug": "mattias-skjelmose-jensen",
+   "coverage": "parcial",
+   "note": "Só achei uma estimativa, no Tourmalet de 2026, e o próprio artigo diz que o tempo dele foi em parte inferido. Não há arquivo de potência público.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 2702,
+     "value": 6.08,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Col du Tourmalet, etapa 6 do Tour de France 2026 (~45:02, tempo aproximado)",
+     "year": 2026,
+     "source_url": "https://cyclinguptodate.com/cycling/tadej-pogacar-is-the-new-record-holder-on-the-col-du-tourmalet-but-many-more-have-broken-the-previous-top-time"
+    }
+   ]
+  },
+  {
+   "slug": "florian-lipowitz",
+   "coverage": "boa",
+   "note": "São estimativas do ChronosWatts para as subidas do Tour de France 2025, mais o Tourmalet de 2026. Não há dado medido nem VO2max público. Os watts absolutos do ChronosWatts são padronizados para 78 kg, por isso não entraram.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 2250,
+     "value": 6.02,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Hautacam, etapa 12 do Tour de France 2025 (37:30)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/269/FlorianLipowitz"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 6.16,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Hautacam, etapa 12 do Tour de France 2025 (média na subida final; a fonte não informa a duração)",
+     "year": 2025,
+     "source_url": "https://www.radsport-rennrad.de/tour-de-france/tour-de-france-2025-pogacar-lipowitz-co-watt-werte/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1171,
+     "value": 6.38,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Peyragudes (depois de Estarvielle), Tour de France 2025 (19:31)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/269/FlorianLipowitz"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1973,
+     "value": 6.1,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Superbagnères, Tour de France 2025 (32:53)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/269/FlorianLipowitz"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3009,
+     "value": 5.99,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "La Plagne, Tour de France 2025 (50:09)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/269/FlorianLipowitz"
+    },
+    {
+     "metric": "power",
+     "duration_s": 4323,
+     "value": 5.25,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Col de la Loze pelo lado de Courchevel, Tour de France 2025 (72:03)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/269/FlorianLipowitz"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2684,
+     "value": 6.13,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Col du Tourmalet, etapa 6 do Tour de France 2026 (~44:44, tempo aproximado)",
+     "year": 2026,
+     "source_url": "https://cyclinguptodate.com/cycling/tadej-pogacar-is-the-new-record-holder-on-the-col-du-tourmalet-but-many-more-have-broken-the-previous-top-time"
+    }
+   ]
+  },
+  {
+   "slug": "davide-piganzoli",
+   "coverage": "nenhuma",
+   "note": "Uma busca só trouxe peso e altura (61 kg, 174 cm), sem nenhum número de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "anthon-charmig",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum dado de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "milan-fretin",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum dado de pico de sprint ou de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "derek-gee",
+   "coverage": "boa",
+   "note": "Arquivo dele mesmo no Strava (etapa 20 do Giro 2025, Finestre), analisado pela Velo, mais dados dos arquivos do Giro 2025 publicados pela Escape Collective. Não achei números de 2026.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 3724,
+     "value": 407,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Colle delle Finestre inteiro, etapa 20 do Giro d'Italia 2025 (1:02:04), arquivo do Strava",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3724,
+     "value": 5.8,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Colle delle Finestre inteiro, etapa 20 do Giro d'Italia 2025 (1:02:04)",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1642,
+     "value": 435,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Primeiros 8,4 km do Finestre, etapa 20 do Giro d'Italia 2025 (27:22)",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1642,
+     "value": 6.2,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Primeiros 8,4 km do Finestre, etapa 20 do Giro d'Italia 2025 (27:22)",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 262,
+     "value": 494,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Primeiro 1,5 km do Finestre, etapa 20 do Giro d'Italia 2025 (4:22)",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 262,
+     "value": 7.1,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Primeiro 1,5 km do Finestre, etapa 20 do Giro d'Italia 2025 (4:22)",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 240,
+     "value": 500,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Primeiros 4 min do Finestre, etapa 20 do Giro d'Italia 2025",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/power-analysis-how-simon-yates-won-giro-ditalia/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 390,
+     "value": 400,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Segunda passagem pela subida de Surrel, etapa 1 do Giro d'Italia 2025 (~6,5 min, valor aproximado)",
+     "year": 2025,
+     "source_url": "https://escapecollective.com/the-power-of-patience-how-derek-gee-climbed-into-giro-contention?comments=open"
+    }
+   ]
+  },
+  {
+   "slug": "luke-plapp",
+   "coverage": "nenhuma",
+   "note": "Duas buscas sem nenhum número de potência publicado. Só aparece menção ao tempo dele em Jebel Hafeet, sem watts.",
+   "datapoints": []
+  },
+  {
+   "slug": "corbin-strong",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum dado de potência ou sprint publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "igor-arrieta-lizarraga",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhuma estimativa nem dado de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "pavel-bittner",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum dado de sprint ou de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "rick-pluimers",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum resultado relevante.",
+   "datapoints": []
+  },
+  {
+   "slug": "anders-foldager",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: a cota de buscas da web acabou antes de chegar nele. Vale buscar de novo.",
+   "datapoints": []
+  },
+  {
+   "slug": "marc-hirschi",
+   "coverage": "nao_pesquisado",
+   "note": "Uma busca sem resultado. A segunda (arquivos do Strava de 2020/2025) não rodou porque a cota de buscas acabou. Vale buscar de novo.",
+   "datapoints": []
+  },
+  {
+   "slug": "stefan-kung",
+   "coverage": "nenhuma",
+   "note": "Duas buscas sem número publicado. Os 402 W do Europeu de CRI 2020 são do Dowsett, não dele: Küng não publicou a potência daquela prova.",
+   "datapoints": []
+  },
+  {
+   "slug": "andrew-august",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum dado de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "tim-van-dijke",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: a cota de buscas da web acabou antes de chegar nele. Vale buscar de novo.",
+   "datapoints": []
+  },
+  {
+   "slug": "alexander-kamp",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: a cota de buscas da web acabou antes de chegar nele. Vale buscar de novo.",
+   "datapoints": []
+  },
+  {
+   "slug": "yannis-voisard",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: a cota de buscas da web acabou antes de chegar nele. Vale buscar de novo.",
+   "datapoints": []
+  },
+  {
+   "slug": "tom-pidcock",
+   "coverage": "parcial",
+   "note": "Estimativas da Lanterne Rouge para subidas curtas em 2025 e o arquivo do Strava dele em Sa Calobra (2022).",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 496,
+     "value": 7.91,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Arctic Race of Norway 2025, etapa 3, subida final (8:16)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/08/11/pidcock-delivers-best-short-climb-performance-ever-arctic-race-of-norway-stage-3-2025/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 447,
+     "value": 7.69,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "AlUla Tour 2025, etapa 2, subida final (7:27)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/01/30/tom-pidcock-pushes-huge-w-kg-after-leaving-ineos-alula-tour-2025-stage-2/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1366,
+     "value": 386,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Sa Calobra, KOM no Strava, treino de dez/2022 (22:46)",
+     "year": 2022,
+     "source_url": "https://road.cc/content/news/tom-pidcock-smashes-sa-calobra-kom-298121"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1366,
+     "value": 6.7,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Sa Calobra, KOM no Strava, dez/2022, peso de 58 kg informado no Strava",
+     "year": 2022,
+     "source_url": "https://road.cc/content/news/tom-pidcock-smashes-sa-calobra-kom-298121"
+    }
+   ]
+  },
+  {
+   "slug": "enric-mas",
+   "coverage": "parcial",
+   "note": "Dois esforços de subida estimados por terceiros (Vuelta 2024 e Tour 2025); nenhum arquivo de potência do próprio ciclista.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1188,
+     "value": 6.37,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Peyragudes (depois de Estarvielle), 19:48",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/226/EnricMas"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1419,
+     "value": 6.41,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Vuelta 2024, etapa 9, subida de Hazallanas (23:39)",
+     "year": 2024,
+     "source_url": "https://lanternerouge.com/2024/08/25/special-performance-by-adam-yates-vuelta-a-espana-2024-stage-9/"
+    }
+   ]
+  },
+  {
+   "slug": "benoit-cosnefroy",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum número de potência público.",
+   "datapoints": []
+  },
+  {
+   "slug": "jasper-stuyven",
+   "coverage": "parcial",
+   "note": "Arquivos de corrida publicados via Strava/Velon (MSR 2021, Omloop 2020, Mundial 2023); são de antes de 2023, exceto o Mundial.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 12823,
+     "value": 347,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Mundial de Glasgow 2023, média do circuito urbano (3:33:43); NP de 424 W",
+     "year": 2023,
+     "source_url": "https://velo.outsideonline.com/road/power-analysis-hardest-world-championships-modern-cycling/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 167,
+     "value": 515,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Milano-Sanremo 2021, ataque vencedor a partir do pé do Poggio até a chegada (2:47); dados do Strava",
+     "year": 2021,
+     "source_url": "https://cyclingweekly.com/news/racing/strava-data-reveals-rapid-ascent-of-the-poggio-in-milan-san-remo-2021-494176"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1545,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Milano-Sanremo 2021, potência máxima no sprint final",
+     "year": 2021,
+     "source_url": "https://cyclingweekly.com/news/racing/strava-data-reveals-rapid-ascent-of-the-poggio-in-milan-san-remo-2021-494176"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1410,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Omloop Het Nieuwsblad 2020 (vitória), máximo no sprint de 14 s; dados da Velon",
+     "year": 2020,
+     "source_url": "https://cyclingweekly.com/news/racing/power-data-reveal-more-about-the-huge-attacks-put-in-during-omloop-het-nieuwsblad-450732"
+    },
+    {
+     "metric": "power",
+     "duration_s": 18000,
+     "value": 4.04,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Omloop Het Nieuwsblad 2020, média da corrida (~5 h, 315 W; NP de 370 W); dados da Velon",
+     "year": 2020,
+     "source_url": "https://cyclingweekly.com/news/racing/power-data-reveal-more-about-the-huge-attacks-put-in-during-omloop-het-nieuwsblad-450732"
+    }
+   ]
+  },
+  {
+   "slug": "alex-aranburu",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum número de potência público; só peso e altura no PCS.",
+   "datapoints": []
+  },
+  {
+   "slug": "sepp-kuss",
+   "coverage": "boa",
+   "note": "Arquivo dele no Strava (Vuelta 2019) e várias subidas estimadas pela Chronoswatts no Tour de 2023 e 2025.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1183,
+     "value": 6.38,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Peyragudes (depois de Estarvielle), 19:43",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/236/SeppKuss"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1010,
+     "value": 6.8,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2023, Marie-Blanque (vertente oeste), 16:50",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/236/SeppKuss"
+    },
+    {
+     "metric": "power",
+     "duration_s": 508,
+     "value": 6.68,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2023, Amerands, 8:28",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/236/SeppKuss"
+    },
+    {
+     "metric": "power",
+     "duration_s": 950,
+     "value": 6.28,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2023, Puy de Dôme (últimos 4 km), 15:50",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/236/SeppKuss"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2295,
+     "value": 6.08,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2023, Tourmalet (face leste), 38:15",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/236/SeppKuss"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2703,
+     "value": 6.23,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2023, Grand Colombier, 45:03",
+     "year": 2023,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/236/SeppKuss"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1418,
+     "value": 397,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Vuelta 2019, etapa 15, ataque final no Santuario del Acebo (23:38, 6,2 W/kg a 64 kg); dados do Strava",
+     "year": 2019,
+     "source_url": "https://velo.outsideonline.com/events/vuelta-a-espana/power-analysis-sepp-kusss-stage-15-win-at-the-vuelta/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1219,
+     "value": 393,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Vuelta 2019, etapa 15, primeira subida do Puerto del Acebo (20:19, 6,1 W/kg); dados do Strava",
+     "year": 2019,
+     "source_url": "https://velo.outsideonline.com/events/vuelta-a-espana/power-analysis-sepp-kusss-stage-15-win-at-the-vuelta/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 21,
+     "value": 515,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Vuelta 2019, etapa 15, ataque para largar a fuga (21 s)",
+     "year": 2019,
+     "source_url": "https://velo.outsideonline.com/events/vuelta-a-espana/power-analysis-sepp-kusss-stage-15-win-at-the-vuelta/?scope=anon"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 616,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Vuelta 2019, etapa 15, potência máxima na subida final",
+     "year": 2019,
+     "source_url": "https://velo.outsideonline.com/events/vuelta-a-espana/power-analysis-sepp-kusss-stage-15-win-at-the-vuelta/?scope=anon"
+    }
+   ]
+  },
+  {
+   "slug": "paul-lapeira",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum número de potência público.",
+   "datapoints": []
+  },
+  {
+   "slug": "alex-baudin",
+   "coverage": "boa",
+   "note": "Dados Wahoo divulgados pela EF no Tour 2026 (etapa 9) e o número de 20 min postado por Vaughters (TARA 2026).",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1200,
+     "value": 6.3,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Tour Auvergne-Rhône-Alpes 2026, etapa 1 (vitória), última subida depois de passar o dia na fuga; postado por Vaughters",
+     "year": 2026,
+     "source_url": "https://www.idlprocycling.com/cycling/ef-boss-vaughters-releases-the-insane-power-numbers-it-took-for-baudin-to-win-dauphine-stage-1"
+    },
+    {
+     "metric": "power",
+     "duration_s": 15,
+     "value": 905,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 9, sprint final (15 s, 14,1 W/kg)",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/news/van-der-poel-pidcock-and-baudin-the-watts-that-decided-tour-de-france-stage-9/"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1072,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 9, pico no sprint final (16,8 W/kg)",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/news/van-der-poel-pidcock-and-baudin-the-watts-that-decided-tour-de-france-stage-9/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 105,
+     "value": 508,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 9, seguindo Van der Poel na subida final (1:45, 7,9 W/kg)",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/news/van-der-poel-pidcock-and-baudin-the-watts-that-decided-tour-de-france-stage-9/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 420,
+     "value": 436,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 9, melhor 7 min para entrar na fuga (6,8 W/kg)",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/news/van-der-poel-pidcock-and-baudin-the-watts-that-decided-tour-de-france-stage-9/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 600,
+     "value": 398,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 9, melhor 10 min (6,2 W/kg)",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/news/van-der-poel-pidcock-and-baudin-the-watts-that-decided-tour-de-france-stage-9/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3000,
+     "value": 346,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 9, 50 min para formar a fuga (5,4 W/kg; NP de 390 W)",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/news/van-der-poel-pidcock-and-baudin-the-watts-that-decided-tour-de-france-stage-9/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 360,
+     "value": 453,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 9 (Malemort-Ussel), ataque anterior para entrar na fuga (6 min); dados Wahoo da equipe",
+     "year": 2026,
+     "source_url": "https://www.efprocycling.com/racing/ef-pro-cycling-tour-de-france-stage-9-malemort-ussel/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 480,
+     "value": 428,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 9, movimento para a fuga vingar (8 min); dados Wahoo da equipe",
+     "year": 2026,
+     "source_url": "https://www.efprocycling.com/racing/ef-pro-cycling-tour-de-france-stage-9-malemort-ussel/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 238,
+     "value": 402,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 9, respondendo ao ataque de Van der Poel no Mont Bessou (3:58); dados Wahoo da equipe",
+     "year": 2026,
+     "source_url": "https://www.efprocycling.com/racing/ef-pro-cycling-tour-de-france-stage-9-malemort-ussel/"
+    }
+   ]
+  },
+  {
+   "slug": "jordan-jegat",
+   "coverage": "parcial",
+   "note": "Estimativas da Chronoswatts para as subidas do Tour 2025; nenhum arquivo próprio.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1201,
+     "value": 6.19,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Peyragudes (depois de Estarvielle), 20:01",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/266/JordanJegat"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2117,
+     "value": 5.65,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Superbagnères, 35:17",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/266/JordanJegat"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2563,
+     "value": 5.18,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Hautacam, 42:43",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/266/JordanJegat"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3352,
+     "value": 5.38,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, La Plagne, 55:52",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/266/JordanJegat"
+    },
+    {
+     "metric": "power",
+     "duration_s": 4621,
+     "value": 4.86,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Col de la Loze pelo lado de Courchevel, 77:01",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/266/JordanJegat"
+    }
+   ]
+  },
+  {
+   "slug": "quinten-hermans",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum número de potência público.",
+   "datapoints": []
+  },
+  {
+   "slug": "mathias-vacek",
+   "coverage": "nenhuma",
+   "note": "A busca não trouxe nenhum dado de potência sobre ele.",
+   "datapoints": []
+  },
+  {
+   "slug": "per-strand-hagenes",
+   "coverage": "nenhuma",
+   "note": "A busca não trouxe nenhum dado de potência sobre ele.",
+   "datapoints": []
+  },
+  {
+   "slug": "matthew-riccitello",
+   "coverage": "nao_pesquisado",
+   "note": "Só aparece num grupo da Lanterne Rouge (Vuelta 2024) com faixa de 6,70–6,72 W/kg sem duração e sem valor individual; o limite de buscas acabou antes de aprofundar.",
+   "datapoints": []
+  },
+  {
+   "slug": "noa-isidore",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada acabou.",
+   "datapoints": []
+  },
+  {
+   "slug": "arvid-de-kleijn",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada acabou.",
+   "datapoints": []
+  },
+  {
+   "slug": "diego-ulissi",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada acabou antes da busca dele.",
+   "datapoints": []
+  },
+  {
+   "slug": "matys-grisel",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada acabou.",
+   "datapoints": []
+  },
+  {
+   "slug": "riley-sheehan",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada acabou.",
+   "datapoints": []
+  },
+  {
+   "slug": "jan-castellon",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada acabou.",
+   "datapoints": []
+  },
+  {
+   "slug": "marcel-camprubi",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas da rodada acabou.",
+   "datapoints": []
+  },
+  {
+   "slug": "jonas-vingegaard",
+   "coverage": "boa",
+   "note": "Várias estimativas de analistas (Lanterne Rouge, Na1chaca via Velo, Domestique) para subidas de 2025-2026; não achei arquivo de potência oficial nem VO2max publicado.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 3272,
+     "value": 6.52,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Mont Ventoux, Tour de France 2025 etapa 16, 54:32",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/07/22/historical-performances-of-vingegaard-and-pogacar-on-mont-ventoux-tour-de-france-2025-stage-16/"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 6.29,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Hautacam, Tour de France 2025 etapa 12 (a fonte não informa a duração)",
+     "year": 2025,
+     "source_url": "https://www.radsport-rennrad.de/tour-de-france/tour-de-france-2025-pogacar-lipowitz-co-watt-werte/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2280,
+     "value": 6.2,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Bola del Mundo, Vuelta a España 2025, penúltima etapa, ~38 min",
+     "year": 2025,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/vingegaard-power-blockhaus-giro/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2237,
+     "value": 6.35,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Blockhaus, Giro d'Italia 2026 etapa 7, 37:17 (estimativa de Na1chaca; ~370 W pela conversão do artigo)",
+     "year": 2026,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/vingegaard-power-blockhaus-giro/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2342,
+     "value": 6.4,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Blockhaus, Giro d'Italia 2026 etapa 7, 39:02 (estimativa da Domestique)",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/news/6-4w-kg-on-friday-and-7-1w-kg-on-sunday-suggest-vingegaard-has-yet-to-hit-top-gear-at-the-giro/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 450,
+     "value": 7.1,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Subida final de Corno alle Scale, Giro d'Italia 2026 etapa 9, 7:30 (o box marca como estimado; o texto cita ~420 W e dados Velon)",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/news/6-4w-kg-on-friday-and-7-1w-kg-on-sunday-suggest-vingegaard-has-yet-to-hit-top-gear-at-the-giro/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 450,
+     "value": 420,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Subida final de Corno alle Scale, Giro d'Italia 2026 etapa 9, 7:30 (valor em W citado no texto)",
+     "year": 2026,
+     "source_url": "https://www.domestiquecycling.com/en/news/6-4w-kg-on-friday-and-7-1w-kg-on-sunday-suggest-vingegaard-has-yet-to-hit-top-gear-at-the-giro/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1850,
+     "value": 6.77,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Ataque na subida a Carì, Giro d'Italia 2026 etapa 16 (vitória), ~30:50 (estimativa de Na1chaca)",
+     "year": 2026,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/vingegaard-unlocks-huge-climbing-power-to-pressure-pogacar/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1850,
+     "value": 395,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Carì, Giro d'Italia 2026 etapa 16: conversão do artigo para cerca de 395 W com ~58 kg",
+     "year": 2026,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/giro-ditalia/vingegaard-unlocks-huge-climbing-power-to-pressure-pogacar/?scope=anon"
+    }
+   ]
+  },
+  {
+   "slug": "lenny-martinez",
+   "coverage": "nenhuma",
+   "note": "Três buscas sem nenhum número de potência publicado; só resultados (ex.: vitória no Mont-Cenis, Dauphiné 2025).",
+   "datapoints": []
+  },
+  {
+   "slug": "primoz-roglic",
+   "coverage": "parcial",
+   "note": "Estimativa do Ventoux 2025 (Lanterne Rouge), uma de fórum para Lussari 2023 e dados oficiais da equipe só de 2019.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 3338,
+     "value": 6.35,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Mont Ventoux, Tour de France 2025 etapa 16, 55:38",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/07/22/historical-performances-of-vingegaard-and-pogacar-on-mont-ventoux-tour-de-france-2025-stage-16/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1730,
+     "value": 6.37,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Contrarrelógio do Monte Lussari, Giro 2023, 28:50 (ranking de fórum do Cyclingnews, usuário Peyresourde)",
+     "year": 2023,
+     "source_url": "https://forum.cyclingnews.com/threads/comprehensive-climbers-ranking.41317/post-3310749"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1380,
+     "value": 6.3,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Los Machucos, Vuelta 2019 etapa 13, quase 23 min (dados liberados pela Jumbo-Visma ao jornal AD)",
+     "year": 2019,
+     "source_url": "https://cyclingweekly.com/news/racing/vuelta-a-espana/power-data-reveals-primoz-roglic-improved-giro-ditalia-performance-win-vuelta-espana-438157"
+    }
+   ]
+  },
+  {
+   "slug": "laurence-pithie",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum dado de potência publicado para ele.",
+   "datapoints": []
+  },
+  {
+   "slug": "jai-hindley",
+   "coverage": "nenhuma",
+   "note": "Uma busca: só uma menção ao Passo Fedaia 2022 num ranking de subidas, sem números.",
+   "datapoints": []
+  },
+  {
+   "slug": "afonso-eulalio",
+   "coverage": "nenhuma",
+   "note": "Só achei tempos de subida do Giro 2026 (ex.: 24:32 em Corno alle Scale), nenhum número de potência.",
+   "datapoints": []
+  },
+  {
+   "slug": "jan-christen",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum dado de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "natnael-tesfatsion",
+   "coverage": "nenhuma",
+   "note": "A busca só trouxe homônimos (Leigh Tesfatsion, economista); nada de potência do ciclista.",
+   "datapoints": []
+  },
+  {
+   "slug": "clement-venturini",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas web da sessão acabou antes.",
+   "datapoints": []
+  },
+  {
+   "slug": "antonio-morgado",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum dado de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "anthony-turgis",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas web da sessão acabou antes.",
+   "datapoints": []
+  },
+  {
+   "slug": "cristian-rodriguez",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas web da sessão acabou antes.",
+   "datapoints": []
+  },
+  {
+   "slug": "matteo-trentin",
+   "coverage": "nenhuma",
+   "note": "Uma busca (Velon/sprint) sem números de potência atribuídos a ele.",
+   "datapoints": []
+  },
+  {
+   "slug": "giovanni-lonardi",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas web da sessão acabou antes.",
+   "datapoints": []
+  },
+  {
+   "slug": "hector-alvarez-martinez",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas web da sessão acabou antes.",
+   "datapoints": []
+  },
+  {
+   "slug": "luke-tuckwell",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas web da sessão acabou antes.",
+   "datapoints": []
+  },
+  {
+   "slug": "jakob-soderqvist",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas web da sessão acabou antes.",
+   "datapoints": []
+  },
+  {
+   "slug": "magnus-cort-nielsen",
+   "coverage": "nenhuma",
+   "note": "Uma busca, sem nenhum dado de potência publicado para ele.",
+   "datapoints": []
+  },
+  {
+   "slug": "andreas-kron",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas web da sessão acabou antes.",
+   "datapoints": []
+  },
+  {
+   "slug": "luke-mudgway",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: o limite de buscas web da sessão acabou antes.",
+   "datapoints": []
+  },
+  {
+   "slug": "wout-van-aert",
+   "coverage": "boa",
+   "note": "Recordes pessoais do Giro 2025 que ele próprio publicou (1 min, 10 min, 1 h no Finestre), mais uma estimativa de terceiros em Roubaix 2026.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 60,
+     "value": 852,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Giro d'Italia 2025, recorde pessoal de 1 min (dados que ele postou no Instagram)",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/van-aert-rides-best-values-ever-in-giro-and-reveals-his-tour-de-france-plan-wouldve-liked-to-make-it-a-goal"
+    },
+    {
+     "metric": "power",
+     "duration_s": 600,
+     "value": 518,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Giro d'Italia 2025, recorde pessoal de 10 min (dados que ele postou no Instagram)",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/van-aert-rides-best-values-ever-in-giro-and-reveals-his-tour-de-france-plan-wouldve-liked-to-make-it-a-goal"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3600,
+     "value": 428,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Giro 2025, etapa 20, Colle delle Finestre: maior potência de 1 h que ele já publicou",
+     "year": 2025,
+     "source_url": "https://escapecollective.com/van-aert-breaks-his-own-records-with-colle-delle-finestre-climb/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 160,
+     "value": 6.4,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Paris-Roubaix 2026, ataque a 54 km do fim (~500 W estimados por 2:40, sem arquivo dele)",
+     "year": 2026,
+     "source_url": "https://headless-velo.outsideonline.com/road/road-racing/paris-roubaix-power-analysis-2026-wout-van-aert/"
+    }
+   ]
+  },
+  {
+   "slug": "giulio-ciccone",
+   "coverage": "parcial",
+   "note": "Só uma estimativa da Lanterne Rouge (Vuelta a Burgos 2025); nenhum arquivo de potência publicado foi encontrado.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 875,
+     "value": 6.51,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Vuelta a Burgos 2025, etapa 5, trecho íngreme de Lagunas de Neila em 14:35 (eW/kg)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/08/09/ciccone-conquers-lagunas-de-neila-as-del-toro-secures-overall-win-vuelta-a-burgos-stage-5-2025/"
+    }
+   ]
+  },
+  {
+   "slug": "tobias-lund-andresen",
+   "coverage": "nao_pesquisado",
+   "note": "Nenhum dado de potência público encontrado; só houve uma busca antes de acabar a cota de buscas da rodada.",
+   "datapoints": []
+  },
+  {
+   "slug": "christophe-laporte",
+   "coverage": "nao_pesquisado",
+   "note": "Nenhum dado de potência público encontrado em duas buscas; a cota de buscas acabou antes de uma terceira tentativa.",
+   "datapoints": []
+  },
+  {
+   "slug": "dylan-groenewegen",
+   "coverage": "parcial",
+   "note": "Só um pico de sprint de ~1.500 W citado pela GCN sem origem declarada (por volta de 2023); não há arquivo medido.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1500,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Pico de sprint 'reportado' em matéria da GCN sobre os ciclistas mais potentes (sem fonte declarada)",
+     "year": 2023,
+     "source_url": "https://www.globalcyclingnetwork.com/lifestyle/fitness/who-are-the-most-powerful-cyclists-in-the-world"
+    }
+   ]
+  },
+  {
+   "slug": "oscar-onley",
+   "coverage": "parcial",
+   "note": "Médias de subida do Tour 2025 vindas do Strava dele (Ventoux e Hautacam), citadas pela Cycling Weekly e pela Rouleur.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 3332,
+     "value": 373,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 16, Mont Ventoux em 55:32 (2º no KOM do Strava)",
+     "year": 2025,
+     "source_url": "https://www.cyclingweekly.com/news/kom-history-made-tadej-pogacar-sets-new-record-on-mont-ventoux-during-stage-16-of-the-tour-de-france"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 362,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 12, subida final de Hautacam (média da atividade dele no Strava)",
+     "year": 2025,
+     "source_url": "https://rouleur.cc/blogs/rouleur-performance/the-power-numbers-needed-to-keep-up-with-tadej-pogacar-at-a-tour-de-france-summit-finish"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 848,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 12, potência máxima na subida de Hautacam (Strava)",
+     "year": 2025,
+     "source_url": "https://rouleur.cc/blogs/rouleur-performance/the-power-numbers-needed-to-keep-up-with-tadej-pogacar-at-a-tour-de-france-summit-finish"
+    }
+   ]
+  },
+  {
+   "slug": "santiago-buitrago-sanchez",
+   "coverage": "nenhuma",
+   "note": "Nenhum número de potência publicado encontrado em duas buscas; as fontes trazem só o peso (59 kg).",
+   "datapoints": []
+  },
+  {
+   "slug": "mathys-rondel",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência público para este jovem francês da Tudor.",
+   "datapoints": []
+  },
+  {
+   "slug": "jhonatan-narvaez",
+   "coverage": "nao_pesquisado",
+   "note": "Nenhum número de potência publicado encontrado (nem da vitória no Giro 2024 sobre Pogačar); a cota de buscas acabou antes de uma terceira tentativa.",
+   "datapoints": []
+  },
+  {
+   "slug": "lewis-askey",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência público encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "valentin-paret-peintre",
+   "coverage": "nenhuma",
+   "note": "Venceu no Ventoux em 2025, mas nenhuma fonte publicou watts ou W/kg dele (só o peso, ~52 kg).",
+   "datapoints": []
+  },
+  {
+   "slug": "ben-healy",
+   "coverage": "boa",
+   "note": "Arquivos do Strava dele publicados pela imprensa: curva de potência completa da vitória no Tour 2025, Ventoux 2025 e recordes no Tour 2026.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 5,
+     "value": 965,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 6 (vitória), melhor 5 s (arquivo do Strava)",
+     "year": 2025,
+     "source_url": "https://www.stickybottle.com/coaching/ben-healys-tour-de-france-201km-stage-win-in-watts-calories-speed-heart-rate-195938"
+    },
+    {
+     "metric": "power",
+     "duration_s": 30,
+     "value": 648,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 6, melhor 30 s",
+     "year": 2025,
+     "source_url": "https://www.stickybottle.com/coaching/ben-healys-tour-de-france-201km-stage-win-in-watts-calories-speed-heart-rate-195938"
+    },
+    {
+     "metric": "power",
+     "duration_s": 60,
+     "value": 538,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 6, melhor 1 min",
+     "year": 2025,
+     "source_url": "https://www.stickybottle.com/coaching/ben-healys-tour-de-france-201km-stage-win-in-watts-calories-speed-heart-rate-195938"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 444,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 6, melhor 5 min",
+     "year": 2025,
+     "source_url": "https://www.stickybottle.com/coaching/ben-healys-tour-de-france-201km-stage-win-in-watts-calories-speed-heart-rate-195938"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1200,
+     "value": 380,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 6, melhor 20 min",
+     "year": 2025,
+     "source_url": "https://www.stickybottle.com/coaching/ben-healys-tour-de-france-201km-stage-win-in-watts-calories-speed-heart-rate-195938"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3600,
+     "value": 324,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 6, melhor 60 min",
+     "year": 2025,
+     "source_url": "https://www.stickybottle.com/coaching/ben-healys-tour-de-france-201km-stage-win-in-watts-calories-speed-heart-rate-195938"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3540,
+     "value": 6,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 16, Mont Ventoux: ~59 min a ~6 W/kg (arquivo de potência dele; 2º na etapa)",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/healys-brutal-effort-the-numbers-behind-2nd-on-ventoux/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 30,
+     "value": 670,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa 16, sprint final no Ventoux (30 s)",
+     "year": 2025,
+     "source_url": "https://www.domestiquecycling.com/en/features/healys-brutal-effort-the-numbers-behind-2nd-on-ventoux/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 456,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 14 (Mulhouse–Le Markstein), melhor 5 min durante ataque de 110 km (a matéria não diz a origem dos dados)",
+     "year": 2026,
+     "source_url": "https://www.stickybottle.com/races-results/ben-healys-new-all-time-power-record-during-110km-tour-attack-208706"
+    },
+    {
+     "metric": "power",
+     "duration_s": 600,
+     "value": 432,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 14, melhor 10 min",
+     "year": 2026,
+     "source_url": "https://www.stickybottle.com/races-results/ben-healys-new-all-time-power-record-during-110km-tour-attack-208706"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1200,
+     "value": 399,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 14, melhor 20 min",
+     "year": 2026,
+     "source_url": "https://www.stickybottle.com/races-results/ben-healys-new-all-time-power-record-during-110km-tour-attack-208706"
+    },
+    {
+     "metric": "power",
+     "duration_s": 10800,
+     "value": 313,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2026, etapa 14, média de 3 h (recorde pessoal de todos os tempos)",
+     "year": 2026,
+     "source_url": "https://www.stickybottle.com/races-results/ben-healys-new-all-time-power-record-during-110km-tour-attack-208706"
+    }
+   ]
+  },
+  {
+   "slug": "alexandre-delettre",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência público encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "tim-wellens",
+   "coverage": "parcial",
+   "note": "Recordes pessoais de 20, 60 e 90 min de uma etapa do Tour 2025 (La Plagne), que ele mesmo publicou no Instagram.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1200,
+     "value": 484,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa de La Plagne, recorde de 20 min (print do próprio atleta)",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/-haters-want-to-say-its-fake-tim-wellens-shares-insane-watts-he-used-to-crush-the-peloton-in-the-alps"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3600,
+     "value": 444,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa de La Plagne, recorde de 60 min",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/-haters-want-to-say-its-fake-tim-wellens-shares-insane-watts-he-used-to-crush-the-peloton-in-the-alps"
+    },
+    {
+     "metric": "power",
+     "duration_s": 5400,
+     "value": 402,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Tour de France 2025, etapa de La Plagne, recorde de 90 min",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/-haters-want-to-say-its-fake-tim-wellens-shares-insane-watts-he-used-to-crush-the-peloton-in-the-alps"
+    }
+   ]
+  },
+  {
+   "slug": "jon-barrenetxea-golzarri",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência público encontrado (só peso e altura).",
+   "datapoints": []
+  },
+  {
+   "slug": "orluis-aular",
+   "coverage": "nenhuma",
+   "note": "Nenhum watt medido encontrado; só notas de sprint de sites de ranking.",
+   "datapoints": []
+  },
+  {
+   "slug": "hugo-hofstetter",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência público encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "eric-antonio-fagundez",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência público para o uruguaio da Burgos BH.",
+   "datapoints": []
+  },
+  {
+   "slug": "axel-laurance",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência público encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "aubin-sparfel",
+   "coverage": "nenhuma",
+   "note": "Nenhum dado de potência ou VO2max público encontrado.",
+   "datapoints": []
+  },
+  {
+   "slug": "jasper-philipsen",
+   "coverage": "parcial",
+   "note": "Só achei um número: pico de sprint de até 1.900 W, que a Rouleur atribui ao software Inscyd (parceiro da equipe). Não achei dado da Velon nem arquivo publicado. Não consegui abrir a página da Rouleur (HTTP 429), então a data do artigo não foi confirmada.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1900,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Rouleur, citando o software Inscyd: 'gera até 1.900 W no sprint'; data do artigo não confirmada",
+     "year": null,
+     "source_url": "https://www.rouleur.cc/blogs/the-rouleur-journal/a-grand-tour-is-hardest-for-the-sprinters-the-physiological-toll-of-riding-in-the-grupetto"
+    }
+   ]
+  },
+  {
+   "slug": "mads-pedersen",
+   "coverage": "parcial",
+   "note": "Só números que o próprio Pedersen declarou: pico de sprint em pé de 1.600-1.700 W, pico sentado de cerca de 1.250 W e 750 W nos paralelepípedos atrás de Pogačar em Roubaix 2026. Nenhum número em W/kg nem por duração.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1700,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Declarado pelo atleta no podcast Lang Distance: pico típico de sprint em pé de '1600-1700 W' (limite superior); artigo da Velora de 31/03/2026, mas o URL diz flanders-2025",
+     "year": 2026,
+     "source_url": "https://veloracycling.com/news/mads-pedersen-sprint-power-loss-flanders-2025"
+    },
+    {
+     "metric": "other",
+     "duration_s": null,
+     "value": 1250,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Pico sentado de cerca de 1.250 W, declarado pelo atleta na volta da lesão, antes de Flandres (Velora)",
+     "year": 2026,
+     "source_url": "https://veloracycling.com/news/mads-pedersen-sprint-power-loss-flanders-2025"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 750,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Paris-Roubaix 2026: diz que estava fazendo 750 W nos paralelepípedos tentando seguir Pogačar; sem duração informada",
+     "year": 2026,
+     "source_url": "https://www.idlprocycling.com/cycling/mads-pedersen-opens-up-about-what-its-really-like-to-race-tadej-pogacar-i-was-putting-out-750-watts"
+    }
+   ]
+  },
+  {
+   "slug": "matteo-jorgenson",
+   "coverage": "parcial",
+   "note": "Dois conjuntos de estimativas: esforços de 3 a 4 min a cerca de 8 W/kg no Tirreno 2026 (Cycling Weekly) e eW/kg em subidas do Paris-Nice 2024 (Lanterne Rouge). Nenhum arquivo próprio publicado.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 251,
+     "value": 560,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Tirreno-Adriático 2026, etapa 4, subida final de Tortoreto (4:11), estimativa de 560 W",
+     "year": 2026,
+     "source_url": "https://www.cyclingweekly.com/racing/tirreno-adriatico-power-analysis-del-toro-dominates-as-jorgenson-hits-career-best-numbers"
+    },
+    {
+     "metric": "power",
+     "duration_s": 251,
+     "value": 8,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tirreno-Adriático 2026, etapa 4, Tortoreto (4:11), 8,0 W/kg estimado",
+     "year": 2026,
+     "source_url": "https://www.cyclingweekly.com/racing/tirreno-adriatico-power-analysis-del-toro-dominates-as-jorgenson-hits-career-best-numbers"
+    },
+    {
+     "metric": "power",
+     "duration_s": 173,
+     "value": 575,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Tirreno-Adriático 2026, etapa 5, subida final ao Santuario del Beato Sante (2:53), estimativa de 575 W",
+     "year": 2026,
+     "source_url": "https://www.cyclingweekly.com/racing/tirreno-adriatico-power-analysis-del-toro-dominates-as-jorgenson-hits-career-best-numbers"
+    },
+    {
+     "metric": "power",
+     "duration_s": 173,
+     "value": 8.2,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tirreno-Adriático 2026, etapa 5, Santuario del Beato Sante (2:53), 8,2 W/kg estimado",
+     "year": 2026,
+     "source_url": "https://www.cyclingweekly.com/racing/tirreno-adriatico-power-analysis-del-toro-dominates-as-jorgenson-hits-career-best-numbers"
+    },
+    {
+     "metric": "power",
+     "duration_s": 179,
+     "value": 570,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Tirreno-Adriático 2026, etapa 6, subida final de Camerino (2:59), 570 W; o artigo não diz se veio do Strava ou de cálculo dos autores",
+     "year": 2026,
+     "source_url": "https://www.cyclingweekly.com/racing/tirreno-adriatico-power-analysis-del-toro-dominates-as-jorgenson-hits-career-best-numbers"
+    },
+    {
+     "metric": "power",
+     "duration_s": 179,
+     "value": 8.1,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tirreno-Adriático 2026, etapa 6, Camerino (2:59), 8,1 W/kg",
+     "year": 2026,
+     "source_url": "https://www.cyclingweekly.com/racing/tirreno-adriatico-power-analysis-del-toro-dominates-as-jorgenson-hits-career-best-numbers"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 5.67,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Paris-Nice 2024, etapa 7, La Madone d'Utelle (15,1 km a 5,9%), 5,67 eW/kg; duração não informada (cerca de 36 min, já que chegou 8 s atrás de Vlasov, que fez 35:45)",
+     "year": 2024,
+     "source_url": "https://lanternerouge.com/2024/03/10/jorgenson-sticks-to-evenepoel-and-wins-paris-nice-gc/"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 6.17,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Paris-Nice 2024, etapa 8, Côte de Peille (6,5 km a 6,9%), 6,17 eW/kg no vácuo de Vlasov; duração não informada",
+     "year": 2024,
+     "source_url": "https://lanternerouge.com/2024/03/10/jorgenson-sticks-to-evenepoel-and-wins-paris-nice-gc/"
+    }
+   ]
+  },
+  {
+   "slug": "jenno-berckmoes",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum dado público de potência. As fontes só trazem resultados e peso (cerca de 61 kg).",
+   "datapoints": []
+  },
+  {
+   "slug": "thymen-arensman",
+   "coverage": "parcial",
+   "note": "Só W/kg estimados pelo ChronosWatts em subidas do Tour 2025. Não achei arquivo próprio nem dado de laboratório.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 3003,
+     "value": 6.18,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, La Plagne, 50:03 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/275/ThymenArensman"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2068,
+     "value": 5.94,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Superbagnères, 34:28 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/275/ThymenArensman"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1253,
+     "value": 5.83,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Peyragudes (depois de Estarvielle), 20:53 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/275/ThymenArensman"
+    },
+    {
+     "metric": "power",
+     "duration_s": 4549,
+     "value": 4.88,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Col de la Loze pelo lado de Courchevel, 75:49 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/275/ThymenArensman"
+    }
+   ]
+  },
+  {
+   "slug": "marco-brenner",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum dado público de potência do ciclista da Tudor.",
+   "datapoints": []
+  },
+  {
+   "slug": "jonathan-milan",
+   "coverage": "boa",
+   "note": "Bem documentado no sprint: dados da Velon no Giro 2024, número da Trek no UAE Tour 2025 e o pico de cerca de 1.960 W que ele mesmo declarou. Nada de FTP nem de esforços longos.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1940,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Giro d'Italia 2024, etapa 4, pico no sprint vencedor (dados da Velon)",
+     "year": 2024,
+     "source_url": "https://escapecollective.com/speed-check-breaking-down-milans-first-win-of-the-2024-giro/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 20,
+     "value": 1620,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Giro d'Italia 2024, etapa 4, média dos 20 s finais (dados da Velon)",
+     "year": 2024,
+     "source_url": "https://escapecollective.com/speed-check-breaking-down-milans-first-win-of-the-2024-giro/"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1840,
+     "unit": "W",
+     "kind": "medido",
+     "context": "UAE Tour 2025, sprint vencedor da etapa 4 (publicado pela Trek, equipe do atleta)",
+     "year": 2025,
+     "source_url": "https://racing.trekbikes.com/?p=55627"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1960,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Pico histórico declarado pelo atleta em entrevista: 'meu pico sempre foi 1965, 1960 watts'; diz que hoje o pico é um pouco menor, mas ele o sustenta por mais tempo",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/how-jonathan-milan-used-an-italian-term-to-keep-his-incredible-peak-power-a-secret-but-still-revealed-it"
+    }
+   ]
+  },
+  {
+   "slug": "egan-bernal",
+   "coverage": "boa",
+   "note": "Arquivo de potência do Strava analisado pela Escape Collective (2023), um KOM de 2025 noticiado pela IDL e um VO2max de 91 citado numa entrevista antiga (2019).",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1200,
+     "value": 341,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Treino de 2023, subida do Col d'Eze, 20 min (arquivo de potência do Strava, Escape Collective)",
+     "year": 2023,
+     "source_url": "https://escapecollective.com/power-analysis-egan-bernal-is-ready/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 600,
+     "value": 401,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Treino de 2023, intervalo over-under de 10 min, 401 W de média; o autor converte em 6,68 W/kg assumindo 60 kg (arquivo do Strava, Escape Collective)",
+     "year": 2023,
+     "source_url": "https://escapecollective.com/power-analysis-egan-bernal-is-ready/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 30,
+     "value": 480,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Treino de 2023, média dos 'overs' de cerca de 30 s ou mais dentro do over-under, cerca de 8 W/kg (arquivo do Strava, Escape Collective)",
+     "year": 2023,
+     "source_url": "https://escapecollective.com/power-analysis-egan-bernal-is-ready/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 879,
+     "value": 360,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Fev/2025, KOM no segmento Patios, perto de Bogotá (5,9 km a 6,4%, chegada a 3.014 m), 14:39; a IDL não confirma que o número veio do arquivo do Strava",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/ineos-is-flying-bernal-impresses-with-kom-at-3000-meters-ganna-smashes-evenepoels-records-with-73-wkg"
+    },
+    {
+     "metric": "power",
+     "duration_s": 879,
+     "value": 6,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Fev/2025, segmento Patios: cerca de 6 W/kg, calculado pela IDL com 60 kg da ProCyclingStats",
+     "year": 2025,
+     "source_url": "https://www.idlprocycling.com/cycling/ineos-is-flying-bernal-impresses-with-kom-at-3000-meters-ganna-smashes-evenepoels-records-with-73-wkg"
+    },
+    {
+     "metric": "vo2max",
+     "duration_s": null,
+     "value": 91,
+     "unit": "ml/kg/min",
+     "kind": "medido",
+     "context": "VO2max de 91 citado em entrevista à RIDE Media ('é só um número'); condições do teste não informadas; dado antigo e ano não confirmado na página",
+     "year": 2019,
+     "source_url": "https://www.ridemedia.com.au/articles/egan-bernal-vo2max-91-just-number/"
+    }
+   ]
+  },
+  {
+   "slug": "kevin-vauquelin",
+   "coverage": "parcial",
+   "note": "Só W/kg estimados pelo ChronosWatts em subidas do Tour 2025. A imprensa diz que ele compartilha os dados de potência, mas não achei nenhum número dele publicado em texto.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1192,
+     "value": 6.18,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Peyragudes (depois de Estarvielle), 19:52 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/263/KévinVauquelin"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1798,
+     "value": 5.94,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Mont Ventoux até o Chalet Reynard, 29:58 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/263/KévinVauquelin"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2320,
+     "value": 5.75,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Hautacam, 38:40 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/263/KévinVauquelin"
+    },
+    {
+     "metric": "power",
+     "duration_s": 2076,
+     "value": 5.7,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Superbagnères, 34:36 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/263/KévinVauquelin"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3284,
+     "value": 5.48,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, La Plagne, 54:44 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/263/KévinVauquelin"
+    },
+    {
+     "metric": "power",
+     "duration_s": 4215,
+     "value": 5.31,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour de France 2025, Col de la Loze pelo lado de Courchevel, 70:15 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/263/KévinVauquelin"
+    }
+   ]
+  },
+  {
+   "slug": "michael-storer",
+   "coverage": "nenhuma",
+   "note": "Não achei dado público de potência, nem no Tour of the Alps 2025, que ele venceu, nem no Giro.",
+   "datapoints": []
+  },
+  {
+   "slug": "leo-bisiaux",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum dado de potência. As fontes só trazem o perfil (58 kg, 1,81 m).",
+   "datapoints": []
+  },
+  {
+   "slug": "ludovico-crescioli",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum dado público de potência do ciclista da Polti VisitMalta.",
+   "datapoints": []
+  },
+  {
+   "slug": "ethan-vernon",
+   "coverage": "parcial",
+   "note": "Só o FTP de cerca de 400 W que ele mesmo citou num diário de treino publicado pela Cycling Weekly (2026). Não achei pico de sprint.",
+   "datapoints": [
+    {
+     "metric": "ftp",
+     "duration_s": null,
+     "value": 400,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Diário de treino de janeiro na Cycling Weekly (publicado em 28/05/2026): 'meu FTP é por volta de 400 watts'",
+     "year": 2026,
+     "source_url": "https://www.cyclingweekly.com/fitness/saunas-endurance-blocks-and-racing-track-how-sprinter-ethan-vernon-trains-every-week"
+    }
+   ]
+  },
+  {
+   "slug": "jorgen-nordhagen",
+   "coverage": "nenhuma",
+   "note": "Não achei teste de VO2max nem dado de potência publicado do norueguês da Visma.",
+   "datapoints": []
+  },
+  {
+   "slug": "steffen-de-schuyteneer",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum dado de potência. As fontes só trazem o perfil (cerca de 73-74 kg).",
+   "datapoints": []
+  },
+  {
+   "slug": "henok-mulubrhan",
+   "coverage": "nenhuma",
+   "note": "Não achei nenhum dado de potência publicado do eritreu da XDS Astana.",
+   "datapoints": []
+  },
+  {
+   "slug": "stanislaw-aniolkowski",
+   "coverage": "nenhuma",
+   "note": "Não achei pico de sprint nem outro dado de potência publicado.",
+   "datapoints": []
+  },
+  {
+   "slug": "simone-gualdi",
+   "coverage": "nenhuma",
+   "note": "A busca não trouxe nada de potência sobre o ciclista da Lotto Intermarché.",
+   "datapoints": []
+  },
+  {
+   "slug": "jason-tesson",
+   "coverage": "nenhuma",
+   "note": "Não achei dado de potência publicado do velocista da TotalEnergies.",
+   "datapoints": []
+  },
+  {
+   "slug": "georg-steinhauser",
+   "coverage": "nenhuma",
+   "note": "Não achei W/kg publicado nem da vitória no Passo Brocon (Giro 2024). Só há estimativas para outros ciclistas na mesma subida.",
+   "datapoints": []
+  },
+  {
+   "slug": "felix-gall",
+   "coverage": "boa",
+   "note": "Várias estimativas de subidas do Tour de France 2025 (ChronosWatts) e do Tour de Suisse 2025 (Lanterne Rouge). Não há arquivo próprio publicado.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 2349,
+     "value": 5.7,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Hautacam, Tour de France 2025, 39'09 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/259/FelixGall"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1153,
+     "value": 6.46,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Peyragudes (depois de Estarvielle), Tour de France 2025, 19'13 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/259/FelixGall"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1967,
+     "value": 6.13,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Superbagnères, Tour de France 2025, 32'47 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/259/FelixGall"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1988,
+     "value": 6.22,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Superbagnères, Tour de France 2025, etapa 14, 33:08 (Lanterne Rouge, eW/kg)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/07/19/pogacar-slows-down-on-superbagneres-tour-de-france-2025-stage-14/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3097,
+     "value": 5.84,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "La Plagne, Tour de France 2025, 51'37 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/259/FelixGall"
+    },
+    {
+     "metric": "power",
+     "duration_s": 4086,
+     "value": 5.5,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Col de la Loze pelo lado de Courchevel, Tour de France 2025, 68'06 (ChronosWatts)",
+     "year": 2025,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/259/FelixGall"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1631,
+     "value": 6.77,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Contrarrelógio de montanha, Tour de Suisse 2025, etapa 8, 27:11 (Lanterne Rouge, eW/kg ajustado ao nível do mar)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/06/22/almeida-crushes-mountain-itt-tour-de-suisse-2025-stage-8/"
+    },
+    {
+     "metric": "power",
+     "duration_s": null,
+     "value": 7.2,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Subida de Emmetten, Tour de Suisse 2025, etapa 7; a fonte não informa a duração (Lanterne Rouge, eW/kg)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/06/21/almeida-dominates-the-climbs-in-pursuit-of-the-frenchman-tour-de-suisse-2025-stage-7/"
+    }
+   ]
+  },
+  {
+   "slug": "brandon-mcnulty",
+   "coverage": "boa",
+   "note": "Arquivo de treino de 2022 analisado pela VeloNews (testes de 5 e 19 min), mais estimativas do Mundial de 2026, que ele venceu.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 530,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Teste de 5 min no Val de Ebo, treino de inverno em Calpe (7,7 W/kg); arquivo analisado pela VeloNews",
+     "year": 2022,
+     "source_url": "https://sports.yahoo.com/power-analysis-hard-does-brandon-140243675.html"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 7.7,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Teste de 5 min no Val de Ebo, treino de inverno 2022",
+     "year": 2022,
+     "source_url": "https://sports.yahoo.com/power-analysis-hard-does-brandon-140243675.html"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1140,
+     "value": 465,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Teste de 19 min, subida completa do Val de Ebo (6,7 W/kg), treino de inverno 2022",
+     "year": 2022,
+     "source_url": "https://sports.yahoo.com/power-analysis-hard-does-brandon-140243675.html"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1140,
+     "value": 6.7,
+     "unit": "W/kg",
+     "kind": "medido",
+     "context": "Teste de 19 min no Val de Ebo, treino de inverno 2022",
+     "year": 2022,
+     "source_url": "https://sports.yahoo.com/power-analysis-hard-does-brandon-140243675.html"
+    },
+    {
+     "metric": "power",
+     "duration_s": 600,
+     "value": 497,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Esforço de 10 min em treino antes de Mallorca (7,2 W/kg), 2022",
+     "year": 2022,
+     "source_url": "https://sports.yahoo.com/power-analysis-hard-does-brandon-140243675.html"
+    },
+    {
+     "metric": "power",
+     "duration_s": 3600,
+     "value": 360,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Treino de 3 × 60 min a 360 W (5,2 W/kg); são blocos de treino, não esforço máximo",
+     "year": 2022,
+     "source_url": "https://sports.yahoo.com/power-analysis-hard-does-brandon-140243675.html"
+    },
+    {
+     "metric": "power",
+     "duration_s": 220,
+     "value": 8,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Voie Camillien-Houde no Mundial de Montreal 2026, cerca de 3:40 a ~8 W/kg junto com Del Toro (análise da Velo)",
+     "year": 2026,
+     "source_url": "https://velo.outsideonline.com/road/road-racing/power-analysis-how-brandon-mcnulty-won-worlds/?scope=anon"
+    },
+    {
+     "metric": "power",
+     "duration_s": 1339,
+     "value": 6.02,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Peyragudes, Tour de France 2022, 22'19 (ChronosWatts)",
+     "year": 2022,
+     "source_url": "https://www.chronoswatts.com/en/cyclistes/256/BrandonMcNulty"
+    }
+   ]
+  },
+  {
+   "slug": "quinn-simmons",
+   "coverage": "boa",
+   "note": "Arquivo público dele no Strava, da prova de estrada do Mundial de 2026 em Montreal, analisado pela PezCyclingNews e pela CyclingUpToDate.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 504,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Melhor 5 min do dia, prova de estrada do Mundial de Montreal 2026 (arquivo do Strava)",
+     "year": 2026,
+     "source_url": "https://pezcyclingnews.com/cycling-training-nutrition-recovery-pez-toolbox/cycling-durability-quinn-simmons-worlds-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 300,
+     "value": 473,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Melhor 5 min depois de 5.000 kJ acumulados, Mundial 2026",
+     "year": 2026,
+     "source_url": "https://pezcyclingnews.com/cycling-training-nutrition-recovery-pez-toolbox/cycling-durability-quinn-simmons-worlds-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 60,
+     "value": 659,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Melhor 1 min do dia, feito depois de mais de 4.000 kJ, Mundial 2026",
+     "year": 2026,
+     "source_url": "https://pezcyclingnews.com/cycling-training-nutrition-recovery-pez-toolbox/cycling-durability-quinn-simmons-worlds-power/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 23040,
+     "value": 292,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Média da prova inteira: 6h24 e cerca de 6.714 kJ, Mundial 2026",
+     "year": 2026,
+     "source_url": "https://pezcyclingnews.com/cycling-training-nutrition-recovery-pez-toolbox/cycling-durability-quinn-simmons-worlds-power/"
+    },
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1100,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Pico de quase 1.100 W no Mundial 2026; a fonte diz 'almost 1,100 watts' (potência normalizada de 362 W)",
+     "year": 2026,
+     "source_url": "https://cyclinguptodate.com/cycling/quinn-simmons-crazy-power-data-at-world-championships-americans-strava-shows-just-how-hard-the-2026-world-championships-was-to-win"
+    }
+   ]
+  },
+  {
+   "slug": "juan-ayuso-pesquera",
+   "coverage": "parcial",
+   "note": "Duas estimativas da Lanterne Rouge em 2025: Frontignano, na Tirreno, e Giro, etapa 7. Ele não publica arquivo de potência.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1185,
+     "value": 6.79,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Frontignano, Tirreno-Adriatico 2025, etapa 6, 19:45 (Lanterne Rouge, eW/kg)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/03/15/ayuso-shines-on-frontignano-ganna-fights-for-gc-tirreno-adriatico-2025-stage-6/"
+    },
+    {
+     "metric": "power",
+     "duration_s": 463,
+     "value": 6.74,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Trecho mais íngreme da subida de Marsia, Giro d'Italia 2025, etapa 7, 7:43 (Lanterne Rouge, eW/kg)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/05/16/uaes-young-guns-strike-roglic-on-first-summit-finish-giro-ditalia-stage-7-2025/"
+    }
+   ]
+  },
+  {
+   "slug": "ion-izagirre",
+   "coverage": "nenhuma",
+   "note": "Uma busca só. A página dele na ChronosWatts não tem subidas registradas e não apareceu nenhum dado público de potência.",
+   "datapoints": []
+  },
+  {
+   "slug": "michael-matthews",
+   "coverage": "parcial",
+   "note": "Ele mesmo citou números do sprint num podcast da Roadman (2026). É dado do próprio atleta, mas sem arquivo publicado.",
+   "datapoints": [
+    {
+     "metric": "sprint_peak",
+     "duration_s": null,
+     "value": 1550,
+     "unit": "W",
+     "kind": "medido",
+     "context": "Sprint uma semana depois de voltar a treinar, após quatro semanas parado; ele espera chegar a uns 1.650 W (relato dele, Roadman Cycling)",
+     "year": 2026,
+     "source_url": "https://roadmancycling.com/blog/michael-matthews-no-base-miles-pro-training"
+    }
+   ]
+  },
+  {
+   "slug": "ben-tulett",
+   "coverage": "parcial",
+   "note": "Só há o ritmo do grupo que ele puxou no Tour de l'Ain 2025. Não existe número individual dele.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 1020,
+     "value": 5.9,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Col de la Biche, Tour de l'Ain 2025, etapa 3: ritmo de 17 min do grupo puxado por Tulett, Nordhagen e companheiros, não é número individual (Lanterne Rouge, eW/kg)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/08/08/uijtdebroeks-crushes-grand-colombier-for-first-pro-win-tour-de-lain-2025-stage-3/"
+    }
+   ]
+  },
+  {
+   "slug": "alessandro-fancellu",
+   "coverage": "parcial",
+   "note": "Uma estimativa da Lanterne Rouge na chegada ao Monte Fuji, Tour of Japan 2025, onde ele foi 2º.",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 2520,
+     "value": 5.86,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Monte Fuji, Tour of Japan 2025, etapa 5, 42 min, 2º lugar (Lanterne Rouge, eW/kg)",
+     "year": 2025,
+     "source_url": "https://lanternerouge.com/2025/05/25/summit-showdown-on-mount-fuji-tour-of-japan-stage-5-2025/"
+    }
+   ]
+  },
+  {
+   "slug": "jakob-omrzel",
+   "coverage": "nenhuma",
+   "note": "Uma busca só. Ele aparece em relatos da Lanterne Rouge (Valle d'Aosta, Giro Sub-23), mas sem número de potência.",
+   "datapoints": []
+  },
+  {
+   "slug": "ivan-romeo",
+   "coverage": "nenhuma",
+   "note": "Uma busca só. Entrevistas na Rouleur e na Cyclingnews falam dele, mas não publicam números de potência.",
+   "datapoints": []
+  },
+  {
+   "slug": "alessandro-romele",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: a cota de buscas da execução acabou antes. Falta pesquisar.",
+   "datapoints": []
+  },
+  {
+   "slug": "frits-biesterbos",
+   "coverage": "nao_pesquisado",
+   "note": "A única busca (em holandês) só trouxe homônimos sem relação com ciclismo. A segunda tentativa esbarrou na cota de buscas.",
+   "datapoints": []
+  },
+  {
+   "slug": "jay-vine",
+   "coverage": "parcial",
+   "note": "Estimativa do Tour Down Under 2026 publicada pela IDL Pro Cycling ('calculated data', sem dizer quem calculou).",
+   "datapoints": [
+    {
+     "metric": "power",
+     "duration_s": 720,
+     "value": 7.3,
+     "unit": "W/kg",
+     "kind": "estimado_por_fonte",
+     "context": "Tour Down Under 2026, etapa 2: cerca de 12 min a ~7,3 W/kg, segundo 'calculated data' (IDL Pro Cycling)",
+     "year": 2026,
+     "source_url": "https://www.idlprocycling.com/cycling/vines-watts-in-australia-are-off-the-charts-but-can-he-be-a-leader-in-a-grand-tour-bruyneel-doesnt-think-so?twit=91"
+    },
+    {
+     "metric": "power",
+     "duration_s": 720,
+     "value": 500,
+     "unit": "W",
+     "kind": "estimado_por_fonte",
+     "context": "Tour Down Under 2026, etapa 2: média de 'mais de 500 W' por cerca de 12 min (IDL Pro Cycling)",
+     "year": 2026,
+     "source_url": "https://www.idlprocycling.com/cycling/vines-watts-in-australia-are-off-the-charts-but-can-he-be-a-leader-in-a-grand-tour-bruyneel-doesnt-think-so?twit=91"
+    }
+   ]
+  },
+  {
+   "slug": "alexis-renard",
+   "coverage": "nenhuma",
+   "note": "Uma busca só. Não apareceu número de sprint nem de potência dele, só perfil e resultados.",
+   "datapoints": []
+  },
+  {
+   "slug": "sebastian-berwick",
+   "coverage": "nenhuma",
+   "note": "Uma busca só, sem nenhum resultado sobre ele.",
+   "datapoints": []
+  },
+  {
+   "slug": "urko-berrade-fernandez",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: a cota de buscas da execução acabou antes. Falta pesquisar.",
+   "datapoints": []
+  },
+  {
+   "slug": "xabier-berasategi-garmendia",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: a cota de buscas da execução acabou antes. Falta pesquisar.",
+   "datapoints": []
+  },
+  {
+   "slug": "clement-champoussin",
+   "coverage": "nenhuma",
+   "note": "Uma busca só. Só achei o peso na ProCyclingStats (61 kg), sem número de potência.",
+   "datapoints": []
+  },
+  {
+   "slug": "nicolas-vinokurov",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: a cota de buscas da execução acabou antes. Falta pesquisar.",
+   "datapoints": []
+  },
+  {
+   "slug": "pierre-gautherat",
+   "coverage": "nao_pesquisado",
+   "note": "Não pesquisado: a cota de buscas da execução acabou antes. Falta pesquisar.",
+   "datapoints": []
+  }
+ ],
+ "missing": []
+}
