@@ -24,7 +24,7 @@ test("joga uma partida inteira contra o Computador até o Fim, sem internet", as
 
   const fim = page.getByRole("button", { name: "Jogar de novo" });
   const proxima = page.getByRole("button", { name: "Próxima rodada" });
-  const correr = page.getByRole("button", { name: "Correr!" });
+  const mostrar = page.getByRole("button", { name: "Mostrar cartas!" });
   const primeiraLinha = page.locator(".carta__linha").first();
   const duelo = page.getByRole("dialog", { name: "Duelo" });
   const pular = page.getByRole("button", { name: "Pular ⏩" });
@@ -42,9 +42,9 @@ test("joga uma partida inteira contra o Computador até o Fim, sem internet", as
       await expect(page.getByRole("region", { name: carta! })).toBeVisible();
     }
     if (rodada === 11) await expect(page.getByText("Carta A", { exact: true })).toBeVisible();
-    if (await correr.isVisible()) {
+    if (await mostrar.isVisible()) {
       await expect(page.getByText(/^O computador escolheu /)).toBeVisible();
-      await correr.click();
+      await mostrar.click();
     } else {
       // 2 toques na mesma linha: o 1º marca, o 2º envia.
       await primeiraLinha.click();
