@@ -1,0 +1,21 @@
+{
+  // Código que roda no workerd (Worker + Durable Object da sala). Os tipos do
+  // runtime e do Env vêm de worker-configuration.d.ts, gerado por
+  // `npm run tipos:worker` (wrangler types). Refaça depois de mudar o wrangler.jsonc.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": [],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["."]
+}

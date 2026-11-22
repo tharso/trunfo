@@ -42,6 +42,9 @@ export default defineConfig({
         globIgnores: ["wrangler.json"],
         // SPA: qualquer navegação sem internet abre o index.html do precache.
         navigateFallback: "/index.html",
+        // /sala/* é do Durable Object (multiplayer): o SW nunca responde por ela.
+        // A página do link da sala é /s/<código>, que cai no index.html como as outras.
+        navigateFallbackDenylist: [/^\/sala\//],
         cleanupOutdatedCaches: true,
       },
     }),

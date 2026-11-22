@@ -1,5 +1,6 @@
 // Retrospecto (docs/spec.md, parte 8; GLOSSARY.md): vitórias, derrotas e empates
 // contra o Computador, por Nível. Só o modo solo conta. Funções puras.
+import { resultadoDoFim } from "./fim";
 import type { Estado, Nivel } from "./tipos";
 
 export interface RetrospectoDoNivel {
@@ -33,6 +34,6 @@ export function registrarPartida(retrospecto: Retrospecto, nivel: Nivel, resulta
 export function resultadoDaPartida(estado: Estado, pessoa: number): ResultadoDaPartida | null {
   if (!estado.fim) return null;
   if (estado.pessoas[pessoa].fora === "saiu") return "saida";
-  if (estado.fim.vencedor === null) return "empate";
-  return estado.fim.vencedor === pessoa ? "vitoria" : "derrota";
+  return resultadoDoFim(estado.fim, pessoa);
 }
+

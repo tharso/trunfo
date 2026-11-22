@@ -102,7 +102,7 @@ body {
   font-size: 2rem;
 }
 
-/* Placar em cabo de guerra: verde = você, amarelo = monte de empate, vermelho = Computador. */
+/* Placar em cabo de guerra: verde = você, amarelo = monte de empate, vermelho = a outra pessoa (o Computador no solo). */
 .placar {
   display: flex;
   flex-direction: column;
@@ -142,8 +142,34 @@ body {
 .placar__empate {
   background: #d9b44a;
 }
-.placar__computador {
+.placar__outro {
   background: #c62828;
+}
+
+/* Com 3 ou 4 pessoas: a barra dividida, os outros em tons neutros, com as iniciais. */
+.placar__cabo--dividida {
+  height: 1.25rem;
+}
+.placar__cabo--dividida .placar__outro {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  color: #0f172a;
+  background: #cbd5e1;
+  /* Um fio escuro separa as partes vizinhas. */
+  box-shadow: inset 1px 0 0 #0f172a;
+}
+.placar__cabo--dividida .placar__outro:nth-of-type(4) {
+  background: #94a3b8;
+}
+.placar__cabo--dividida .placar__outro:nth-of-type(5) {
+  background: #e2e8f0;
 }
 
 /* Sorteio. */
@@ -209,6 +235,7 @@ body {
 
 .duelo__pular {
   position: absolute;
+  z-index: 1;
   right: 1rem;
   top: max(1rem, env(safe-area-inset-top));
   padding: 0.4rem 0.8rem;
@@ -279,6 +306,18 @@ body {
   text-shadow: 0 1px 2px #0008;
 }
 
+/* Carta e Apelido: um Apelido de 20 letras corta com "…" em vez de empurrar a nota. */
+.duelo__nomes {
+  min-width: 0;
+}
+
+.duelo__nomes,
+.duelo__pessoa {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .duelo__pessoa {
   display: block;
   font-size: 0.8rem;
@@ -340,7 +379,33 @@ body {
   animation: sobe 0.25s ease-out both;
 }
 
-/* Ver as duas cartas: lado a lado quando cabe, uma embaixo da outra no celular. */
+/* Com 3 ou 4 cartas na mesa, as faixas ficam mais baixas para o duelo caber no celular. */
+.duelo--mesa-cheia .duelo__conteudo {
+  gap: 0.7rem;
+}
+.duelo--mesa-cheia .duelo__etapa {
+  font-size: 1.6rem;
+}
+.duelo--mesa-cheia .duelo__faixa {
+  padding: 0.5rem 0.75rem;
+}
+.duelo--mesa-cheia .duelo__avatar {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.75rem;
+}
+.duelo--mesa-cheia .duelo__nota {
+  font-size: 1.6rem;
+}
+.duelo--mesa-cheia .duelo__pista {
+  height: 0.8rem;
+  margin-top: 0.4rem;
+}
+.duelo--mesa-cheia .duelo__resultado {
+  min-height: 4.5rem;
+}
+
+/* Ver as cartas: lado a lado quando cabe, uma embaixo da outra no celular. */
 .duelo__cartas {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));

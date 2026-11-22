@@ -16,7 +16,7 @@ Cada regra veio de um achado real da revisão da primeira versão (PR #30).
 
 ## Dados guardados no celular
 
-- Guarde só o que a spec manda guardar (Retrospecto e Partida guardada). Preferências de sessão ficam na memória da página.
+- Guarde só o que a spec manda guardar: Retrospecto e Partida guardada (parte 8); no multiplayer, Apelido e identificador secreto (parte 10) e a última sala, para voltar a ela ao abrir o link de novo (parte 9, item 18). Preferências de sessão ficam na memória da página.
 - Ao ler do `localStorage`, valide a forma: um estado com carta fora do baralho atual ou campo de tipo inválido é ignorado, e o jogo começa limpo.
 
 ## Uma fonte para cada valor
