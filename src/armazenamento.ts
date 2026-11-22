@@ -81,14 +81,3 @@ export function lerPartida(): Estado | null {
 export function guardarPartida(estado: Estado | null): void {
   escrever(CHAVE_PARTIDA, estado === null ? null : { versao: VERSAO_DA_PARTIDA, estado });
 }
-
-const CHAVE_SOM = "trunfo:som";
-
-/** Som ligado? Começa ligado (docs/spec.md, parte 7); só `false` guardado desliga. */
-export function lerSomLigado(): boolean {
-  return ler(CHAVE_SOM) !== false;
-}
-
-export function guardarSomLigado(ligado: boolean): void {
-  escrever(CHAVE_SOM, ligado);
-}

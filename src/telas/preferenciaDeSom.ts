@@ -1,9 +1,7 @@
-// Som ligado ou desligado (docs/spec.md, parte 7). Começa ligado e é lembrado
-// no celular (src/armazenamento.ts, que tolera falha: sem armazenamento, vale
-// "ligado" e a escolha só dura até fechar a página).
-import { guardarSomLigado, lerSomLigado } from "../armazenamento";
+// Som ligado ou desligado (docs/spec.md, parte 7). Começa ligado a cada vez que a
+// página abre; a escolha fica só na memória (a spec não guarda o som no celular).
 
-let ligado = lerSomLigado();
+let ligado = true;
 const ouvintes = new Set<(ligado: boolean) => void>();
 
 export function somLigado(): boolean {
@@ -12,7 +10,6 @@ export function somLigado(): boolean {
 
 export function ligarSom(sim: boolean): void {
   ligado = sim;
-  guardarSomLigado(sim);
   ouvintes.forEach((ouvir) => ouvir(sim));
 }
 
