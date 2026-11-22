@@ -1,4 +1,4 @@
-// Navegação entre as telas: Início (↔ Como jogar) → Partida → Fim.
+// Navegação entre as telas: Início (↔ Como jogar) → Sorteio → Partida → Fim.
 // A tela não decide regra: cria a partida e manda ações para o módulo de regras.
 // O App também guarda no celular (src/armazenamento.ts) a partida solo depois de
 // cada rodada e o Retrospecto quando a partida acaba (docs/spec.md, parte 8).
@@ -10,6 +10,7 @@ import { ComoJogar } from "./ComoJogar";
 import { Fim } from "./Fim";
 import { Inicio } from "./Inicio";
 import { Partida } from "./Partida";
+import { Sorteio } from "./Sorteio";
 
 // No modo solo, a Ordem da mesa é: você, depois o Computador.
 const VOCE = 0;
@@ -17,6 +18,7 @@ const VOCE = 0;
 type Tela =
   | { nome: "inicio" }
   | { nome: "comoJogar" }
+  | { nome: "sorteio"; estado: Estado }
   | { nome: "partida"; estado: Estado }
   | { nome: "fim"; estado: Estado };
 
@@ -72,8 +74,9 @@ export function App() {
     if (!estado.fim) registrarFim(aplicar(estado, { tipo: "sair", pessoa: VOCE }).estado);
   }
 
+  /** Partida nova: passa pelo Sorteio. "Continuar" vai direto para a Partida. */
   function jogar() {
-    setTela({ nome: "partida", estado: novaPartida(nivel) });
+    setTela({ nome: "sorteio", estado: novaPartida(nivel) });
   }
 
   switch (tela.nome) {
@@ -95,6 +98,8 @@ export function App() {
       );
     case "comoJogar":
       return <ComoJogar aoVoltar={() => setTela({ nome: "inicio" })} />;
+    case "sorteio":
+      return <Sorteio estado={tela.estado} aoComecar={() => setTela({ nome: "partida", estado: tela.estado })} />;
     case "partida":
       return (
         <Partida

@@ -5,6 +5,7 @@ import { expect, test } from "@playwright/test";
 // Com a pessoa escolhendo sempre a primeira linha (Sprint), essa semente acaba
 // em 20 rodadas. A semente só fixa o sorteio; quem decide as regras é o módulo.
 // Nela, o Computador joga o Super Trunfo na rodada 8 e você tem uma Carta A na 11.
+// O duelo é pulado: na 1ª rodada com um toque na tela, nas outras com "Pular ⏩".
 // A partida roda SEM INTERNET: a 1ª visita instala o service worker (PWA), depois
 // o teste corta a rede e recarrega. Assim o mesmo teste cobre o jogo e o offline.
 // No meio, recarrega a página: o Início mostra "Continuar partida?" e a partida
@@ -18,11 +19,15 @@ test("joga uma partida inteira contra o Computador até o Fim, sem internet", as
   await page.reload();
   await expect(page.getByText("Fácil: você 0 × 0 computador", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Jogar", exact: true }).click();
+  await expect(page.getByRole("heading", { name: /^(Você começa!|O computador começa\.)$/ })).toBeVisible();
+  await page.getByRole("button", { name: "Ver minha primeira carta" }).click();
 
   const fim = page.getByRole("button", { name: "Jogar de novo" });
   const proxima = page.getByRole("button", { name: "Próxima rodada" });
   const correr = page.getByRole("button", { name: "Correr!" });
   const primeiraLinha = page.locator(".carta__linha").first();
+  const duelo = page.getByRole("dialog", { name: "Duelo" });
+  const pular = page.getByRole("button", { name: "Pular ⏩" });
 
   for (let rodada = 1; rodada <= 100; rodada++) {
     await expect(page.getByText(`Rodada ${rodada}/100`)).toBeVisible();
@@ -46,6 +51,9 @@ test("joga uma partida inteira contra o Computador até o Fim, sem internet", as
       await expect(page.getByText("toque de novo ▶")).toBeVisible();
       await primeiraLinha.click();
     }
+    await expect(duelo).toBeVisible();
+    if (rodada === 1) await duelo.getByRole("heading", { level: 2 }).click();
+    else await pular.click();
     await expect(page.getByRole("heading", { name: /Você ganhou a rodada!|O computador ganhou\.|Empate!/ })).toBeVisible();
     if (rodada === 8) await expect(page.getByText(/^Super Trunfo! Ganha de qualquer carta\./)).toBeVisible();
     await proxima.click();
