@@ -5,6 +5,7 @@ import { ATRIBUTOS, type Carta as CartaDasRegras, type ChaveAtributo } from "../
 import "./Carta.css";
 import { corDaMarcacao, corDaNota, textoSobre } from "./cores";
 import { aparencia, NOME_DO_ATRIBUTO } from "./doBaralho";
+import { Rosto } from "./Rosto";
 
 const ICONE: Record<ChaveAtributo, string> = {
   sprint: "⚡",
@@ -46,7 +47,7 @@ interface Props {
 
 export function Carta({ carta, marcado, aoTocar, selo, rotulo }: Props) {
   // As regras só guardam código, nome e notas; o resto (equipe, cores, país...) vem do baralho.
-  const { dados, cores, iniciais } = aparencia(carta);
+  const { dados, cores, iniciais, foto } = aparencia(carta);
   const marcacao = corDaMarcacao(cores);
   const pais = dados ? (NOMES_DE_PAIS.of(dados.pais) ?? dados.paisNome) : null;
   const estilo = {
@@ -69,7 +70,7 @@ export function Carta({ carta, marcado, aoTocar, selo, rotulo }: Props) {
             </span>
           )}
           <div class={`carta__iniciais${iniciais.length > 3 ? " carta__iniciais--longas" : ""}`} aria-hidden="true">
-            {iniciais}
+            <Rosto foto={foto} iniciais={iniciais} />
           </div>
         </header>
         <h2 class="carta__nome">{carta.nome}</h2>

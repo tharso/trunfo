@@ -11,6 +11,7 @@ import { resultadoDoVencedor, type Carta as CartaDasRegras, type EventoDaRodada 
 import { Carta, TEXTO_DA_ETAPA } from "./Carta";
 import { corDaNota } from "./cores";
 import { aparencia, cartaPeloCodigo, NOME_DO_ATRIBUTO } from "./doBaralho";
+import { Rosto } from "./Rosto";
 import type { NomeNaTela } from "./mesa";
 import type { AoMomento } from "./momentos";
 import { selo, textoDoMotivo } from "./Selos";
@@ -189,7 +190,7 @@ interface FaixaProps {
 }
 
 function Faixa({ carta, quem, pessoa, nota, evento, crescimento, pronto }: FaixaProps) {
-  const { cores, iniciais } = aparencia(carta);
+  const { cores, iniciais, foto } = aparencia(carta);
   // O Super Trunfo enche a barra quando ganhou por ser Super Trunfo; contra a Carta A, vale a nota.
   const alvo = carta.superTrunfo && evento.motivo === "superTrunfo" ? 100 : nota;
   const vence = pronto && evento.vencedor === pessoa;
@@ -201,7 +202,7 @@ function Faixa({ carta, quem, pessoa, nota, evento, crescimento, pronto }: Faixa
     >
       <div class="duelo__quem">
         <span class="duelo__avatar" aria-hidden="true">
-          {iniciais}
+          <Rosto foto={foto} iniciais={iniciais} />
         </span>
         <span class="duelo__nomes">
           {carta.nome}
