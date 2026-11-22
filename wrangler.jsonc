@@ -7,6 +7,9 @@
   "routes": [
     { "pattern": "supertrunfo.tharso.com", "custom_domain": true }
   ],
+  // Builds de branch (PR) na Cloudflare rodam `wrangler preview`, que exige
+  // este bloco, mesmo vazio. O main usa `wrangler deploy` e ignora o bloco.
+  "previews": {},
   // Primeira versão sem servidor (ADR 0001): só arquivos estáticos, em modo SPA.
   "assets": {
     "not_found_handling": "single-page-application"
