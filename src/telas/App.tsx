@@ -1,4 +1,4 @@
-// Navegação entre as telas: Início (↔ Como jogar) → Partida → Fim.
+// Navegação entre as telas: Início (↔ Como jogar) → Sorteio → Partida → Fim.
 // A tela não decide regra: cria a partida e manda ações para o módulo de regras.
 import { useState } from "preact/hooks";
 import baralho from "../dados/baralho.json";
@@ -7,10 +7,12 @@ import { ComoJogar } from "./ComoJogar";
 import { Fim } from "./Fim";
 import { Inicio } from "./Inicio";
 import { Partida } from "./Partida";
+import { Sorteio } from "./Sorteio";
 
 type Tela =
   | { nome: "inicio" }
   | { nome: "comoJogar" }
+  | { nome: "sorteio"; estado: Estado }
   | { nome: "partida"; estado: Estado }
   | { nome: "fim"; estado: Estado };
 
@@ -39,19 +41,21 @@ export function App() {
         <Inicio
           nivel={nivel}
           aoMudarNivel={setNivel}
-          aoJogar={() => setTela({ nome: "partida", estado: novaPartida(nivel) })}
+          aoJogar={() => setTela({ nome: "sorteio", estado: novaPartida(nivel) })}
           aoComoJogar={() => setTela({ nome: "comoJogar" })}
         />
       );
     case "comoJogar":
       return <ComoJogar aoVoltar={() => setTela({ nome: "inicio" })} />;
+    case "sorteio":
+      return <Sorteio estado={tela.estado} aoComecar={() => setTela({ nome: "partida", estado: tela.estado })} />;
     case "partida":
       return <Partida inicial={tela.estado} aoTerminar={(estado) => setTela({ nome: "fim", estado })} />;
     case "fim":
       return (
         <Fim
           estado={tela.estado}
-          aoJogarDeNovo={() => setTela({ nome: "partida", estado: novaPartida(nivel) })}
+          aoJogarDeNovo={() => setTela({ nome: "sorteio", estado: novaPartida(nivel) })}
           aoVoltar={() => setTela({ nome: "inicio" })}
         />
       );
