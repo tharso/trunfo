@@ -1,0 +1,11 @@
+# Cabeçalhos do Workers Static Assets.
+# O service worker e o script que o registra vão sem cache: assim o navegador
+# sempre confere se há versão nova do jogo (spec: "sw.js servido com no-cache").
+/sw.js
+  Cache-Control: no-cache
+
+/registerSW.js
+  Cache-Control: no-cache
+
+/manifest.webmanifest
+  Cache-Control: no-cache
