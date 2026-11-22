@@ -10,6 +10,7 @@ import {
   type Resultado,
   type TemposDaSala,
 } from "../sala/sala";
+import { PING, PONG, SILENCIO_MAXIMO, semSinal } from "../sala/sinal";
 
 // Um Durable Object por sala (spec, parte 10), com a WebSocket Hibernation API:
 // o DO aceita o socket com ctx.acceptWebSocket e pode sair da memória enquanto
@@ -19,15 +20,21 @@ import {
 // Por isso nada fica em campo da classe: o estado da sala vai no storage
 // (chave "sala") e quem está em cada socket vai no attachment do socket.
 //
+// Sinal de vida: o celular manda "ping" e a Cloudflare responde "pong" sem
+// acordar o objeto (setWebSocketAutoResponse). Enquanto há alguém conectado, o
+// alarme toca pelo menos a cada SILENCIO_MAXIMO e fecha o socket calado (sem
+// ping), que conta como queda (src/sala/sinal.ts).
+//
 // Esta classe é só a casca de rede. As decisões (quem entra, Apelido, Ordem da
 // mesa, Anfitrião, "Começar", a partida com o módulo de regras e o que cada
 // pessoa pode ver) moram em src/sala/sala.ts, sem rede, com testes.
 
 const CHAVE = "sala";
 
-/** O que fica preso em cada socket: o identificador secreto de quem está nele. */
+/** O que fica preso em cada socket: o identificador secreto de quem está nele e quando abriu (ms). */
 interface Anexo {
   id: string | null;
+  abertoEm: number;
 }
 
 /**
@@ -56,11 +63,20 @@ function temposDaSala(): TemposDaSala {
   };
 }
 
+function anexoDoSocket(socket: WebSocket): Anexo {
+  return (socket.deserializeAttachment() as Anexo | null) ?? { id: null, abertoEm: 0 };
+}
+
 function idDoSocket(socket: WebSocket): string | null {
-  return (socket.deserializeAttachment() as Anexo | null)?.id ?? null;
+  return anexoDoSocket(socket).id;
 }
 
 export class Sala extends DurableObject<Env> {
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    this.ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair(PING, PONG));
+  }
+
   /** Chamado pelo Worker (RPC) ao criar sala: reserva o código se está livre. */
   async reservar(codigo: string): Promise<boolean> {
     const estado = reservar(await this.ler(), codigo, Date.now(), temposDaSala());
@@ -76,7 +92,7 @@ export class Sala extends DurableObject<Env> {
     }
     const { 0: cliente, 1: servidor } = new WebSocketPair();
     this.ctx.acceptWebSocket(servidor);
-    servidor.serializeAttachment({ id: null } satisfies Anexo);
+    servidor.serializeAttachment({ id: null, abertoEm: Date.now() } satisfies Anexo);
     return new Response(null, { status: 101, webSocket: cliente });
   }
 
@@ -84,7 +100,9 @@ export class Sala extends DurableObject<Env> {
     if (typeof mensagem !== "string") return;
     const conexao = idDoSocket(socket);
     const resultado = receber(await this.ler(), conexao, mensagem, Date.now(), { semente: sementeDaPartida() }, temposDaSala());
-    if (resultado.conexao !== conexao) socket.serializeAttachment({ id: resultado.conexao } satisfies Anexo);
+    if (resultado.conexao !== conexao) {
+      socket.serializeAttachment({ ...anexoDoSocket(socket), id: resultado.conexao } satisfies Anexo);
+    }
     if (resultado.resposta) socket.send(JSON.stringify(resultado.resposta));
     await this.aplicar(resultado);
   }
@@ -105,6 +123,7 @@ export class Sala extends DurableObject<Env> {
    * livre e um link velho recebe "acabou".
    */
   async alarm(): Promise<void> {
+    await this.fecharSocketsCalados();
     const antes = await this.ler();
     const resultado = alarme(antes, Date.now(), temposDaSala());
     if (antes !== null && resultado.estado === null) {
@@ -112,16 +131,51 @@ export class Sala extends DurableObject<Env> {
       await this.ctx.storage.deleteAll();
       return;
     }
-    await this.aplicar(resultado);
+    // Nada venceu (só a verificação do sinal): não grava, só agenda o próximo.
+    if (resultado.estado === antes) await this.agendar(antes);
+    else await this.aplicar(resultado);
   }
 
-  /** Um socket fechou. Se era a última conexão da pessoa, ela caiu. */
-  private async fechou(socket: WebSocket): Promise<void> {
-    const id = idDoSocket(socket);
+  /**
+   * Fecha os sockets sem ping há SILENCIO_MAXIMO (o celular sumiu sem fechar
+   * a conexão). Se era a última conexão da pessoa, ela caiu.
+   */
+  private async fecharSocketsCalados(): Promise<void> {
+    const agora = Date.now();
+    for (const socket of this.ctx.getWebSockets()) {
+      const { id, abertoEm } = anexoDoSocket(socket);
+      if (id === null) continue;
+      const ultimoPing = this.ctx.getWebSocketAutoResponseTimestamp(socket)?.getTime() ?? null;
+      if (!semSinal(abertoEm, ultimoPing, agora)) continue;
+      // Sem dono antes de fechar: o webSocketClose que vier depois não conta a queda de novo.
+      socket.serializeAttachment({ id: null, abertoEm } satisfies Anexo);
+      try {
+        socket.close(1001, "Sem sinal");
+      } catch {
+        // Já fechado.
+      }
+      await this.fechou(socket, id);
+    }
+  }
+
+  /** Um socket fechou. Se era a última conexão da pessoa (`id`), ela caiu. */
+  private async fechou(socket: WebSocket, id = idDoSocket(socket)): Promise<void> {
     if (id === null) return;
     const outraConexao = this.ctx.getWebSockets().some((s) => s !== socket && idDoSocket(s) === id);
     if (outraConexao) return;
     await this.aplicar(desconectar(await this.ler(), id, Date.now()));
+  }
+
+  /**
+   * O próximo alarme: o que a sala espera (queda, cutucar, sala vazia) e, com
+   * alguém conectado, a próxima verificação do sinal.
+   */
+  private async agendar(estado: EstadoDaSala | null): Promise<void> {
+    const instantes = [proximoAlarme(estado, temposDaSala())];
+    if (this.ctx.getWebSockets().some((socket) => idDoSocket(socket) !== null)) instantes.push(Date.now() + SILENCIO_MAXIMO);
+    const quando = instantes.filter((instante) => instante !== null);
+    if (quando.length === 0) await this.ctx.storage.deleteAlarm();
+    else await this.ctx.storage.setAlarm(Math.min(...quando));
   }
 
   private async ler(): Promise<EstadoDaSala | null> {
@@ -135,9 +189,7 @@ export class Sala extends DurableObject<Env> {
   private async aplicar(resultado: Resultado): Promise<void> {
     if (resultado.estado !== null) {
       await this.ctx.storage.put(CHAVE, resultado.estado);
-      const quando = proximoAlarme(resultado.estado, temposDaSala());
-      if (quando === null) await this.ctx.storage.deleteAlarm();
-      else await this.ctx.storage.setAlarm(quando);
+      await this.agendar(resultado.estado);
     }
     if (resultado.paraPessoas.length === 0) return;
     const porPessoa = new Map<string, string[]>();

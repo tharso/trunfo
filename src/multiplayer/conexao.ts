@@ -2,6 +2,7 @@ import PartySocket from "partysocket";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { lerMensagemDaSala, type MensagemDaSala, type MensagemDoCliente, type MotivoDaRecusa } from "../sala/protocolo";
 import { avancar, filaVazia, receberNaFila, type FilaDaPartida } from "./fila";
+import { vigiarSinal } from "./sinal";
 
 // A conversa do celular com a Sala (Durable Object atrás de /sala/<código>).
 // partysocket reconecta sozinho quando a rede cai ou o servidor reinicia; a cada
@@ -107,8 +108,11 @@ export function useSala({ codigo, apelido, id }: EntradaNaSala) {
     };
     addEventListener("offline", mudouARede);
     addEventListener("online", mudouARede);
+    // E quando o sinal some sem o navegador avisar: ping/pong (src/multiplayer/sinal.ts).
+    const pararDeVigiar = vigiarSinal(conexao);
     return () => {
       fechada = true;
+      pararDeVigiar();
       removeEventListener("offline", mudouARede);
       removeEventListener("online", mudouARede);
       conexao.close();
