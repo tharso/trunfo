@@ -117,6 +117,70 @@ describe("rodada", () => {
   });
 });
 
+describe("Super Trunfo e Carta A", () => {
+  const superTrunfo: Carta = { ...carta("ST", 20), superTrunfo: true };
+  const cartaA: Carta = { ...carta("A1", 30), cartaA: true };
+
+  it("o Super Trunfo ganha de qualquer carta, em qualquer atributo", () => {
+    const estado = partidaArrumada([[carta("N", 99), carta("x")], [superTrunfo, carta("y")]]);
+    const { eventos } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "sprint" });
+    expect(eventos[0]).toMatchObject({ vencedor: 1, motivo: "superTrunfo", cartasLevadas: 2 });
+  });
+
+  it("com 2 pessoas, a Carta A ganha do Super Trunfo", () => {
+    const estado = partidaArrumada([[cartaA, carta("x")], [superTrunfo, carta("y")]], 1);
+    const { eventos } = aplicar(estado, { tipo: "computadorEscolhe" });
+    expect(eventos[0]).toMatchObject({ vencedor: 0, motivo: "cartaA", cartasLevadas: 2 });
+  });
+
+  it("com 3 pessoas, a Carta A tira o Super Trunfo da disputa e a nota mais alta ganha", () => {
+    const estado = partidaArrumada([[cartaA, carta("x")], [superTrunfo, carta("y")], [carta("N", 70), carta("z")]]);
+    const { estado: depois, eventos } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "pave" });
+    expect(eventos[0]).toMatchObject({ vencedor: 2, motivo: "cartaA", cartasLevadas: 3 });
+    expect(depois.pessoas[2].monte).toEqual(["z", "A1", "ST", "N"]);
+  });
+
+  it("com 4 pessoas, a Carta A pode ganhar a disputa sem o Super Trunfo", () => {
+    const estado = partidaArrumada([
+      [carta("N1", 10), carta("w")],
+      [superTrunfo, carta("x")],
+      [{ ...cartaA, notas: { ...cartaA.notas, voltas: 95 } }, carta("y")],
+      [carta("N2", 60), carta("z")],
+    ]);
+    const { eventos } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "voltas" });
+    expect(eventos[0]).toMatchObject({ vencedor: 2, motivo: "cartaA", cartasLevadas: 4 });
+  });
+
+  it("com 3 pessoas sem Carta A na mesa, o Super Trunfo ganha", () => {
+    const estado = partidaArrumada([[carta("N1", 99), carta("x")], [superTrunfo, carta("y")], [carta("N2", 98), carta("z")]]);
+    const { eventos } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "sprint" });
+    expect(eventos[0]).toMatchObject({ vencedor: 1, motivo: "superTrunfo", cartasLevadas: 3 });
+  });
+
+  it("com 3 pessoas, se o Super Trunfo sai da disputa e as outras empatam, é empate", () => {
+    const estado = partidaArrumada([[cartaA, carta("x")], [superTrunfo, carta("y")], [carta("N", 30), carta("z")]]);
+    const { estado: depois, eventos } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "sprint" });
+    expect(eventos[0]).toMatchObject({ vencedor: null, motivo: "empate", cartasLevadas: 0 });
+    expect(depois.monteDeEmpate).toEqual(["A1", "ST", "N"]);
+  });
+
+  it("com 4 pessoas e só 2 ainda na partida, vale a regra de 2: a Carta A ganha", () => {
+    const inicial = partidaArrumada([[cartaA, carta("x")], [superTrunfo, carta("y")], [carta("c")], [carta("d")]]);
+    const estado: Estado = {
+      ...inicial,
+      pessoas: inicial.pessoas.map((p, i) => (i >= 2 ? { ...p, monte: [], fora: "semCartas" } : p)),
+    };
+    const { eventos } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "sprint" });
+    expect(eventos[0]).toMatchObject({ vencedor: 0, motivo: "cartaA", cartasLevadas: 2 });
+  });
+
+  it("a Carta A sem o Super Trunfo na mesa é uma carta normal", () => {
+    const estado = partidaArrumada([[cartaA, carta("x")], [carta("N", 80), carta("y")]]);
+    const { eventos } = aplicar(estado, { tipo: "escolher", pessoa: 0, atributo: "montanha" });
+    expect(eventos[0]).toMatchObject({ vencedor: 1, motivo: "nota" });
+  });
+});
+
 describe("fim da partida", () => {
   it("acaba quando uma pessoa tem todas as cartas", () => {
     const estado = partidaArrumada([[carta("A", 90), carta("B", 10)], [carta("C", 20)]]);
