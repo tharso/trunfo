@@ -2,6 +2,7 @@
 // partida solo guardada, no `localStorage`. Toda leitura e escrita tolera falha
 // (aba anônima, armazenamento cheio ou bloqueado, dado velho ou estragado):
 // sem armazenamento, o jogo funciona, só não lembra.
+import baralho from "./dados/baralho.json";
 import { retrospectoVazio, type Estado, type Nivel, type Retrospecto } from "./regras";
 
 const CHAVE_RETROSPECTO = "trunfo:retrospecto";
@@ -51,6 +52,14 @@ export function guardarRetrospecto(retrospecto: Retrospecto): void {
   escrever(CHAVE_RETROSPECTO, retrospecto);
 }
 
+// As cartas do baralho atual. O baralho.json muda entre versões do jogo; uma partida
+// guardada com carta que não existe mais não serve.
+const CODIGOS_DO_BARALHO = new Set(baralho.cartas.map((c) => c.codigo));
+
+function cartasDoBaralho(codigos: unknown): boolean {
+  return Array.isArray(codigos) && codigos.every((codigo) => CODIGOS_DO_BARALHO.has(codigo));
+}
+
 /** A partida solo guardada, ou `null` se não há (ou se o que há não serve). */
 export function lerPartida(): Estado | null {
   const guardado = ler(CHAVE_PARTIDA) as { versao?: unknown; estado?: Partial<Estado> } | null;
@@ -60,9 +69,11 @@ export function lerPartida(): Estado | null {
     estado.fim === null &&
     (estado.nivel === "facil" || estado.nivel === "normal") &&
     Array.isArray(estado.baralho) &&
+    cartasDoBaralho(estado.baralho.map((c) => c?.codigo)) &&
+    cartasDoBaralho(estado.monteDeEmpate) &&
     Array.isArray(estado.pessoas) &&
     estado.pessoas.length === 2 &&
-    estado.pessoas.every((p) => p && Array.isArray(p.monte));
+    estado.pessoas.every((p) => p && (p.tipo === "humano" || p.tipo === "computador") && cartasDoBaralho(p.monte));
   return serve ? (estado as Estado) : null;
 }
 
