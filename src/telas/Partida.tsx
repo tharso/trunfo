@@ -1,19 +1,20 @@
-// Rodadas da partida solo, num visual simples (o visual de verdade vem nos
-// tickets 24 e 25). A tela só manda ações e desenha o estado e os eventos.
+// Rodadas da partida solo. A carta tem o visual da parte 5 da spec; o resto
+// é simples (o visual de verdade vem no ticket 25). A tela só manda ações e
+// desenha o estado e os eventos.
 import { useState } from "preact/hooks";
 import baralho from "../dados/baralho.json";
 import {
-  ATRIBUTOS,
   aplicar,
   atributoDoComputador,
   cartaDeCima,
   type Acao,
-  type Carta,
+  type Carta as CartaDasRegras,
   type ChaveAtributo,
   type Estado,
   type Evento,
 } from "../regras";
-import { Selos, textoDoMotivo } from "./Selos";
+import { Carta } from "./Carta";
+import { selo, textoDoMotivo } from "./Selos";
 
 // No modo solo, a Ordem da mesa é: você, depois o Computador.
 const VOCE = 0;
@@ -79,7 +80,7 @@ function Placar({ estado }: { estado: Estado }) {
   );
 }
 
-function VezDeVoce({ carta, aoEscolher }: { carta: Carta; aoEscolher: (a: ChaveAtributo) => void }) {
+function VezDeVoce({ carta, aoEscolher }: { carta: CartaDasRegras; aoEscolher: (a: ChaveAtributo) => void }) {
   const [marcado, setMarcado] = useState<ChaveAtributo | null>(null);
   // 2 toques na mesma linha: o 1º marca, o 2º envia. Tocar em outra linha troca a marcação.
   function tocar(atributo: ChaveAtributo) {
@@ -89,54 +90,20 @@ function VezDeVoce({ carta, aoEscolher }: { carta: Carta; aoEscolher: (a: ChaveA
   return (
     <main class="rodada">
       <p class="rodada__aviso">Sua vez: escolha um atributo.</p>
-      <CartaSimples carta={carta} marcado={marcado} aoTocar={tocar} />
+      <Carta carta={carta} marcado={marcado} aoTocar={tocar} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />
     </main>
   );
 }
 
-function VezDoComputador({ carta, atributo, aoCorrer }: { carta: Carta; atributo: ChaveAtributo; aoCorrer: () => void }) {
+function VezDoComputador({ carta, atributo, aoCorrer }: { carta: CartaDasRegras; atributo: ChaveAtributo; aoCorrer: () => void }) {
   return (
     <main class="rodada">
       <p class="rodada__aviso">O computador escolheu {NOME_DO_ATRIBUTO[atributo]}.</p>
-      <CartaSimples carta={carta} marcado={atributo} />
+      <Carta carta={carta} marcado={atributo} selo={selo(carta)} rotulo={`Sua carta: ${carta.nome}`} />
       <button type="button" class="botao" onClick={aoCorrer}>
         Correr!
       </button>
     </main>
-  );
-}
-
-function CartaSimples({
-  carta,
-  marcado,
-  aoTocar,
-}: {
-  carta: Carta;
-  marcado: ChaveAtributo | null;
-  aoTocar?: (a: ChaveAtributo) => void;
-}) {
-  return (
-    <section class="carta" aria-label={`Sua carta: ${carta.nome}`}>
-      <h2 class="carta__nome">{carta.nome}</h2>
-      <Selos carta={carta} />
-      <ul class="carta__linhas">
-        {ATRIBUTOS.map((atributo) => (
-          <li key={atributo}>
-            <button
-              type="button"
-              class={`carta__linha${marcado === atributo ? " carta__linha--marcada" : ""}`}
-              aria-pressed={marcado === atributo}
-              disabled={!aoTocar}
-              onClick={() => aoTocar?.(atributo)}
-            >
-              <span>{NOME_DO_ATRIBUTO[atributo]}</span>
-              {marcado === atributo && aoTocar && <span class="carta__dica">toque de novo ▶</span>}
-              <span class="carta__nota">{carta.notas[atributo]}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </section>
   );
 }
 

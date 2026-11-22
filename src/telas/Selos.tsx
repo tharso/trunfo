@@ -3,8 +3,8 @@
 // (ticket 24) e o duelo (ticket 25) usarem como estão.
 import type { Carta, Evento } from "../regras";
 
-/** Selo de Super Trunfo ou de Carta A. Nada para uma carta normal. */
-export function Selos({ carta }: { carta: Carta }) {
+/** Selo de Super Trunfo ou de Carta A, para a prop `selo` da Carta. `null` para uma carta normal. */
+export function selo(carta: Carta) {
   if (carta.superTrunfo) return <span class="selo selo--super-trunfo">Super Trunfo</span>;
   if (carta.cartaA) return <span class="selo selo--carta-a">Carta A</span>;
   return null;
