@@ -15,6 +15,7 @@ import {
 } from "../regras";
 import { Carta } from "./Carta";
 import { Duelo } from "./Duelo";
+import { BotaoSom } from "./BotaoSom";
 import { MenuPartida } from "./MenuPartida";
 import type { AoMomento } from "./momentos";
 import { Placar } from "./Placar";
@@ -71,7 +72,10 @@ export function Partida({ inicial, aoTerminar, aoMomento, aoMudar, aoSair }: Pro
 
   return (
     <div class="tela partida">
-      <MenuPartida aoSair={() => aoSair(estado)} />
+      <div class="partida__topo">
+        <BotaoSom />
+        <MenuPartida aoSair={() => aoSair(estado)} />
+      </div>
       <Placar
         voce={noPlacar.pessoas[VOCE].monte.length}
         empate={noPlacar.monteDeEmpate.length}

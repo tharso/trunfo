@@ -10,6 +10,8 @@ export type Momento =
   /** Uma barra do duelo começou a subir e sobe por `duracaoMs` (tique-taque). */
   | { tipo: "barra"; quem: "voce" | "computador"; duracaoMs: number }
   /** O resultado da rodada apareceu. `pulou`: chegou pelo "Pular ⏩" ou pelo toque na tela. */
-  | { tipo: "resultado"; resultado: "ganhar" | "perder" | "empate"; pulou: boolean };
+  | { tipo: "resultado"; resultado: "ganhar" | "perder" | "empate"; pulou: boolean }
+  /** A tela Fim apareceu: a partida acabou. */
+  | { tipo: "fim"; resultado: "vitoria" | "derrota" | "empate" };
 
 export type AoMomento = (momento: Momento) => void;

@@ -10,6 +10,7 @@ import { ComoJogar } from "./ComoJogar";
 import { Fim } from "./Fim";
 import { Inicio } from "./Inicio";
 import { Partida } from "./Partida";
+import { sentir } from "./sensacao";
 import { Sorteio } from "./Sorteio";
 
 // No modo solo, a Ordem da mesa é: você, depois o Computador.
@@ -110,6 +111,7 @@ export function App() {
             setTela({ nome: "inicio" });
           }}
           aoTerminar={(estado) => setTela({ nome: "fim", estado })}
+          aoMomento={sentir}
         />
       );
     case "fim":
@@ -118,6 +120,7 @@ export function App() {
           estado={tela.estado}
           aoJogarDeNovo={jogar}
           aoVoltar={() => setTela({ nome: "inicio" })}
+          aoMomento={sentir}
         />
       );
   }

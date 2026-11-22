@@ -2,6 +2,7 @@
 // do nível, "Jogar" (ou "Continuar partida?" quando há partida guardada),
 // "Como jogar" e o aviso de jogo de fã. O som vem em outro ticket.
 import type { Nivel, PlacarDoNivel } from "../regras";
+import { BotaoSom } from "./BotaoSom";
 import "./Inicio.css";
 
 const NIVEIS: { nivel: Nivel; nome: string; explicacao: string }[] = [
@@ -41,6 +42,7 @@ export function Inicio({
 }: Props) {
   return (
     <div class="tela">
+      <BotaoSom />
       <main class="inicio">
         <h1 class="inicio__titulo">Super Trunfo Ciclismo</h1>
         <fieldset class="niveis">

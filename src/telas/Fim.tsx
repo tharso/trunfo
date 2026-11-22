@@ -1,5 +1,7 @@
 // Fim da partida (docs/spec.md, parte 6): quem ganhou, o motivo, o placar e as rodadas jogadas.
+import { useEffect } from "preact/hooks";
 import type { Estado, MotivoDoFim } from "../regras";
+import type { AoMomento } from "./momentos";
 
 const VOCE = 0;
 const COMPUTADOR = 1;
@@ -22,10 +24,16 @@ interface Props {
   estado: Estado;
   aoJogarDeNovo: () => void;
   aoVoltar: () => void;
+  /** Gancho para som e vibração (ticket 28): o fim (vitória, derrota ou empate). */
+  aoMomento?: AoMomento;
 }
 
-export function Fim({ estado, aoJogarDeNovo, aoVoltar }: Props) {
+export function Fim({ estado, aoJogarDeNovo, aoVoltar, aoMomento }: Props) {
   const fim = estado.fim!;
+  useEffect(() => {
+    const resultado = fim.vencedor === VOCE ? "vitoria" : fim.vencedor === COMPUTADOR ? "derrota" : "empate";
+    aoMomento?.({ tipo: "fim", resultado });
+  }, []);
   const titulo = fim.vencedor === VOCE ? "Você ganhou!" : fim.vencedor === COMPUTADOR ? "O computador ganhou." : "Empate.";
   return (
     <div class="tela">

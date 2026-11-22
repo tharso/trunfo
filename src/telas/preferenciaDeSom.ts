@@ -1,19 +1,10 @@
 // Som ligado ou desligado (docs/spec.md, parte 7). Começa ligado e é lembrado
-// no aparelho. A leitura e a escrita toleram falha (aba anônima, armazenamento
-// bloqueado): aí vale "ligado" e a escolha só dura até fechar a página.
+// no celular (src/armazenamento.ts, que tolera falha: sem armazenamento, vale
+// "ligado" e a escolha só dura até fechar a página).
+import { guardarSomLigado, lerSomLigado } from "../armazenamento";
 
-const CHAVE = "trunfo:som";
-
-let ligado = ler();
+let ligado = lerSomLigado();
 const ouvintes = new Set<(ligado: boolean) => void>();
-
-function ler(): boolean {
-  try {
-    return localStorage.getItem(CHAVE) !== "desligado";
-  } catch {
-    return true;
-  }
-}
 
 export function somLigado(): boolean {
   return ligado;
@@ -21,11 +12,7 @@ export function somLigado(): boolean {
 
 export function ligarSom(sim: boolean): void {
   ligado = sim;
-  try {
-    localStorage.setItem(CHAVE, sim ? "ligado" : "desligado");
-  } catch {
-    // Não deu para lembrar; vale só nesta visita.
-  }
+  guardarSomLigado(sim);
   ouvintes.forEach((ouvir) => ouvir(sim));
 }
 
